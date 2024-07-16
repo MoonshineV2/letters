@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <!--<persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
+
+        &lt;!&ndash; Provider Hibernate Core Dependecy
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>&ndash;&gt;
+
+        &lt;!&ndash; Hibernate version 4.2 or older, use this
+        <provider>org.hibernate.ejb.HibernatePersistence</provider> &ndash;&gt;
+
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        &lt;!&ndash; Register all models &ndash;&gt;
+        <class>com.example.letters.model.InputLetter</class>
+        <class>com.example.letters.model.Participant</class>
+        <class>com.example.letters.model.Worker</class>
+        <class>com.example.letters.model.Workgroup</class>
+
+        <properties>
+
+            &lt;!&ndash; JDBC URL Server:Port/DBName &ndash;&gt;
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/portalja"/>
+
+            &lt;!&ndash; DB Driver &ndash;&gt;
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+
+            &lt;!&ndash; DB User &ndash;&gt;
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+
+            &lt;!&ndash; DB Pass &ndash;&gt;
+            <property name="javax.persistence.jdbc.password" value="postgres"/>
+
+            &lt;!&ndash; Dialect compatibility PostgreSQL 10 &ndash;&gt;
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>
+
+            &lt;!&ndash; Attention, this option can cause data destroy in db. Use caution.
+                Values: validate, update, create, create-drop &ndash;&gt;
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+
+            &lt;!&ndash; Show SQL in console&ndash;&gt;
+            <property name="hibernate.show_sql" value="true"/>
+
+            &lt;!&ndash; Show SQL formatted &ndash;&gt;
+            <property name="hibernate.format_sql" value="true"/>
+
+        </properties>
+    </persistence-unit>-->
+    <persistence-unit name="portalja">
+        <jta-data-source>java:/pg_portalja</jta-data-source>
+        <properties>
+            <property
+                    name="jakarta.persistence.schema-generation.database.action"
+                    value="none" />
+            <property name="eclipselink.logging.level.sql" value="FINE" />
+            <property name="eclipselink.logging.parameters" value="true" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.enable_lazy_load_no_trans" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

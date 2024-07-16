@@ -1,0 +1,105 @@
+<html>
+<head>
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="letters.css">
+    <script src="input.js"></script>
+</head>
+<body>
+    <nav id='menu'>
+        <ul>
+            <li><a href='http://'>Входящие</a></li>
+            <li><a href='http://'>Исходящие</a></li>
+            <!--<li><a class='dropdown-arrow' href='http://'>Products</a>
+                <ul class='sub-menus'>
+                    <li><a href='http://'>Products 1</a></li>
+                    <li><a href='http://'>Products 2</a></li>
+                    <li><a href='http://'>Products 3</a></li>
+                    <li><a href='http://'>Products 4</a></li>
+                </ul>
+            </li>-->
+            <li><a href='http://'>БД</a></li>
+            <li>
+                <input type="text" placeholder="Поиск..">
+            </li>
+        </ul>
+    </nav>
+    <div class="horizontal-view">
+        <input type="file" id="avatar" />
+    </div>
+    <div class="horizontal-view">
+        <label for="ivc-num">номер входящего ИВЦ ЖА</label>
+        <input id="ivc-num" type="text">
+        <label class="container">
+            <input type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+            ответ на исходящее
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label for="registration-date">дата регистрации</label>
+        <input id="registration-date" type="date" value="2024-07-09" />
+        <label for="ivc-num-output">номер исходящего ИВЦ ЖА</label>
+        <input id="ivc-num-output" type="text">
+    </div>
+    <div class="horizontal-view">
+        <label for="doc-num">номер документа</label>
+        <input id="doc-num" type="text">
+    </div>
+    <div class="horizontal-view">
+        <label for="date-doc">дата документа</label>
+        <input id="date-doc" type="date" value="2024-07-09" />
+    </div>
+    <div class="horizontal-view">
+        <label for="postuplenie-date">дата поступления документа</label>
+        <input id="postuplenie-date" type="date" value="2024-07-09" />
+        <label for="easd-num">номер ЕАСД</label>
+        <input id="easd-num" type="text">
+    </div>
+    <div class="horizontal-view">
+        <label for="origin-select">источник письма</label>
+        <select name="origins" id="origin-select">
+            <option value="">--Please choose an option--</option>
+        </select>
+    </div>
+    <div class="horizontal-view">
+        <label for="signer-select">подписант</label>
+        <select name="signers" id="signer-select">
+            <option value="">--Please choose an option--</option>
+        </select>
+    </div>
+    <div class="horizontal-view">
+        <label for="executor-select">исполнитель</label>
+        <select name="executors" id="executor-select">
+            <option value="">--Please choose an option--</option>
+        </select>
+    </div>
+    <div class="horizontal-view">
+        <label for="topic">тема</label>
+        <input id="topic" type="text">
+        <label for="tags">теги</label>
+        <select id="tags" name="tags" data-placeholder="Выберите теги" multiple data-multi-select>
+            <option value="Apple">Apple</option>
+            <option value="Banana">Banana</option>
+            <option value="Blackberry">Blackberry</option>
+            <option value="Blueberry">Blueberry</option>
+            <option value="Cherry">Cherry</option>
+            <option value="Cranberry">Cranberry</option>
+            <option value="Grapes">Grapes</option>
+            <option value="Kiwi">Kiwi</option>
+            <option value="Mango">Mango</option>
+            <option value="Orange">Orange</option>
+            <option value="Peach">Peach</option>
+            <option value="Pear">Pear</option>
+            <option value="Pineapple">Pineapple</option>
+            <option value="Raspberry">Raspberry</option>
+            <option value="Strawberry">Strawberry</option>
+            <option value="Watermelon">Watermelon</option>
+        </select>
+        <label class="container">
+            <input type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+            резерв
+        </label>
+    </div>
+</body>
+</html>
