@@ -7,8 +7,8 @@
 <body>
     <nav id='menu'>
         <ul>
-            <li><a href='http://'>Входящие</a></li>
-            <li><a href='http://'>Исходящие</a></li>
+            <li><a id="input-ref" href='http://localhost:8080/letters/rest/pages/input'>Входящие</a></li>
+            <li><a id="output-ref" href='http://'>Исходящие</a></li>
             <!--<li><a class='dropdown-arrow' href='http://'>Products</a>
                 <ul class='sub-menus'>
                     <li><a href='http://'>Products 1</a></li>
@@ -17,89 +17,119 @@
                     <li><a href='http://'>Products 4</a></li>
                 </ul>
             </li>-->
-            <li><a href='http://'>БД</a></li>
+            <li><a id="db-ref" href='http://'>БД</a></li>
             <li>
                 <input type="text" placeholder="Поиск..">
             </li>
         </ul>
     </nav>
-    <div class="horizontal-view">
-        <input type="file" id="avatar" />
+    <div>
+        <div class="horizontal-view">
+            <input type="file" id="file" />
+        </div>
+        <div class="horizontal-view">
+            <label>
+                номер входящего ИВЦ ЖА
+                <input class="custom-input" style="max-width: 100px" id="ivc-num" type="text">
+            </label>
+            <label>
+                <input id="is-answer" type="checkbox">
+                ответ на исходящее
+            </label>
+        </div>
+        <div class="horizontal-view">
+            <label>
+                дата регистрации
+                <input class="custom-date" id="registration-date" type="date" value="2024-07-09" />
+            </label>
+            <label>
+                номер исходящего ИВЦ ЖА
+                <input class="custom-input" id="ivc-num-output" type="text">
+            </label>
+        </div>
+        <div class="horizontal-view">
+            <label>
+                номер документа
+                <input class="custom-input" id="doc-num" type="text">
+            </label>
+        </div>
+        <div class="horizontal-view">
+            <label for="date-doc">
+                дата документа
+                <input class="custom-date" id="date-doc" type="date" value="2024-07-09" />
+            </label>
+        </div>
+        <div class="horizontal-view">
+            <label>
+                дата поступления документа
+                <input class="custom-date" id="postuplenie-date" type="date" value="2024-07-09" />
+            </label>
+            <label>
+                номер ЕАСД
+                <input class="custom-input" id="easd-num" type="text">
+            </label>
+        </div>
+        <div class="horizontal-view">
+            <label>
+                источник письма
+                <div class="custom-select">
+                    <select name="origins" id="origin-select">
+                        <option value="">--Please choose an option--</option>
+                    </select>
+                </div>
+            </label>
+            <label>
+                <input id="prilojenie" type="checkbox">
+                приложение
+            </label>
+        </div>
+        <div class="horizontal-view">
+            <label>
+                подписант
+                <select name="signers" id="signer-select">
+                    <option value="">--Please choose an option--</option>
+                </select>
+            </label>
+            <label>
+                кому расписано
+                <select name="targets" id="target-select">
+                    <option value="">--Please choose an option--</option>
+                </select>
+            </label>
+        </div>
+        <div class="horizontal-view">
+            <label>
+                исполнитель
+                <select name="executors" id="executor-select">
+                    <option value="">--Please choose an option--</option>
+                </select>
+            </label>
+        </div>
+        <div class="horizontal-view">
+            <label>
+                тема
+                <input class="custom-input" id="topic" type="text">
+            </label>
+            <label style="display: flex">
+                теги
+                <select id="tags" name="tags"></select>
+            </label>
+            <label>
+                <input id="reserve" type="checkbox" checked="checked">
+                резерв
+            </label>
+        </div>
+        <div class="horizontal-view">
+            <label>
+                примечание
+                <input class="custom-input" id="note" type="text">
+            </label>
+        </div>
     </div>
     <div class="horizontal-view">
-        <label for="ivc-num">номер входящего ИВЦ ЖА</label>
-        <input id="ivc-num" type="text">
-        <label class="container">
-            <input type="checkbox" checked="checked">
-            <span class="checkmark"></span>
-            ответ на исходящее
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label for="registration-date">дата регистрации</label>
-        <input id="registration-date" type="date" value="2024-07-09" />
-        <label for="ivc-num-output">номер исходящего ИВЦ ЖА</label>
-        <input id="ivc-num-output" type="text">
-    </div>
-    <div class="horizontal-view">
-        <label for="doc-num">номер документа</label>
-        <input id="doc-num" type="text">
-    </div>
-    <div class="horizontal-view">
-        <label for="date-doc">дата документа</label>
-        <input id="date-doc" type="date" value="2024-07-09" />
-    </div>
-    <div class="horizontal-view">
-        <label for="postuplenie-date">дата поступления документа</label>
-        <input id="postuplenie-date" type="date" value="2024-07-09" />
-        <label for="easd-num">номер ЕАСД</label>
-        <input id="easd-num" type="text">
-    </div>
-    <div class="horizontal-view">
-        <label for="origin-select">источник письма</label>
-        <select name="origins" id="origin-select">
-            <option value="">--Please choose an option--</option>
-        </select>
-    </div>
-    <div class="horizontal-view">
-        <label for="signer-select">подписант</label>
-        <select name="signers" id="signer-select">
-            <option value="">--Please choose an option--</option>
-        </select>
-    </div>
-    <div class="horizontal-view">
-        <label for="executor-select">исполнитель</label>
-        <select name="executors" id="executor-select">
-            <option value="">--Please choose an option--</option>
-        </select>
-    </div>
-    <div class="horizontal-view">
-        <label for="topic">тема</label>
-        <input id="topic" type="text">
-        <label for="tags">теги</label>
-        <select id="tags" name="tags" data-placeholder="Выберите теги" multiple data-multi-select>
-            <option value="Apple">Apple</option>
-            <option value="Banana">Banana</option>
-            <option value="Blackberry">Blackberry</option>
-            <option value="Blueberry">Blueberry</option>
-            <option value="Cherry">Cherry</option>
-            <option value="Cranberry">Cranberry</option>
-            <option value="Grapes">Grapes</option>
-            <option value="Kiwi">Kiwi</option>
-            <option value="Mango">Mango</option>
-            <option value="Orange">Orange</option>
-            <option value="Peach">Peach</option>
-            <option value="Pear">Pear</option>
-            <option value="Pineapple">Pineapple</option>
-            <option value="Raspberry">Raspberry</option>
-            <option value="Strawberry">Strawberry</option>
-            <option value="Watermelon">Watermelon</option>
-        </select>
-        <label class="container">
-            <input type="checkbox" checked="checked">
-            <span class="checkmark"></span>
-            резерв
-        </label>
+        <button onclick="saveDocument()">
+            Создать
+        </button>
     </div>
 </body>
 </html>

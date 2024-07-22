@@ -2,10 +2,13 @@ package com.example.letters.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Table(schema = "letter", name = "tags")
 @Data
+@NoArgsConstructor
 public class Tag {
 
     @Id
@@ -14,4 +17,8 @@ public class Tag {
 
     @Column(name = "text")
     private String text;
+
+    public Tag(int id) {
+        this.id = id;
+    }
 }

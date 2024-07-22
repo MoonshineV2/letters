@@ -20,7 +20,7 @@ public class InputLetter {
     private int year;
 
     @Column(name = "num_ivc")
-    private String numberIVC;
+    private int numberIVC;
 
     @Column(name = "create_date")
     private Timestamp createDate;
@@ -82,9 +82,9 @@ public class InputLetter {
     @Column(name = "note", columnDefinition = "bpchar", length = 500)
     private String note;
 
-    /*@ManyToOne
+    @ManyToOne
     @JoinColumn(name="target_worker_id")
-    private Worker targetWorker;*/
+    private Worker targetWorker;
 
     @Column(name = "reserve")
     private boolean isReserve;

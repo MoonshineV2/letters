@@ -1,12 +1,19 @@
-window.onload = async function() {
-    document.querySelectorAll('[data-multi-select]').forEach(select => new MultiSelect(select));
+getOriginsData();
+getSignersData();
+getExecutorsData();
+getWorkersData();
+getActualNumberIVC()
+getTagsData()
 
-    await getOriginsData();
-    await getSignersData();
-
-    response = await fetch('/letters/rest/participants');
-    const participants = await response.json();
+window.onload = function() {
+    document.getElementById("input-ref").style.color = "yellow";
 };
+
+async function getTagsData() {
+    await getTags();
+
+    document.querySelectorAll('[data-multi-select]').forEach(select => new MultiSelect(select));
+}
 
 async function getOriginsData() {
     let response = await fetch('/letters/rest/originsAndAddresses');
@@ -18,7 +25,7 @@ async function getOriginsData() {
     originsAndAddresses.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.name
-        option.value = element
+        option.value = element.id
         select.appendChild(option)
     })
 }
@@ -31,11 +38,120 @@ async function getSignersData() {
     response.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.initials
-        option.value = element
+        option.value = element.id
         select.appendChild(option)
     })
 }
 
+async function getExecutorsData() {
+    let response = await (await fetch('/letters/rest/participants')).json();
+
+    const select = document.getElementById("executor-select");
+
+    response.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.initials
+        option.value = element.id
+        select.appendChild(option)
+    })
+}
+
+async function getWorkersData() {
+    let response = await (await fetch('/letters/rest/workers')).json();
+
+    const select = document.getElementById("target-select");
+
+    response.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.initials
+        option.value = element.id
+        select.appendChild(option)
+    })
+}
+
+async function getTags() {
+    let response = await (await fetch('/letters/rest/tags')).json();
+    const data = [];
+    response.forEach(element => {
+        data.push({
+            value: element.id,
+            text: element.text
+        })
+    })
+
+    new MultiSelect("#tags", {
+        data: data,
+        placeholder: "Выберите теги",
+        search: true,
+        selectAll: false,
+        listAll: false
+    })
+}
+
+async function getActualNumberIVC() {
+    let response = await (await fetch('/letters/rest/inputLetters/actualNumberIVC')).json();
+    document.getElementById("ivc-num").value = response.numberIVC;
+}
+
+async function saveDocument() {
+    const numIVC = document.getElementById("ivc-num").value;
+    const isAnswer = document.getElementById("is-answer").checked;
+    const outputNum = document.getElementById("ivc-num-output").value;
+    const registrationDate = document.getElementById("registration-date").value;
+    const postuplenieDate = document.getElementById("postuplenie-date").value;
+    const documentDate = document.getElementById("date-doc").value;
+    const easdNum = document.getElementById("easd-num").value;
+    const documentNum = document.getElementById("doc-num").value;
+    //const documentName = document.getElementById("doc");
+    //const documentType
+    const origin = document.getElementById("origin-select").value;
+    const prilojenie = document.getElementById("prilojenie").checked;
+    const signer = document.getElementById("signer-select").value;
+    const target = document.getElementById("target-select").value;
+    const executor = document.getElementById("executor-select").value;
+    const topic = document.getElementById("topic").value;
+    const tagElements = document.getElementsByClassName("multi-select-selected")
+    const note = document.getElementById("note").value;
+    const reserve = document.getElementById("reserve").checked;
+    const file = document.getElementById("file").value;
+
+    const tags = [];
+
+    Object.values(tagElements).forEach(el => {
+        tags.push(el.getAttribute("data-value"))
+    })
+
+    const response = await fetch("/letters/rest/inputLetters", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            numberIVC: numIVC,
+            registrationDate: registrationDate,
+            postuplenieDate: postuplenieDate,
+            documentDate: documentDate,
+            documentNumber: documentNum,
+            originId: origin,
+            signerId: signer,
+            executorId: executor,
+            easdNumber: easdNum,
+            outputNumber: outputNum,
+            answer: isAnswer,
+            prilojenie: prilojenie,
+            topic: topic,
+            tagIds: tags,
+            note: note,
+            targetWorkerId: target,
+            reserve: reserve,
+            file: file
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+}
 class MultiSelect {
 
     constructor(element, options = {}) {

@@ -2,10 +2,12 @@ package com.example.letters.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(schema = "letter", name = "participants")
 @Data
+@NoArgsConstructor
 public class Participant {
 
     @Id
@@ -19,4 +21,8 @@ public class Participant {
     private String post;
     @Column(name = "can_sign")
     private boolean canSign;
+
+    public Participant(int id) {
+        this.id = id;
+    }
 }

@@ -7,6 +7,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Path("workers")
 public class WorkerController {
     @Inject
@@ -20,5 +23,15 @@ public class WorkerController {
                 .orElseThrow(() -> new WebApplicationException(Response.Status.NOT_FOUND));
 
         return WorkerDto.fromWorker(worker);
+    }
+
+    @GET
+    @Produces("application/json")
+    public List<WorkerDto> getAll() {
+        List<WorkerDto> workers = workerRepository.findAll().stream()
+                .map(WorkerDto::fromWorker)
+                .collect(Collectors.toList());
+
+        return workers;
     }
 }

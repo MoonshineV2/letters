@@ -1,7 +1,9 @@
 package com.example.letters.controller;
 
+import com.example.letters.dto.ActualNumberIVC;
+import com.example.letters.dto.InputLetterDto;
 import com.example.letters.model.InputLetter;
-import com.example.letters.repository.InputLetterRepository;
+import com.example.letters.service.InputLetterService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
@@ -10,23 +12,28 @@ import jakarta.ws.rs.core.Response;
 public class InputLetterController {
 
     @Inject
-    private InputLetterRepository inputLetterRepository;
-
+    private InputLetterService inputLetterService;
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public InputLetter find(@PathParam("id") int id) {
-        InputLetter inputLetter = inputLetterRepository.findById(id)
-                .orElseThrow(() -> new WebApplicationException(Response.Status.NOT_FOUND));
-
-        return inputLetter;
+    public InputLetterDto find(@PathParam("id") int id) {
+        InputLetter inputLetter = inputLetterService.findById(id);
+        return InputLetterDto.fromInputLetter(inputLetter);
     }
 
     @POST
     @Path("")
-    public Response create(InputLetter inputLetter) {
-        inputLetterRepository.create(inputLetter);
+    @Consumes("application/json")
+    public Response create(InputLetterDto inputLetterDto) {
+        inputLetterService.create(inputLetterDto.toInputLetter());
 
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("actualNumberIVC")
+    @Produces("application/json")
+    public ActualNumberIVC getActualNumberIVC() {
+        return new ActualNumberIVC(inputLetterService.getActualNumberIVC());
     }
 }
