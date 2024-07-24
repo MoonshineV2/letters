@@ -1,13 +1,26 @@
-getOriginsData();
-getSignersData();
-getExecutorsData();
-getWorkersData();
 getActualNumberIVC()
 getTagsData()
 
-window.onload = function() {
+window.onload = async function() {
     document.getElementById("input-ref").style.color = "yellow";
+
+    await getOriginsData();
+    await getSignersData();
+    await getExecutorsData();
+    await getWorkersData();
+
+    cutOptionText(16)
+
+    document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
 };
+
+function cutOptionText(maxTextLength) {
+    var e=document.querySelectorAll('option')
+    e.forEach(x=>{
+        if(x.textContent.length > maxTextLength)
+            x.textContent=x.textContent.substring(0,maxTextLength)+'...';
+    })
+}
 
 async function getTagsData() {
     await getTags();
@@ -28,6 +41,17 @@ async function getOriginsData() {
         option.value = element.id
         select.appendChild(option)
     })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    select.appendChild(option)
+
+    select.onchange = () => {
+        if (select.value === 'other') {
+            console.log("yes")
+        }
+    }
 }
 
 async function getSignersData() {
@@ -113,9 +137,13 @@ async function saveDocument() {
     const tagElements = document.getElementsByClassName("multi-select-selected")
     const note = document.getElementById("note").value;
     const reserve = document.getElementById("reserve").checked;
-    const file = document.getElementById("file").value;
+    const file = document.getElementById("file").files[0];
 
     const tags = [];
+
+    const binary = await getBinaryFromFile(file);
+
+    //console.log(arrayBufferToBase64(binary))
 
     Object.values(tagElements).forEach(el => {
         tags.push(el.getAttribute("data-value"))
@@ -144,13 +172,32 @@ async function saveDocument() {
             note: note,
             targetWorkerId: target,
             reserve: reserve,
-            file: file
+            file: arrayBufferToBase64(binary)
         }),
     });
 
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
     }
+}
+
+async function getBinaryFromFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.addEventListener('load', () => resolve(reader.result))
+        reader.addEventListener('error', (err) => reject(err))
+        reader.readAsArrayBuffer(file)
+    })
+}
+
+function arrayBufferToBase64( buffer ) {
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+    }
+    return window.btoa( binary );
 }
 class MultiSelect {
 

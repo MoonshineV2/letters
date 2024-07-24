@@ -1,14 +1,16 @@
 <html>
 <head>
-    <title>Title</title>
+    <title>Входящие</title>
     <link rel="stylesheet" type="text/css" href="letters.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="input.js"></script>
+
 </head>
 <body>
     <nav id='menu'>
         <ul>
             <li><a id="input-ref" href='http://localhost:8080/letters/rest/pages/input'>Входящие</a></li>
-            <li><a id="output-ref" href='http://'>Исходящие</a></li>
+            <li><a id="output-ref" href='http://localhost:8080/letters/rest/pages/output'>Исходящие</a></li>
             <!--<li><a class='dropdown-arrow' href='http://'>Products</a>
                 <ul class='sub-menus'>
                     <li><a href='http://'>Products 1</a></li>
@@ -23,113 +25,116 @@
             </li>
         </ul>
     </nav>
-    <div>
-        <div class="horizontal-view">
-            <input type="file" id="file" />
-        </div>
-        <div class="horizontal-view">
-            <label>
-                номер входящего ИВЦ ЖА
-                <input class="custom-input" style="max-width: 100px" id="ivc-num" type="text">
-            </label>
-            <label>
-                <input id="is-answer" type="checkbox">
-                ответ на исходящее
-            </label>
-        </div>
-        <div class="horizontal-view">
-            <label>
-                дата регистрации
-                <input class="custom-date" id="registration-date" type="date" value="2024-07-09" />
-            </label>
-            <label>
-                номер исходящего ИВЦ ЖА
-                <input class="custom-input" id="ivc-num-output" type="text">
-            </label>
-        </div>
-        <div class="horizontal-view">
-            <label>
-                номер документа
-                <input class="custom-input" id="doc-num" type="text">
-            </label>
-        </div>
-        <div class="horizontal-view">
-            <label for="date-doc">
-                дата документа
-                <input class="custom-date" id="date-doc" type="date" value="2024-07-09" />
-            </label>
-        </div>
-        <div class="horizontal-view">
-            <label>
-                дата поступления документа
-                <input class="custom-date" id="postuplenie-date" type="date" value="2024-07-09" />
-            </label>
-            <label>
-                номер ЕАСД
-                <input class="custom-input" id="easd-num" type="text">
-            </label>
-        </div>
-        <div class="horizontal-view">
-            <label>
-                источник письма
-                <div class="custom-select">
-                    <select name="origins" id="origin-select">
-                        <option value="">--Please choose an option--</option>
-                    </select>
-                </div>
-            </label>
-            <label>
-                <input id="prilojenie" type="checkbox">
-                приложение
-            </label>
-        </div>
-        <div class="horizontal-view">
-            <label>
-                подписант
+    <div class="horizontal-view">
+        <label>
+            Номер входящего ИВЦ ЖА
+            <input class="custom-input custom-input-small" id="ivc-num" type="text">
+        </label>
+        <label>
+            <input id="is-answer" type="checkbox">
+            ответ на исходящее
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            Дата регистрации
+            <input class="custom-date" id="registration-date" type="date"/>
+        </label>
+        <label>
+            Номер исходящего ИВЦ ЖА
+            <input class="custom-input custom-input-small" id="ivc-num-output" type="text">
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            Номер документа
+            <input class="custom-input custom-input-small" id="doc-num" type="text">
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label for="date-doc">
+            Дата документа
+            <input class="custom-date" id="date-doc" type="date"/>
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            Дата поступления документа
+            <input class="custom-date" id="postuplenie-date" type="date"/>
+        </label>
+        <label>
+            Номер ЕАСД
+            <input class="custom-input custom-input-small" id="easd-num" type="text">
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            Источник письма
+            <div class="custom-select">
+                <select name="origins" id="origin-select">
+                    <option value="" disabled selected hidden>Выберите вариант</option>
+                </select>
+            </div>
+        </label>
+        <label>
+            <input id="prilojenie" type="checkbox">
+            приложение
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            Подписант
+            <div class="custom-select">
                 <select name="signers" id="signer-select">
-                    <option value="">--Please choose an option--</option>
+                    <option value="" disabled selected hidden>Выберите вариант</option>
                 </select>
-            </label>
-            <label>
-                кому расписано
+            </div>
+        </label>
+        <label class="custom-label custom-label-right">
+            Кому расписано
+            <div class="custom-select">
                 <select name="targets" id="target-select">
-                    <option value="">--Please choose an option--</option>
+                    <option value="" disabled selected hidden>Выберите вариант</option>
                 </select>
-            </label>
-        </div>
-        <div class="horizontal-view">
-            <label>
-                исполнитель
+            </div>
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            Исполнитель
+            <div class="custom-select">
                 <select name="executors" id="executor-select">
-                    <option value="">--Please choose an option--</option>
+                    <option value="" disabled selected hidden>Выберите вариант</option>
                 </select>
-            </label>
-        </div>
-        <div class="horizontal-view">
-            <label>
-                тема
-                <input class="custom-input" id="topic" type="text">
-            </label>
-            <label style="display: flex">
-                теги
-                <select id="tags" name="tags"></select>
-            </label>
-            <label>
-                <input id="reserve" type="checkbox" checked="checked">
-                резерв
-            </label>
-        </div>
-        <div class="horizontal-view">
-            <label>
-                примечание
-                <input class="custom-input" id="note" type="text">
-            </label>
-        </div>
+            </div>
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label class="custom-label">
+            Тема
+            <input class="custom-input custom-input-pointer" id="topic" type="text">
+        </label>
+        <label>
+            Теги
+            <select id="tags" name="tags"></select>
+        </label>
+        <label>
+            <input id="reserve" type="checkbox" checked="checked">
+            резерв
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label class="custom-label">
+            Примечание
+            <input class="custom-input custom-input-pointer" id="note" type="text">
+        </label>
+        <input type="file" id="file" />
     </div>
     <div class="horizontal-view">
         <button onclick="saveDocument()">
-            Создать
+            Сохранить
         </button>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

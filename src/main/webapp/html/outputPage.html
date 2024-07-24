@@ -1,10 +1,103 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Исходящие</title>
+    <link rel="stylesheet" type="text/css" href="letters.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="output.js"></script>
 </head>
 <body>
-
+    <nav id='menu'>
+        <ul>
+            <li><a id="input-ref" href='http://localhost:8080/letters/rest/pages/input'>Входящие</a></li>
+            <li><a id="output-ref" href='http://localhost:8080/letters/rest/pages/output'>Исходящие</a></li>
+            <li><a id="db-ref" href='http://'>БД</a></li>
+            <li>
+                <input type="text" placeholder="Поиск..">
+            </li>
+        </ul>
+    </nav>
+    <div class="horizontal-view">
+        <label>
+            номер исходящего ИВЦ ЖА
+            <input class="custom-input" style="max-width: 100px" id="ivc-num" type="text">
+        </label>
+        <label>
+            номер входящего
+            <input class="custom-input" style="max-width: 100px" id="input-num" type="text">
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            дата регистрации
+            <input class="custom-date" id="registration-date" type="date" value="2024-07-09" />
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            куда направлено письмо
+            <div class="custom-select">
+                <select name="address" id="address-select">
+                    <option value="">--Please choose an option--</option>
+                </select>
+            </div>
+        </label>
+        <label>
+            номер ЕАСД
+            <input class="custom-input" id="easd-num" type="text">
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            кому направлено письмо
+            <div class="custom-select">
+                <select name="participant" id="participant-select">
+                    <option value="">--Please choose an option--</option>
+                </select>
+            </div>
+        </label>
+        <label>
+            <input id="prilojenie" type="checkbox">
+            приложение
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            подписант
+            <select name="signers" id="signer-select">
+                <option value="">--Please choose an option--</option>
+            </select>
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            исполнитель
+            <select name="executors" id="executor-select">
+                <option value="">--Please choose an option--</option>
+            </select>
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            тема
+            <input class="custom-input" id="topic" type="text">
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label style="display: flex">
+            теги
+            <select id="tags" name="tags"></select>
+        </label>
+    </div>
+    <div class="horizontal-view">
+        <label>
+            примечание
+            <input class="custom-input" id="note" type="text">
+        </label>
+        <label>
+            <input id="reserve" type="checkbox" checked="checked">
+            резерв
+        </label>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 @Model
 public class InputLetterService {
-
     @Inject
     private InputLetterRepository inputLetterRepository;
 
@@ -74,6 +73,8 @@ public class InputLetterService {
         }
 
         inputLetter.setYear(LocalDateTime.now().getYear());
+
+        System.out.println(inputLetter.getFile());
 
         inputLetter.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
         inputLetterRepository.create(inputLetter);

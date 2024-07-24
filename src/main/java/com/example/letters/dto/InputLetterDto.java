@@ -1,12 +1,10 @@
 package com.example.letters.dto;
 
 import com.example.letters.model.*;
-import jakarta.json.bind.annotation.JsonbNillable;
-import jakarta.json.bind.annotation.JsonbProperty;
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,7 +69,7 @@ public class InputLetterDto {
         dto.documentDate = inputLetter.getDocumentDate();
         dto.documentNumber = inputLetter.getDocumentNumber();
         dto.documentName = inputLetter.getDocumentName();
-        dto.documentTypeId = inputLetter.getDocumentType().getId();
+        dto.documentTypeId = inputLetter.getDocumentType() != null ? inputLetter.getDocumentType().getId() : 0;
         dto.originId = inputLetter.getOrigin().getId();
         dto.signerId = inputLetter.getSigner().getId();
         dto.executorId = inputLetter.getExecutor().getId();
@@ -113,7 +111,7 @@ public class InputLetterDto {
         inputLetter.setNote(getNote());
         inputLetter.setTargetWorker(new Worker(getTargetWorkerId()));
         inputLetter.setReserve(isReserve());
-        inputLetter.setFile(getFile());
+        inputLetter.setFile(file);
 
         return inputLetter;
     }
