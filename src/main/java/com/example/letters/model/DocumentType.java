@@ -11,10 +11,7 @@ import lombok.NoArgsConstructor;
 public class DocumentType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "document_types_id_seq")
-    @SequenceGenerator(name="document_types_id_seq",
-            sequenceName="document_names_id_seq", allocationSize=1)
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name")

@@ -5,6 +5,6 @@ window.onload = function() {
 };
 
 async function getActualNumberIVC() {
-    let response = await (await fetch('/letters/rest/outputLetters/actualNumberIVC')).json();
+    let response = await (await fetch('/letters/api/outputLetters/actualNumberIVC')).json();
     document.getElementById("ivc-num").value = response.numberIVC;
 }

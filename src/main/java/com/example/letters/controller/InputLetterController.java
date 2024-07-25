@@ -20,7 +20,6 @@ public class InputLetterController {
         InputLetter inputLetter = inputLetterService.findById(id);
         return InputLetterDto.fromInputLetter(inputLetter);
     }
-
     @POST
     @Path("")
     @Consumes("application/json")

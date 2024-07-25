@@ -1,9 +1,7 @@
 package com.example.letters.service;
 
 import com.example.letters.model.InputLetter;
-import com.example.letters.qualifier.InputServiceV1;
 import com.example.letters.repository.InputLetterRepository;
-import jakarta.annotation.Resource;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -14,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Model
@@ -73,8 +70,6 @@ public class InputLetterService {
         }
 
         inputLetter.setYear(LocalDateTime.now().getYear());
-
-        System.out.println(inputLetter.getFile());
 
         inputLetter.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
         inputLetterRepository.create(inputLetter);

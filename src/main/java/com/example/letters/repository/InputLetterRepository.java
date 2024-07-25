@@ -21,6 +21,13 @@ public class InputLetterRepository {
     public Optional<InputLetter> findById(int id) {
         return Optional.ofNullable(entityManager.find(InputLetter.class, id));
     }
+
+    public Optional<InputLetter> findByIdNoFile(int id) {
+        return Optional.of((InputLetter) entityManager
+                .createQuery("select il from InputLetter il where il.id = :id")
+                .setParameter("id", id)
+                .getSingleResult());
+    }
     public void create(InputLetter inputLetter) {
         entityManager.persist(inputLetter);
     }

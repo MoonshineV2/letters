@@ -3,15 +3,16 @@ getTagsData()
 
 window.onload = async function() {
     document.getElementById("input-ref").style.color = "yellow";
+    document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
+
 
     await getOriginsData();
     await getSignersData();
     await getExecutorsData();
     await getWorkersData();
+    await getDocumentTypesData();
 
     cutOptionText(16)
-
-    document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
 };
 
 function cutOptionText(maxTextLength) {
@@ -29,7 +30,7 @@ async function getTagsData() {
 }
 
 async function getOriginsData() {
-    let response = await fetch('/letters/rest/originsAndAddresses');
+    let response = await fetch('/letters/api/originsAndAddresses');
     const originsAndAddresses = await response.json();
 
     const select = document.getElementById("origin-select");
@@ -49,13 +50,14 @@ async function getOriginsData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            console.log("yes")
+            var myModal = new bootstrap.Modal(document.getElementById('modal'))
+            myModal.toggle()
         }
     }
 }
 
 async function getSignersData() {
-    let response = await (await fetch('/letters/rest/participants/signers')).json();
+    let response = await (await fetch('/letters/api/participants/signers')).json();
 
     const select = document.getElementById("signer-select");
 
@@ -67,8 +69,21 @@ async function getSignersData() {
     })
 }
 
+async function getDocumentTypesData() {
+    let response = await (await fetch('/letters/api/documentTypes')).json();
+
+    const select = document.getElementById("doc-type-select");
+
+    response.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.name
+        option.value = element.id
+        select.appendChild(option)
+    })
+}
+
 async function getExecutorsData() {
-    let response = await (await fetch('/letters/rest/participants')).json();
+    let response = await (await fetch('/letters/api/participants')).json();
 
     const select = document.getElementById("executor-select");
 
@@ -81,7 +96,7 @@ async function getExecutorsData() {
 }
 
 async function getWorkersData() {
-    let response = await (await fetch('/letters/rest/workers')).json();
+    let response = await (await fetch('/letters/api/workers')).json();
 
     const select = document.getElementById("target-select");
 
@@ -94,7 +109,7 @@ async function getWorkersData() {
 }
 
 async function getTags() {
-    let response = await (await fetch('/letters/rest/tags')).json();
+    let response = await (await fetch('/letters/api/tags')).json();
     const data = [];
     response.forEach(element => {
         data.push({
@@ -113,7 +128,7 @@ async function getTags() {
 }
 
 async function getActualNumberIVC() {
-    let response = await (await fetch('/letters/rest/inputLetters/actualNumberIVC')).json();
+    let response = await (await fetch('/letters/api/inputLetters/actualNumberIVC')).json();
     document.getElementById("ivc-num").value = response.numberIVC;
 }
 
@@ -126,8 +141,7 @@ async function saveDocument() {
     const documentDate = document.getElementById("date-doc").value;
     const easdNum = document.getElementById("easd-num").value;
     const documentNum = document.getElementById("doc-num").value;
-    //const documentName = document.getElementById("doc");
-    //const documentType
+    const documentType = document.getElementById("doc-type-select").value;
     const origin = document.getElementById("origin-select").value;
     const prilojenie = document.getElementById("prilojenie").checked;
     const signer = document.getElementById("signer-select").value;
@@ -138,18 +152,20 @@ async function saveDocument() {
     const note = document.getElementById("note").value;
     const reserve = document.getElementById("reserve").checked;
     const file = document.getElementById("file").files[0];
+    console.log(file)
+    const documentName = file !== undefined ? file.name : "";
 
     const tags = [];
-
-    const binary = await getBinaryFromFile(file);
-
-    //console.log(arrayBufferToBase64(binary))
+    let binary = "";
+    if (file !== undefined) {
+        binary = await getBinaryFromFile(file);
+    }
 
     Object.values(tagElements).forEach(el => {
         tags.push(el.getAttribute("data-value"))
     })
 
-    const response = await fetch("/letters/rest/inputLetters", {
+    const response = await fetch("/letters/api/inputLetters", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -160,6 +176,8 @@ async function saveDocument() {
             postuplenieDate: postuplenieDate,
             documentDate: documentDate,
             documentNumber: documentNum,
+            documentTypeId: documentType,
+            documentName: documentName,
             originId: origin,
             signerId: signer,
             executorId: executor,
