@@ -74,7 +74,6 @@ public class InputLetterDto {
         dto.signerId = inputLetter.getSigner().getId();
         dto.executorId = inputLetter.getExecutor().getId();
         dto.easdNumber = inputLetter.getEasdNumber();
-        dto.outputNumber = inputLetter.getOutputNumber();
         dto.answer = inputLetter.isAnswer();
         dto.prilojenie = inputLetter.isPrilojenie();
         dto.topic = inputLetter.getTopic();
@@ -103,7 +102,6 @@ public class InputLetterDto {
         inputLetter.setSigner(new Participant(getSignerId()));
         inputLetter.setExecutor(new Participant(getExecutorId()));
         inputLetter.setEasdNumber(getEasdNumber());
-        inputLetter.setOutputNumber(getOutputNumber());
         inputLetter.setAnswer(isAnswer());
         inputLetter.setPrilojenie(isPrilojenie());
         inputLetter.setTopic(getTopic());

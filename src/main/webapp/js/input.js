@@ -50,10 +50,206 @@ async function getOriginsData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            var myModal = new bootstrap.Modal(document.getElementById('modal'))
-            myModal.toggle()
+            openModalCreateOrigin();
         }
     }
+}
+function openModalCreateOrigin() {
+    var myModal = new bootstrap.Modal(document.getElementById('modal'));
+
+    const elem = document.getElementById('modal');
+    const footer = elem.children[0].children[0].children[2];
+    const body = elem.children[0].children[0].children[1].children[0];
+
+    const select = document.getElementById("origin-select")
+    const optionsCount = select.options.length;
+
+    document.getElementsByClassName("modal-title")[0].innerHTML = "Создание источника";
+
+    const labelFullname = document.createElement("label");
+    labelFullname.setAttribute("for", "message-text");
+    labelFullname.classList.add('col-form-label');
+    labelFullname.innerHTML = "Полное наименование";
+    body.appendChild(labelFullname)
+
+    const inputFullName = document.createElement("input");
+    inputFullName.classList.add('form-control');
+    inputFullName.type = "text";
+    inputFullName.id = "fullname-input";
+    body.appendChild(inputFullName)
+
+    const labelShortname = document.createElement("label");
+    labelShortname.setAttribute("for", "message-text");
+    labelShortname.classList.add('col-form-label');
+    labelShortname.innerHTML = "Краткое наименование";
+    body.appendChild(labelShortname)
+
+    const inputShortName = document.createElement("input");
+    inputShortName.classList.add('form-control');
+    inputShortName.type = "text";
+    inputShortName.id = "shortname-input";
+    body.appendChild(inputShortName)
+
+    const labelAdmKod = document.createElement("label");
+    labelAdmKod.setAttribute("for", "message-text");
+    labelAdmKod.classList.add('col-form-label');
+    labelAdmKod.innerHTML = "Код администрации";
+    body.appendChild(labelAdmKod)
+
+    const inputAdmKod = document.createElement("input");
+    inputAdmKod.classList.add('form-control');
+    inputAdmKod.type = "text";
+    inputAdmKod.id = "adm-kod-input";
+    body.appendChild(inputAdmKod)
+
+    function hideListener() {
+        body.innerHTML = "";
+        elem.removeEventListener('hidden.bs.modal', hideListener);
+
+        if (optionsCount === select.options.length) {
+            select.options[0].selected = true;
+        }
+    }
+
+    elem.addEventListener('hidden.bs.modal', hideListener)
+
+    footer.children[1].innerHTML = "Создать";
+    footer.children[1].onclick = async () => {
+        await createOriginRequest(
+            inputFullName.value,
+            inputShortName.value,
+            inputAdmKod.value
+        )
+        myModal.hide();
+    }
+
+    myModal.toggle();
+}
+
+async function createOriginRequest(name, shortName, kodADM) {
+    const response = await fetch("/letters/api/originsAndAddresses", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name: name,
+            shortName: shortName,
+            kodADM: kodADM
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    const select = document.getElementById("origin-select")
+
+    const option = document.createElement("option");
+    option.innerText = data.name
+    option.value = data.id
+    select.insertBefore(option, select.options[select.selectedIndex]);
+    option.selected = true;
+}
+
+function openModalTopic() {
+    var myModal = new bootstrap.Modal(document.getElementById('modal'));
+
+    const elem = document.getElementById('modal');
+    const footer = elem.children[0].children[0].children[2];
+    const body = elem.children[0].children[0].children[1].children[0];
+
+    document.getElementsByClassName("modal-title")[0].innerHTML = "Редактирование темы";
+
+    const label = document.createElement("label");
+    label.setAttribute("for", "message-text");
+    label.classList.add('col-form-label');
+    label.innerHTML = "Тема";
+    body.appendChild(label)
+
+    const textarea = document.createElement("textarea");
+    textarea.classList.add('form-control');
+    textarea.id = "message-text";
+    textarea.value = document.getElementById("topic").value;
+    textarea.oninput = () => {
+        footer.children[0].innerHTML = document.getElementById("message-text").value.length + "/100"
+    }
+    body.appendChild(textarea)
+
+    const pElem = document.createElement("p");
+    pElem.innerHTML = textarea.value.length + "/100";
+    footer.insertBefore(pElem, footer.firstChild);
+
+    function hideListener() {
+        footer.removeChild(pElem);
+        body.innerHTML = "";
+        elem.removeEventListener('hidden.bs.modal', hideListener)
+    }
+
+    elem.addEventListener('hidden.bs.modal', hideListener)
+
+    footer.children[2].innerHTML = "Создать";
+    footer.children[2].onclick = () => {
+        closeModalTopic();
+        myModal.hide();
+    }
+
+    myModal.toggle();
+}
+
+function closeModalTopic() {
+    document.getElementById("topic").value = document.getElementById("message-text").value
+}
+
+function openModalNote() {
+    var myModal = new bootstrap.Modal(document.getElementById('modal'));
+
+    const elem = document.getElementById('modal');
+    const footer = elem.children[0].children[0].children[2];
+    const body = elem.children[0].children[0].children[1].children[0];
+
+    document.getElementsByClassName("modal-title")[0].innerHTML = "Редактирование примечания";
+
+    const label = document.createElement("label");
+    label.setAttribute("for", "message-text");
+    label.classList.add('col-form-label');
+    label.innerHTML = "Примечание";
+    body.appendChild(label)
+
+    const textarea = document.createElement("textarea");
+    textarea.classList.add('form-control');
+    textarea.id = "message-text";
+    textarea.value = document.getElementById("note").value;
+    textarea.oninput = () => {
+        footer.children[0].innerHTML = document.getElementById("message-text").value.length + "/500"
+    }
+    body.appendChild(textarea)
+
+    const pElem = document.createElement("p");
+    pElem.innerHTML = document.getElementById("message-text").value.length + "/500";
+    footer.insertBefore(pElem, footer.firstChild);
+
+    function hideListener() {
+        footer.removeChild(pElem);
+        body.innerHTML = "";
+        elem.removeEventListener('hidden.bs.modal', hideListener)
+    }
+
+    elem.addEventListener('hidden.bs.modal', hideListener)
+
+    footer.children[2].innerHTML = "Сохранить";
+    footer.children[2].onclick = () => {
+        closeModalNote();
+        myModal.hide();
+    }
+
+    myModal.toggle();
+}
+
+function closeModalNote() {
+    document.getElementById("note").value = document.getElementById("message-text").value
 }
 
 async function getSignersData() {
@@ -152,7 +348,6 @@ async function saveDocument() {
     const note = document.getElementById("note").value;
     const reserve = document.getElementById("reserve").checked;
     const file = document.getElementById("file").files[0];
-    console.log(file)
     const documentName = file !== undefined ? file.name : "";
 
     const tags = [];

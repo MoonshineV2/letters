@@ -1,6 +1,7 @@
 body {
     margin: 0;
     padding-top: 45px;
+    padding-bottom: 50px;
 }
 
 .splitter {
@@ -9,7 +10,7 @@ body {
 }
 
 .horizontal-view {
-    margin: 10px 8px;
+    margin: 10px auto;
     display: flex;
     flex: content;
     flex-direction: row;

@@ -1,9 +1,7 @@
 package com.example.letters.controller;
 
-import com.example.letters.dto.WorkerDto;
 import com.example.letters.model.OriginAndAddress;
-import com.example.letters.model.Worker;
-import com.example.letters.repository.OriginAndAddressRepository;
+import com.example.letters.service.OriginAndAddressesService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
@@ -14,11 +12,20 @@ import java.util.List;
 public class OriginAndAddressesController {
 
     @Inject
-    private OriginAndAddressRepository originAndAddressRepository;
+    private OriginAndAddressesService originAndAddressesService;
 
     @GET
     @Produces("application/json")
     public List<OriginAndAddress> findAll() {
-        return originAndAddressRepository.findAll();
+        return originAndAddressesService.findAll();
+    }
+
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response create(OriginAndAddress originAndAddress) {
+        OriginAndAddress toReturn = originAndAddressesService.create(originAndAddress);
+
+        return Response.ok(toReturn).build();
     }
 }

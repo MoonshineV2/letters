@@ -44,23 +44,20 @@ public class InputLetter {
     @JoinColumn(name="document_type_id")
     private DocumentType documentType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="origin_id")
     private OriginAndAddress origin;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="signer_id")
     private Participant signer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="executor_id")
     private Participant executor;
 
     @Column(name = "easd_num", columnDefinition = "numeric")
     private int easdNumber;
-
-    @Column(name = "output_num")
-    private String outputNumber;
 
     @Column(name = "is_answer")
     private boolean isAnswer;
@@ -71,7 +68,7 @@ public class InputLetter {
     @Column(name = "topic", columnDefinition = "bpchar", length = 100)
     private String topic;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             schema = "letter",
             name = "tags_input",
@@ -82,7 +79,7 @@ public class InputLetter {
     @Column(name = "note", columnDefinition = "bpchar", length = 500)
     private String note;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="target_worker_id")
     private Worker targetWorker;
 
@@ -91,4 +88,8 @@ public class InputLetter {
 
     @Column(name = "file")
     private byte[] file;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="output_letter_id")
+    private OutputLetter outputLetter;
 }
