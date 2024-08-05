@@ -3,9 +3,8 @@ package com.example.letters.controller;
 import com.example.letters.model.Participant;
 import com.example.letters.repository.ParticipantRepository;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
@@ -26,5 +25,14 @@ public class ParticipantController {
     @Produces("application/json")
     public List<Participant> getSigners() {
         return participantRepository.findSigners();
+    }
+
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response createParticipant(Participant participant) {
+        Participant persisted = participantRepository.create(participant);
+
+        return Response.ok(persisted).build();
     }
 }

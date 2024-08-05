@@ -154,6 +154,150 @@ async function createOriginRequest(name, shortName, kodADM) {
     option.selected = true;
 }
 
+function openModalCreateSigner() {
+    var myModal = new bootstrap.Modal(document.getElementById('modal'));
+
+    const elem = document.getElementById('modal');
+    const footer = elem.children[0].children[0].children[2];
+    const body = elem.children[0].children[0].children[1].children[0];
+
+    const select = document.getElementById("signer-select")
+    const optionsCount = select.options.length;
+
+    document.getElementsByClassName("modal-title")[0].innerHTML = "Создание подписанта";
+
+    const labelFullname = document.createElement("label");
+    labelFullname.setAttribute("for", "message-text");
+    labelFullname.classList.add('col-form-label');
+    labelFullname.innerHTML = "Полное имя";
+    body.appendChild(labelFullname)
+
+    const inputFullName = document.createElement("input");
+    inputFullName.classList.add('form-control');
+    inputFullName.type = "text";
+    inputFullName.id = "fullname-input";
+    body.appendChild(inputFullName)
+
+    const labelInitials = document.createElement("label");
+    labelInitials.setAttribute("for", "message-text");
+    labelInitials.classList.add('col-form-label');
+    labelInitials.innerHTML = "Фамилия, инициалы";
+    body.appendChild(labelInitials)
+
+    const inputInitials = document.createElement("input");
+    inputInitials.classList.add('form-control');
+    inputInitials.type = "text";
+    inputInitials.id = "shortname-input";
+    body.appendChild(inputInitials)
+
+    const labelPost = document.createElement("label");
+    labelPost.setAttribute("for", "post-input");
+    labelPost.classList.add('col-form-label');
+    labelPost.innerHTML = "Должность";
+    body.appendChild(labelPost)
+
+    const inputPost = document.createElement("input");
+    inputPost.classList.add('form-control');
+    inputPost.type = "text";
+    inputPost.id = "post-input";
+    body.appendChild(inputPost)
+
+    /*const labelPost = document.createElement("label");
+    labelPost.setAttribute("for", "message-text");
+    labelPost.classList.add('col-form-label');
+    labelPost.innerHTML = "Должность";
+    body.appendChild(labelPost);
+
+    const divPost = document.createElement("div");
+    divPost.classList.add('custom-select');
+    body.appendChild(divPost)
+
+    const selectPost = document.createElement("select");
+    selectPost.name = "posts";
+    selectPost.id = "post-select";
+    divPost.appendChild(selectPost)*/
+
+    const divSign = document.createElement("div");
+    divSign.classList.add('col-form-label');
+    body.appendChild(divSign)
+
+    const checkSign = document.createElement("input");
+    checkSign.classList.add('form-check-input');
+    checkSign.type = "checkbox";
+    checkSign.id = "sign-checkbox";
+    checkSign.checked = true;
+    checkSign.disabled = true;
+    divSign.appendChild(checkSign);
+
+    const labelSign = document.createElement("label");
+    labelSign.setAttribute("for", "sign-checkbox");
+    labelSign.classList.add('form-check-label');
+    labelSign.innerHTML = "Право подписи";
+    labelSign.style.paddingLeft = "4px";
+    divSign.appendChild(labelSign);
+
+    function hideListener() {
+        body.innerHTML = "";
+        elem.removeEventListener('hidden.bs.modal', hideListener);
+
+        if (optionsCount === select.options.length) {
+            select.options[0].selected = true;
+        }
+    }
+
+    elem.addEventListener('hidden.bs.modal', hideListener)
+
+    footer.children[1].innerHTML = "Создать";
+    footer.children[1].onclick = async () => {
+        const data = await createParticipantRequest(
+            inputFullName.value,
+            inputInitials.value,
+            inputPost.value,
+            true
+        )
+
+        const select = document.getElementById("signer-select")
+
+        const option = document.createElement("option");
+        option.innerText = data.initials
+        option.value = data.id
+        select.insertBefore(option, select.options[select.selectedIndex]);
+        option.selected = true;
+
+        const selectExecutor = document.getElementById("executor-select")
+
+        const optionExecutor = document.createElement("option");
+        optionExecutor.innerText = data.initials
+        optionExecutor.value = data.id
+        selectExecutor.insertBefore(optionExecutor, selectExecutor.options[selectExecutor.options.length-1]);
+
+        myModal.hide();
+    }
+
+    myModal.toggle();
+}
+
+async function createParticipantRequest(fullName, initials, post, canSign) {
+    const response = await fetch("/letters/api/participants", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            fullName: fullName,
+            initials: initials,
+            post: post,
+            canSign: canSign
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
 function openModalTopic() {
     var myModal = new bootstrap.Modal(document.getElementById('modal'));
 
@@ -263,6 +407,18 @@ async function getSignersData() {
         option.value = element.id
         select.appendChild(option)
     })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    select.appendChild(option)
+
+    select.onchange = () => {
+        if (select.value === 'other') {
+            openModalCreateSigner();
+        }
+    }
+
 }
 
 async function getDocumentTypesData() {
@@ -289,6 +445,17 @@ async function getExecutorsData() {
         option.value = element.id
         select.appendChild(option)
     })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    select.appendChild(option)
+
+    select.onchange = () => {
+        if (select.value === 'other') {
+            openModalCreateOrigin();
+        }
+    }
 }
 
 async function getWorkersData() {
@@ -302,6 +469,17 @@ async function getWorkersData() {
         option.value = element.id
         select.appendChild(option)
     })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    select.appendChild(option)
+
+    select.onchange = () => {
+        if (select.value === 'other') {
+            openModalCreateOrigin();
+        }
+    }
 }
 
 async function getTags() {

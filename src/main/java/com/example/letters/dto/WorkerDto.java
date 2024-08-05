@@ -1,8 +1,9 @@
 package com.example.letters.dto;
 
 import com.example.letters.model.Worker;
-import com.example.letters.model.Workgroup;
+import lombok.Data;
 
+@Data
 public class WorkerDto {
     private long id;
     private String fullName;
@@ -23,51 +24,13 @@ public class WorkerDto {
         return workerDto;
     }
 
-    public long getId() {
-        return id;
-    }
+    public Worker toWorker() {
+        Worker worker = new Worker();
+        worker.setFullName(getFullName());
+        worker.setInitials(getInitials());
+        worker.setPost(getPost());
+        worker.setCanSign(isCanSign());
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getInitials() {
-        return initials;
-    }
-
-    public void setInitials(String initials) {
-        this.initials = initials;
-    }
-
-    public String getPost() {
-        return post;
-    }
-
-    public void setPost(String post) {
-        this.post = post;
-    }
-
-    public long getWorkgroupId() {
-        return workgroupId;
-    }
-
-    public void setWorkgroupId(long workgroupId) {
-        this.workgroupId = workgroupId;
-    }
-
-    public boolean isCanSign() {
-        return canSign;
-    }
-
-    public void setCanSign(boolean canSign) {
-        this.canSign = canSign;
+        return worker;
     }
 }
