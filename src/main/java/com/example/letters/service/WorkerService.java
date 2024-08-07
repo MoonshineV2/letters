@@ -27,8 +27,8 @@ public class WorkerService {
                 .orElseThrow(() -> new WebApplicationException(Response.Status.NOT_FOUND));
     }
 
-    public void create(Worker worker) {
-        workerRepository.create(worker);
+    public Worker create(Worker worker) {
+        return workerRepository.create(worker);
     }
 
 }

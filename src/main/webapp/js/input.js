@@ -1,9 +1,19 @@
+let monthMultiSelect;
+let yearMultiSelect;
+
 getActualNumberIVC()
 getTagsData()
 
 window.onload = async function() {
     document.getElementById("input-ref").style.color = "yellow";
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
+
+    monthMultiSelect = new MultiSelect(document.getElementById("months"))
+    yearMultiSelect = new MultiSelect(document.getElementById("years"), {
+        onChange: function(value, text, element) {
+            onOutputYearChange();
+        }
+    })
 
 
     await getOriginsData();
@@ -26,7 +36,7 @@ function cutOptionText(maxTextLength) {
 async function getTagsData() {
     await getTags();
 
-    document.querySelectorAll('[data-multi-select]').forEach(select => new MultiSelect(select));
+    //document.querySelectorAll('[data-multi-select]').forEach(select => new MultiSelect(select));
 }
 
 async function getOriginsData() {
@@ -154,17 +164,22 @@ async function createOriginRequest(name, shortName, kodADM) {
     option.selected = true;
 }
 
-function openModalCreateSigner() {
+function openModalCreateParticipant(checkDisabled, selectNode) {
     var myModal = new bootstrap.Modal(document.getElementById('modal'));
 
     const elem = document.getElementById('modal');
     const footer = elem.children[0].children[0].children[2];
     const body = elem.children[0].children[0].children[1].children[0];
 
-    const select = document.getElementById("signer-select")
+    const select = selectNode;
     const optionsCount = select.options.length;
 
-    document.getElementsByClassName("modal-title")[0].innerHTML = "Создание подписанта";
+    if (checkDisabled) {
+        document.getElementsByClassName("modal-title")[0].innerHTML = "Создание подписанта";
+    }
+    else {
+        document.getElementsByClassName("modal-title")[0].innerHTML = "Создание исполнителя";
+    }
 
     const labelFullname = document.createElement("label");
     labelFullname.setAttribute("for", "message-text");
@@ -202,20 +217,6 @@ function openModalCreateSigner() {
     inputPost.id = "post-input";
     body.appendChild(inputPost)
 
-    /*const labelPost = document.createElement("label");
-    labelPost.setAttribute("for", "message-text");
-    labelPost.classList.add('col-form-label');
-    labelPost.innerHTML = "Должность";
-    body.appendChild(labelPost);
-
-    const divPost = document.createElement("div");
-    divPost.classList.add('custom-select');
-    body.appendChild(divPost)
-
-    const selectPost = document.createElement("select");
-    selectPost.name = "posts";
-    selectPost.id = "post-select";
-    divPost.appendChild(selectPost)*/
 
     const divSign = document.createElement("div");
     divSign.classList.add('col-form-label');
@@ -225,8 +226,8 @@ function openModalCreateSigner() {
     checkSign.classList.add('form-check-input');
     checkSign.type = "checkbox";
     checkSign.id = "sign-checkbox";
-    checkSign.checked = true;
-    checkSign.disabled = true;
+    checkSign.checked = checkDisabled ? true : false;
+    checkSign.disabled = checkDisabled ? true : false;
     divSign.appendChild(checkSign);
 
     const labelSign = document.createElement("label");
@@ -253,16 +254,20 @@ function openModalCreateSigner() {
             inputFullName.value,
             inputInitials.value,
             inputPost.value,
-            true
+            checkSign.checked
         )
 
-        const select = document.getElementById("signer-select")
+        if (checkSign.checked) {
+            const selectSigner = document.getElementById("signer-select")
 
-        const option = document.createElement("option");
-        option.innerText = data.initials
-        option.value = data.id
-        select.insertBefore(option, select.options[select.selectedIndex]);
-        option.selected = true;
+            const option = document.createElement("option");
+            option.innerText = data.initials
+            option.value = data.id
+            selectSigner.insertBefore(option, selectSigner.options[selectSigner.options.length-1]);
+            if (select.id === "signer-select") {
+                option.selected = true;
+            }
+        }
 
         const selectExecutor = document.getElementById("executor-select")
 
@@ -270,6 +275,9 @@ function openModalCreateSigner() {
         optionExecutor.innerText = data.initials
         optionExecutor.value = data.id
         selectExecutor.insertBefore(optionExecutor, selectExecutor.options[selectExecutor.options.length-1]);
+        if (select.id === "executor-select") {
+            optionExecutor.selected = true;
+        }
 
         myModal.hide();
     }
@@ -288,6 +296,151 @@ async function createParticipantRequest(fullName, initials, post, canSign) {
             initials: initials,
             post: post,
             canSign: canSign
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+async function openModalCreateWorker() {
+    var myModal = new bootstrap.Modal(document.getElementById('modal'));
+
+    const elem = document.getElementById('modal');
+    const footer = elem.children[0].children[0].children[2];
+    const body = elem.children[0].children[0].children[1].children[0];
+
+    const select = document.getElementById("target-select");
+    const optionsCount = select.options.length;
+
+    document.getElementsByClassName("modal-title")[0].innerHTML = "Создание сотрудника отдела";
+
+    const labelFullname = document.createElement("label");
+    labelFullname.setAttribute("for", "message-text");
+    labelFullname.classList.add('col-form-label');
+    labelFullname.innerHTML = "Полное имя";
+    body.appendChild(labelFullname)
+
+    const inputFullName = document.createElement("input");
+    inputFullName.classList.add('form-control');
+    inputFullName.type = "text";
+    inputFullName.id = "fullname-input";
+    body.appendChild(inputFullName)
+
+    const labelInitials = document.createElement("label");
+    labelInitials.setAttribute("for", "message-text");
+    labelInitials.classList.add('col-form-label');
+    labelInitials.innerHTML = "Фамилия, инициалы";
+    body.appendChild(labelInitials)
+
+    const inputInitials = document.createElement("input");
+    inputInitials.classList.add('form-control');
+    inputInitials.type = "text";
+    inputInitials.id = "shortname-input";
+    body.appendChild(inputInitials)
+
+    const labelPost = document.createElement("label");
+    labelPost.setAttribute("for", "post-input");
+    labelPost.classList.add('col-form-label');
+    labelPost.innerHTML = "Должность";
+    body.appendChild(labelPost)
+
+    const inputPost = document.createElement("input");
+    inputPost.classList.add('form-control');
+    inputPost.type = "text";
+    inputPost.id = "post-input";
+    body.appendChild(inputPost)
+
+    const labelWorkgroup = document.createElement("label");
+    labelWorkgroup.setAttribute("for", "workgroup-select");
+    labelWorkgroup.classList.add('col-form-label');
+    labelWorkgroup.innerHTML = "Рабочая группа";
+    body.appendChild(labelWorkgroup);
+
+    const divPost = document.createElement("div");
+    divPost.classList.add('custom-select');
+    body.appendChild(divPost)
+
+    const selectWorkgroup = document.createElement("select");
+    selectWorkgroup.name = "workgroups";
+    selectWorkgroup.id = "workgroup-select";
+    divPost.appendChild(selectWorkgroup)
+
+    const option = document.createElement("option");
+    selectWorkgroup.appendChild(option);
+    option.innerText = "Выберит вариант";
+    option.selected = true;
+    option.hidden = true;
+    option.disabled = true;
+
+    const divSign = document.createElement("div");
+    divSign.classList.add('col-form-label');
+    body.appendChild(divSign)
+
+    const checkSign = document.createElement("input");
+    checkSign.classList.add('form-check-input');
+    checkSign.type = "checkbox";
+    checkSign.id = "sign-checkbox";
+    checkSign.checked = false;
+    divSign.appendChild(checkSign);
+
+    const labelSign = document.createElement("label");
+    labelSign.setAttribute("for", "sign-checkbox");
+    labelSign.classList.add('form-check-label');
+    labelSign.innerHTML = "Право подписи";
+    labelSign.style.paddingLeft = "4px";
+    divSign.appendChild(labelSign);
+
+    function hideListener() {
+        body.innerHTML = "";
+        elem.removeEventListener('hidden.bs.modal', hideListener);
+
+        if (optionsCount === select.options.length) {
+            select.options[0].selected = true;
+        }
+    }
+
+    elem.addEventListener('hidden.bs.modal', hideListener)
+
+    footer.children[1].innerHTML = "Создать";
+    footer.children[1].onclick = async () => {
+        const data = await createWorkerRequest(
+            inputFullName.value,
+            inputInitials.value,
+            inputPost.value,
+            checkSign.checked,
+            selectWorkgroup.value
+        )
+
+        const optionWorker = document.createElement("option");
+        optionWorker.innerText = data.initials
+        optionWorker.value = data.id
+        select.insertBefore(optionWorker, select.options[select.options.length-1]);
+        optionWorker.selected = true;
+
+        myModal.hide();
+    }
+
+    myModal.toggle();
+
+    await getWorkgroupsData();
+}
+
+async function createWorkerRequest(fullName, initials, post, canSign, workgroupId) {
+    const response = await fetch("/letters/api/workers", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            fullName: fullName,
+            initials: initials,
+            post: post,
+            canSign: canSign,
+            workgroupId: workgroupId
         }),
     });
 
@@ -415,7 +568,7 @@ async function getSignersData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            openModalCreateSigner();
+            openModalCreateParticipant(true, select);
         }
     }
 
@@ -427,6 +580,21 @@ async function getDocumentTypesData() {
     const select = document.getElementById("doc-type-select");
 
     response.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.name
+        option.value = element.id
+        select.appendChild(option)
+    })
+}
+
+async function getWorkgroupsData() {
+    let response = await fetch('/letters/api/workgroups');
+    const originsAndAddresses = await response.json();
+
+    const select = document.getElementById("workgroup-select");
+
+
+    originsAndAddresses.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.name
         option.value = element.id
@@ -453,7 +621,7 @@ async function getExecutorsData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            openModalCreateOrigin();
+            openModalCreateParticipant(false, select);
         }
     }
 }
@@ -477,7 +645,7 @@ async function getWorkersData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            openModalCreateOrigin();
+            openModalCreateWorker();
         }
     }
 }
@@ -590,6 +758,17 @@ function arrayBufferToBase64( buffer ) {
     }
     return window.btoa( binary );
 }
+
+function onOutputYearChange() {
+    if (yearMultiSelect.selectedItems.length === 0) {
+        return;
+    }
+    if (monthMultiSelect.selectedItems.length === 0) {
+        return;
+    }
+
+    console.log(yearMultiSelect.data.filter(el => el.selected === true))
+}
 class MultiSelect {
 
     constructor(element, options = {}) {
@@ -648,7 +827,7 @@ class MultiSelect {
         if (this.options.selectAll === true || this.options.selectAll === 'true') {
             selectAllHTML = `<div class="multi-select-all">
                 <span class="multi-select-option-radio"></span>
-                <span class="multi-select-option-text">Select all</span>
+                <span class="multi-select-option-text">Выбрать всё</span>
             </div>`;
         }
         let template = `
@@ -675,6 +854,7 @@ class MultiSelect {
         this.element.querySelectorAll('.multi-select-option').forEach(option => {
             option.onclick = () => {
                 let selected = true;
+                this.scroll = this.element.querySelector('.multi-select-options').scrollTop;
                 if (!option.classList.contains('multi-select-selected')) {
                     if (this.options.max && this.selectedValues.length >= this.options.max) {
                         return;
@@ -696,7 +876,7 @@ class MultiSelect {
                     if (this.element.querySelector('.multi-select-header-option')) {
                         this.element.querySelector('.multi-select-header-option').remove();
                     }
-                    headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option">${this.selectedValues.length} selected</span>`);
+                    headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option">${this.selectedValues.length} выбрано</span>`);
                 }
                 if (!this.element.querySelector('.multi-select-header-option')) {
                     headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-placeholder">${this.placeholder}</span>`);
@@ -710,7 +890,7 @@ class MultiSelect {
                     this.element.querySelector('.multi-select-search').value = '';
                 }
                 this.element.querySelectorAll('.multi-select-option').forEach(option => option.style.display = 'flex');
-                headerElement.classList.remove('multi-select-header-active');
+                //headerElement.classList.remove('multi-select-header-active');
                 this.options.onChange(option.dataset.value, option.querySelector('.multi-select-option-text').innerHTML, option);
                 if (selected) {
                     this.options.onSelect(option.dataset.value, option.querySelector('.multi-select-option-text').innerHTML, option);
@@ -732,12 +912,16 @@ class MultiSelect {
             let selectAllButton = this.element.querySelector('.multi-select-all');
             selectAllButton.onclick = () => {
                 let allSelected = selectAllButton.classList.contains('multi-select-selected');
+                let buffer = this.options.onChange;
+                this.options.onChange = function (){}
                 this.element.querySelectorAll('.multi-select-option').forEach(option => {
                     let dataItem = this.data.find(data => data.value == option.dataset.value);
                     if (dataItem && ((allSelected && dataItem.selected) || (!allSelected && !dataItem.selected))) {
                         option.click();
                     }
                 });
+                this.options.onChange = buffer;
+                this.options.onChange(null, null, null);
                 selectAllButton.classList.toggle('multi-select-selected');
             };
         }
@@ -750,6 +934,7 @@ class MultiSelect {
             if (!event.target.closest('.' + this.name) && !event.target.closest('label[for="' + this.selectElement.id + '"]')) {
                 headerElement.classList.remove('multi-select-header-active');
             }
+            this.element.querySelector('.multi-select-options').scrollTop = this.scroll;
         });
     }
 
@@ -762,7 +947,7 @@ class MultiSelect {
             });
         } else {
             if (this.selectedValues.length > 0) {
-                this.element.querySelector('.multi-select-header').insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option">${this.selectedValues.length} selected</span>`);
+                this.element.querySelector('.multi-select-header').insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option">${this.selectedValues.length} выбрано</span>`);
             }
         }
         if (this.element.querySelector('.multi-select-header-option')) {

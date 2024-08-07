@@ -2,10 +2,12 @@ package com.example.letters.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(schema = "letter", name = "workgroups")
 @Data
+@NoArgsConstructor
 public class Workgroup {
 
     @Id
@@ -18,4 +20,9 @@ public class Workgroup {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="leader_id")
     private Worker leader;
+
+
+    public Workgroup(int id) {
+        this.id = id;
+    }
 }

@@ -35,24 +35,54 @@
             ответ на исходящее
         </label>
     </div>
+    <div class="horizontal-view" style="justify-content: end">
+        <label>
+            Год исходящего
+            <select id="years" name="years" data-placeholder="Год" data-search="false" data-select-all="true" multiple data-multi-select>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2021">2021</option>
+                <option value="2020">2010</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+            </select>
+        </label>
+        <label>
+            Месяц исходящего
+            <select id="months" name="months" data-placeholder="Месяц" data-search="false" data-select-all="true" multiple data-multi-select>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        </label>
+        <label>
+            Номер исходящего
+            <div class="custom-select">
+                <select name="doc-num" id="doc-num-select">
+                    <option value="" disabled selected hidden>Выберите вариант</option>
+                </select>
+            </div>
+        </label>
+    </div>
     <div class="horizontal-view">
         <label>
             Дата регистрации
             <input class="custom-date" id="registration-date" type="date"/>
-        </label>
-        <label>
-            Номер исходящего ИВЦ ЖА
-            <input class="custom-input custom-input-small" id="ivc-num-output" type="text">
         </label>
     </div>
     <div class="horizontal-view">
         <label>
             Номер документа
             <input class="custom-input custom-input-small" id="doc-num" type="text">
-        </label>
-        <label>
-            Год исходящего
-            <input class="custom-input custom-input-small" id="year-output" type="text">
         </label>
     </div>
     <div class="horizontal-view">

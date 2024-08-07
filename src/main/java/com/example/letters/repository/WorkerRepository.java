@@ -22,7 +22,9 @@ public class WorkerRepository {
         return Optional.ofNullable(entityManager.find(Worker.class, id));
     }
 
-    public void create(Worker worker) {
+    public Worker create(Worker worker) {
         entityManager.persist(worker);
+
+        return worker;
     }
 }

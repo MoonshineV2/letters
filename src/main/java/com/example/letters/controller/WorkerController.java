@@ -4,10 +4,7 @@ import com.example.letters.dto.WorkerDto;
 import com.example.letters.model.Worker;
 import com.example.letters.service.WorkerService;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
@@ -37,7 +34,12 @@ public class WorkerController {
         return workers;
     }
 
-    /*public Response createWorker(WorkerDto workerDto) {
-        workerService.create(workerDto.);
-    }*/
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response createWorker(WorkerDto workerDto) {
+        Worker worker = workerService.create(workerDto.toWorker());
+
+        return Response.ok(worker).build();
+    }
 }

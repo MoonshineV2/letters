@@ -58,6 +58,7 @@ body {
 
 .custom-select select {
     width: 11.5em;
+    height: 2.5em;
     padding: 7px 12px 7px 12px;
     background-color: #fff;
     border: 1px solid #dee2e6;
@@ -94,6 +95,7 @@ body {
     position: fixed; /* Set the navbar to fixed position */
     top: 0; /* Position the navbar at the top of the page */
     width: 100%; /* Full width */
+    z-index: 999;
 }
 #menu ul, #menu li {
     margin: 0 auto;
@@ -191,6 +193,7 @@ body {
     overflow: hidden;
     gap: 7px;
     /*min-height: 45px;*/
+    min-width: 10em;
 }
 .multi-select .multi-select-header::after {
     content: "";
@@ -220,7 +223,7 @@ body {
     align-items: center;
     background-color: #f3f4f7;
     font-size: 14px;
-    padding: 3px 8px;
+    padding: 0.1em 8px;
     border-radius: 5px;
 }
 .multi-select .multi-select-header .multi-select-header-max {
@@ -235,7 +238,7 @@ body {
     top: 100%;
     left: 0;
     right: 0;
-    z-index: 999;
+    z-index: 998;
     margin-top: 5px;
     padding: 5px;
     background-color: #fff;

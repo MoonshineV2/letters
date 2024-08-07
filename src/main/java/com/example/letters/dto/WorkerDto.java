@@ -1,6 +1,7 @@
 package com.example.letters.dto;
 
 import com.example.letters.model.Worker;
+import com.example.letters.model.Workgroup;
 import lombok.Data;
 
 @Data
@@ -9,7 +10,7 @@ public class WorkerDto {
     private String fullName;
     private String initials;
     private String post;
-    private long workgroupId;
+    private int workgroupId;
     private boolean canSign;
 
     public static WorkerDto fromWorker(Worker worker) {
@@ -29,6 +30,7 @@ public class WorkerDto {
         worker.setFullName(getFullName());
         worker.setInitials(getInitials());
         worker.setPost(getPost());
+        worker.setWorkgroup(new Workgroup(getWorkgroupId()));
         worker.setCanSign(isCanSign());
 
         return worker;
