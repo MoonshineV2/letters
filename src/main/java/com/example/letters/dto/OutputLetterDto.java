@@ -37,7 +37,7 @@ public class OutputLetterDto {
 
     private int easdNumber;
 
-    private String outputNumber;
+    private int inputLetterId;
 
     private boolean isAnswer;
 
@@ -53,6 +53,8 @@ public class OutputLetterDto {
 
     private byte[] file;
 
+    private String documentNum;
+
     public static OutputLetterDto fromOutputLetter(OutputLetter outputLetter) {
         OutputLetterDto dto = new OutputLetterDto();
         dto.id = outputLetter.getId();
@@ -62,13 +64,25 @@ public class OutputLetterDto {
         dto.registrationDate = outputLetter.getRegistrationDate();
         dto.documentDate = outputLetter.getDocumentDate();
         dto.documentName = outputLetter.getDocumentName();
-        dto.documentTypeId = outputLetter.getDocumentType().getId();
-        dto.addressId = outputLetter.getAddress().getId();
-        dto.targetParticipantId = outputLetter.getTargetParticipant().getId();
-        dto.signerId = outputLetter.getSigner().getId();
-        dto.executorId = outputLetter.getExecutor().getId();
+        if (outputLetter.getDocumentType() != null) {
+            dto.documentTypeId = outputLetter.getDocumentType().getId();
+        }
+        if (outputLetter.getAddress() != null) {
+            dto.addressId = outputLetter.getAddress().getId();
+        }
+        if (outputLetter.getTargetParticipant() != null) {
+            dto.targetParticipantId = outputLetter.getTargetParticipant().getId();
+        }
+        if (outputLetter.getSigner() != null) {
+            dto.signerId = outputLetter.getSigner().getId();
+        }
+        if (outputLetter.getExecutor() != null) {
+            dto.executorId = outputLetter.getExecutor().getId();
+        }
         dto.easdNumber = outputLetter.getEasdNumber();
-        dto.outputNumber = outputLetter.getOutputNumber();
+        if (outputLetter.getInputLetter() != null) {
+            dto.inputLetterId =outputLetter.getInputLetter().getId();
+        }
         dto.isAnswer = outputLetter.isAnswer();
         dto.prilojenie = outputLetter.isPrilojenie();
         dto.topic = outputLetter.getTopic();
@@ -76,7 +90,21 @@ public class OutputLetterDto {
         dto.note = outputLetter.getNote();
         dto.isReserve = outputLetter.isReserve();
         dto.file = outputLetter.getFile();
+        dto.documentNum = outputLetter.getDocumentNum();
 
         return dto;
+    }
+
+    public OutputLetter toOutputLetter() {
+        OutputLetter outputLetter = new OutputLetter();
+        outputLetter.setId(getId());
+        outputLetter.setYear(getYear());
+        outputLetter.setNumberIVC(getNumberIVC());
+        outputLetter.setCreateDate(getCreateDate());
+        outputLetter.setRegistrationDate(getRegistrationDate());
+        outputLetter.setDocumentDate(getDocumentDate());
+        outputLetter.setDocumentName(getDocumentName());
+
+        return outputLetter;
     }
 }

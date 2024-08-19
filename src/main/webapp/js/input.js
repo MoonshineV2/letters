@@ -1,20 +1,36 @@
 let monthMultiSelect;
 let yearMultiSelect;
+let tagsMultiSelect;
+
+const outputLetters = {};
 
 getActualNumberIVC()
-getTagsData()
 
 window.onload = async function() {
     document.getElementById("input-ref").style.color = "yellow";
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
 
-    monthMultiSelect = new MultiSelect(document.getElementById("months"))
+    document.getElementById("is-answer").onchange = function (ev) {
+        if (ev.target.checked) {
+            document.getElementById("answer-row").style.display = "";
+        }
+        else {
+            document.getElementById("answer-row").style.display = "none";
+        }
+    }
+
+    monthMultiSelect = new MultiSelect(document.getElementById("months"), {
+        onChange: function(value, text, element) {
+            onOutputYearOrMonthChange();
+        }
+    })
     yearMultiSelect = new MultiSelect(document.getElementById("years"), {
         onChange: function(value, text, element) {
-            onOutputYearChange();
+            onOutputYearOrMonthChange();
         }
     })
 
+    tagsMultiSelect = await getTags();
 
     await getOriginsData();
     await getSignersData();
@@ -32,18 +48,13 @@ function cutOptionText(maxTextLength) {
             x.textContent=x.textContent.substring(0,maxTextLength)+'...';
     })
 }
-
-async function getTagsData() {
-    await getTags();
-
-    //document.querySelectorAll('[data-multi-select]').forEach(select => new MultiSelect(select));
-}
-
 async function getOriginsData() {
     let response = await fetch('/letters/api/originsAndAddresses');
     const originsAndAddresses = await response.json();
 
+    const modal = document.getElementById("modal");
     const select = document.getElementById("origin-select");
+    const modalError = document.getElementById('modal2');
 
 
     originsAndAddresses.forEach(element => {
@@ -60,395 +71,9 @@ async function getOriginsData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            openModalCreateOrigin();
+            openModalCreateOrigin(modal, select, modalError);
         }
     }
-}
-function openModalCreateOrigin() {
-    var myModal = new bootstrap.Modal(document.getElementById('modal'));
-
-    const elem = document.getElementById('modal');
-    const footer = elem.children[0].children[0].children[2];
-    const body = elem.children[0].children[0].children[1].children[0];
-
-    const select = document.getElementById("origin-select")
-    const optionsCount = select.options.length;
-
-    document.getElementsByClassName("modal-title")[0].innerHTML = "Создание источника";
-
-    const labelFullname = document.createElement("label");
-    labelFullname.setAttribute("for", "message-text");
-    labelFullname.classList.add('col-form-label');
-    labelFullname.innerHTML = "Полное наименование";
-    body.appendChild(labelFullname)
-
-    const inputFullName = document.createElement("input");
-    inputFullName.classList.add('form-control');
-    inputFullName.type = "text";
-    inputFullName.id = "fullname-input";
-    body.appendChild(inputFullName)
-
-    const labelShortname = document.createElement("label");
-    labelShortname.setAttribute("for", "message-text");
-    labelShortname.classList.add('col-form-label');
-    labelShortname.innerHTML = "Краткое наименование";
-    body.appendChild(labelShortname)
-
-    const inputShortName = document.createElement("input");
-    inputShortName.classList.add('form-control');
-    inputShortName.type = "text";
-    inputShortName.id = "shortname-input";
-    body.appendChild(inputShortName)
-
-    const labelAdmKod = document.createElement("label");
-    labelAdmKod.setAttribute("for", "message-text");
-    labelAdmKod.classList.add('col-form-label');
-    labelAdmKod.innerHTML = "Код администрации";
-    body.appendChild(labelAdmKod)
-
-    const inputAdmKod = document.createElement("input");
-    inputAdmKod.classList.add('form-control');
-    inputAdmKod.type = "text";
-    inputAdmKod.id = "adm-kod-input";
-    body.appendChild(inputAdmKod)
-
-    function hideListener() {
-        body.innerHTML = "";
-        elem.removeEventListener('hidden.bs.modal', hideListener);
-
-        if (optionsCount === select.options.length) {
-            select.options[0].selected = true;
-        }
-    }
-
-    elem.addEventListener('hidden.bs.modal', hideListener)
-
-    footer.children[1].innerHTML = "Создать";
-    footer.children[1].onclick = async () => {
-        await createOriginRequest(
-            inputFullName.value,
-            inputShortName.value,
-            inputAdmKod.value
-        )
-        myModal.hide();
-    }
-
-    myModal.toggle();
-}
-
-async function createOriginRequest(name, shortName, kodADM) {
-    const response = await fetch("/letters/api/originsAndAddresses", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            name: name,
-            shortName: shortName,
-            kodADM: kodADM
-        }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    const select = document.getElementById("origin-select")
-
-    const option = document.createElement("option");
-    option.innerText = data.name
-    option.value = data.id
-    select.insertBefore(option, select.options[select.selectedIndex]);
-    option.selected = true;
-}
-
-function openModalCreateParticipant(checkDisabled, selectNode) {
-    var myModal = new bootstrap.Modal(document.getElementById('modal'));
-
-    const elem = document.getElementById('modal');
-    const footer = elem.children[0].children[0].children[2];
-    const body = elem.children[0].children[0].children[1].children[0];
-
-    const select = selectNode;
-    const optionsCount = select.options.length;
-
-    if (checkDisabled) {
-        document.getElementsByClassName("modal-title")[0].innerHTML = "Создание подписанта";
-    }
-    else {
-        document.getElementsByClassName("modal-title")[0].innerHTML = "Создание исполнителя";
-    }
-
-    const labelFullname = document.createElement("label");
-    labelFullname.setAttribute("for", "message-text");
-    labelFullname.classList.add('col-form-label');
-    labelFullname.innerHTML = "Полное имя";
-    body.appendChild(labelFullname)
-
-    const inputFullName = document.createElement("input");
-    inputFullName.classList.add('form-control');
-    inputFullName.type = "text";
-    inputFullName.id = "fullname-input";
-    body.appendChild(inputFullName)
-
-    const labelInitials = document.createElement("label");
-    labelInitials.setAttribute("for", "message-text");
-    labelInitials.classList.add('col-form-label');
-    labelInitials.innerHTML = "Фамилия, инициалы";
-    body.appendChild(labelInitials)
-
-    const inputInitials = document.createElement("input");
-    inputInitials.classList.add('form-control');
-    inputInitials.type = "text";
-    inputInitials.id = "shortname-input";
-    body.appendChild(inputInitials)
-
-    const labelPost = document.createElement("label");
-    labelPost.setAttribute("for", "post-input");
-    labelPost.classList.add('col-form-label');
-    labelPost.innerHTML = "Должность";
-    body.appendChild(labelPost)
-
-    const inputPost = document.createElement("input");
-    inputPost.classList.add('form-control');
-    inputPost.type = "text";
-    inputPost.id = "post-input";
-    body.appendChild(inputPost)
-
-
-    const divSign = document.createElement("div");
-    divSign.classList.add('col-form-label');
-    body.appendChild(divSign)
-
-    const checkSign = document.createElement("input");
-    checkSign.classList.add('form-check-input');
-    checkSign.type = "checkbox";
-    checkSign.id = "sign-checkbox";
-    checkSign.checked = checkDisabled ? true : false;
-    checkSign.disabled = checkDisabled ? true : false;
-    divSign.appendChild(checkSign);
-
-    const labelSign = document.createElement("label");
-    labelSign.setAttribute("for", "sign-checkbox");
-    labelSign.classList.add('form-check-label');
-    labelSign.innerHTML = "Право подписи";
-    labelSign.style.paddingLeft = "4px";
-    divSign.appendChild(labelSign);
-
-    function hideListener() {
-        body.innerHTML = "";
-        elem.removeEventListener('hidden.bs.modal', hideListener);
-
-        if (optionsCount === select.options.length) {
-            select.options[0].selected = true;
-        }
-    }
-
-    elem.addEventListener('hidden.bs.modal', hideListener)
-
-    footer.children[1].innerHTML = "Создать";
-    footer.children[1].onclick = async () => {
-        const data = await createParticipantRequest(
-            inputFullName.value,
-            inputInitials.value,
-            inputPost.value,
-            checkSign.checked
-        )
-
-        if (checkSign.checked) {
-            const selectSigner = document.getElementById("signer-select")
-
-            const option = document.createElement("option");
-            option.innerText = data.initials
-            option.value = data.id
-            selectSigner.insertBefore(option, selectSigner.options[selectSigner.options.length-1]);
-            if (select.id === "signer-select") {
-                option.selected = true;
-            }
-        }
-
-        const selectExecutor = document.getElementById("executor-select")
-
-        const optionExecutor = document.createElement("option");
-        optionExecutor.innerText = data.initials
-        optionExecutor.value = data.id
-        selectExecutor.insertBefore(optionExecutor, selectExecutor.options[selectExecutor.options.length-1]);
-        if (select.id === "executor-select") {
-            optionExecutor.selected = true;
-        }
-
-        myModal.hide();
-    }
-
-    myModal.toggle();
-}
-
-async function createParticipantRequest(fullName, initials, post, canSign) {
-    const response = await fetch("/letters/api/participants", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            fullName: fullName,
-            initials: initials,
-            post: post,
-            canSign: canSign
-        }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-    }
-
-    return await response.json();
-}
-
-async function openModalCreateWorker() {
-    var myModal = new bootstrap.Modal(document.getElementById('modal'));
-
-    const elem = document.getElementById('modal');
-    const footer = elem.children[0].children[0].children[2];
-    const body = elem.children[0].children[0].children[1].children[0];
-
-    const select = document.getElementById("target-select");
-    const optionsCount = select.options.length;
-
-    document.getElementsByClassName("modal-title")[0].innerHTML = "Создание сотрудника отдела";
-
-    const labelFullname = document.createElement("label");
-    labelFullname.setAttribute("for", "message-text");
-    labelFullname.classList.add('col-form-label');
-    labelFullname.innerHTML = "Полное имя";
-    body.appendChild(labelFullname)
-
-    const inputFullName = document.createElement("input");
-    inputFullName.classList.add('form-control');
-    inputFullName.type = "text";
-    inputFullName.id = "fullname-input";
-    body.appendChild(inputFullName)
-
-    const labelInitials = document.createElement("label");
-    labelInitials.setAttribute("for", "message-text");
-    labelInitials.classList.add('col-form-label');
-    labelInitials.innerHTML = "Фамилия, инициалы";
-    body.appendChild(labelInitials)
-
-    const inputInitials = document.createElement("input");
-    inputInitials.classList.add('form-control');
-    inputInitials.type = "text";
-    inputInitials.id = "shortname-input";
-    body.appendChild(inputInitials)
-
-    const labelPost = document.createElement("label");
-    labelPost.setAttribute("for", "post-input");
-    labelPost.classList.add('col-form-label');
-    labelPost.innerHTML = "Должность";
-    body.appendChild(labelPost)
-
-    const inputPost = document.createElement("input");
-    inputPost.classList.add('form-control');
-    inputPost.type = "text";
-    inputPost.id = "post-input";
-    body.appendChild(inputPost)
-
-    const labelWorkgroup = document.createElement("label");
-    labelWorkgroup.setAttribute("for", "workgroup-select");
-    labelWorkgroup.classList.add('col-form-label');
-    labelWorkgroup.innerHTML = "Рабочая группа";
-    body.appendChild(labelWorkgroup);
-
-    const divPost = document.createElement("div");
-    divPost.classList.add('custom-select');
-    body.appendChild(divPost)
-
-    const selectWorkgroup = document.createElement("select");
-    selectWorkgroup.name = "workgroups";
-    selectWorkgroup.id = "workgroup-select";
-    divPost.appendChild(selectWorkgroup)
-
-    const option = document.createElement("option");
-    selectWorkgroup.appendChild(option);
-    option.innerText = "Выберит вариант";
-    option.selected = true;
-    option.hidden = true;
-    option.disabled = true;
-
-    const divSign = document.createElement("div");
-    divSign.classList.add('col-form-label');
-    body.appendChild(divSign)
-
-    const checkSign = document.createElement("input");
-    checkSign.classList.add('form-check-input');
-    checkSign.type = "checkbox";
-    checkSign.id = "sign-checkbox";
-    checkSign.checked = false;
-    divSign.appendChild(checkSign);
-
-    const labelSign = document.createElement("label");
-    labelSign.setAttribute("for", "sign-checkbox");
-    labelSign.classList.add('form-check-label');
-    labelSign.innerHTML = "Право подписи";
-    labelSign.style.paddingLeft = "4px";
-    divSign.appendChild(labelSign);
-
-    function hideListener() {
-        body.innerHTML = "";
-        elem.removeEventListener('hidden.bs.modal', hideListener);
-
-        if (optionsCount === select.options.length) {
-            select.options[0].selected = true;
-        }
-    }
-
-    elem.addEventListener('hidden.bs.modal', hideListener)
-
-    footer.children[1].innerHTML = "Создать";
-    footer.children[1].onclick = async () => {
-        const data = await createWorkerRequest(
-            inputFullName.value,
-            inputInitials.value,
-            inputPost.value,
-            checkSign.checked,
-            selectWorkgroup.value
-        )
-
-        const optionWorker = document.createElement("option");
-        optionWorker.innerText = data.initials
-        optionWorker.value = data.id
-        select.insertBefore(optionWorker, select.options[select.options.length-1]);
-        optionWorker.selected = true;
-
-        myModal.hide();
-    }
-
-    myModal.toggle();
-
-    await getWorkgroupsData();
-}
-
-async function createWorkerRequest(fullName, initials, post, canSign, workgroupId) {
-    const response = await fetch("/letters/api/workers", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            fullName: fullName,
-            initials: initials,
-            post: post,
-            canSign: canSign,
-            workgroupId: workgroupId
-        }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-    }
-
-    return await response.json();
 }
 
 function openModalTopic() {
@@ -457,6 +82,8 @@ function openModalTopic() {
     const elem = document.getElementById('modal');
     const footer = elem.children[0].children[0].children[2];
     const body = elem.children[0].children[0].children[1].children[0];
+
+    body.innerHTML = "";
 
     document.getElementsByClassName("modal-title")[0].innerHTML = "Редактирование темы";
 
@@ -481,13 +108,12 @@ function openModalTopic() {
 
     function hideListener() {
         footer.removeChild(pElem);
-        body.innerHTML = "";
         elem.removeEventListener('hidden.bs.modal', hideListener)
     }
 
     elem.addEventListener('hidden.bs.modal', hideListener)
 
-    footer.children[2].innerHTML = "Создать";
+    footer.children[2].innerHTML = "Сохранить";
     footer.children[2].onclick = () => {
         closeModalTopic();
         myModal.hide();
@@ -506,6 +132,8 @@ function openModalNote() {
     const elem = document.getElementById('modal');
     const footer = elem.children[0].children[0].children[2];
     const body = elem.children[0].children[0].children[1].children[0];
+
+    body.innerHTML = "";
 
     document.getElementsByClassName("modal-title")[0].innerHTML = "Редактирование примечания";
 
@@ -530,7 +158,6 @@ function openModalNote() {
 
     function hideListener() {
         footer.removeChild(pElem);
-        body.innerHTML = "";
         elem.removeEventListener('hidden.bs.modal', hideListener)
     }
 
@@ -552,7 +179,9 @@ function closeModalNote() {
 async function getSignersData() {
     let response = await (await fetch('/letters/api/participants/signers')).json();
 
+    const modal = document.getElementById("modal");
     const select = document.getElementById("signer-select");
+    const modalError = document.getElementById("modal2");
 
     response.forEach(element => {
         const option = document.createElement("option");
@@ -568,7 +197,12 @@ async function getSignersData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            openModalCreateParticipant(true, select);
+            const otherSelects = [];
+            otherSelects.push({
+                signFlag: false,
+                selectNode: document.getElementById("executor-select")
+            })
+            openModalCreateParticipant(modal, select, true, modalError ,"Создание подписанта", otherSelects);
         }
     }
 
@@ -605,7 +239,9 @@ async function getWorkgroupsData() {
 async function getExecutorsData() {
     let response = await (await fetch('/letters/api/participants')).json();
 
+    const modal = document.getElementById("modal")
     const select = document.getElementById("executor-select");
+    const modalError = document.getElementById("modal2");
 
     response.forEach(element => {
         const option = document.createElement("option");
@@ -621,7 +257,12 @@ async function getExecutorsData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            openModalCreateParticipant(false, select);
+            const otherSelects = [];
+            otherSelects.push({
+                signFlag: true,
+                selectNode: document.getElementById("signer-select")
+            })
+            openModalCreateParticipant(modal, select, false, modalError,"Создание исполнителя", otherSelects);
         }
     }
 }
@@ -629,7 +270,9 @@ async function getExecutorsData() {
 async function getWorkersData() {
     let response = await (await fetch('/letters/api/workers')).json();
 
+    const modal = document.getElementById("modal");
     const select = document.getElementById("target-select");
+    const modalError = document.getElementById("modal2");
 
     response.forEach(element => {
         const option = document.createElement("option");
@@ -645,7 +288,7 @@ async function getWorkersData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            openModalCreateWorker();
+            openModalCreateWorker(modal, select, modalError);
         }
     }
 }
@@ -660,7 +303,7 @@ async function getTags() {
         })
     })
 
-    new MultiSelect("#tags", {
+    return  new MultiSelect("#tags", {
         data: data,
         placeholder: "Выберите теги",
         search: true,
@@ -677,7 +320,6 @@ async function getActualNumberIVC() {
 async function saveDocument() {
     const numIVC = document.getElementById("ivc-num").value;
     const isAnswer = document.getElementById("is-answer").checked;
-    const outputNum = document.getElementById("ivc-num-output").value;
     const registrationDate = document.getElementById("registration-date").value;
     const postuplenieDate = document.getElementById("postuplenie-date").value;
     const documentDate = document.getElementById("date-doc").value;
@@ -690,21 +332,22 @@ async function saveDocument() {
     const target = document.getElementById("target-select").value;
     const executor = document.getElementById("executor-select").value;
     const topic = document.getElementById("topic").value;
-    const tagElements = document.getElementsByClassName("multi-select-selected")
     const note = document.getElementById("note").value;
     const reserve = document.getElementById("reserve").checked;
     const file = document.getElementById("file").files[0];
     const documentName = file !== undefined ? file.name : "";
+    const outputSelect = document.getElementById("output-select");
 
-    const tags = [];
     let binary = "";
     if (file !== undefined) {
         binary = await getBinaryFromFile(file);
     }
 
-    Object.values(tagElements).forEach(el => {
-        tags.push(el.getAttribute("data-value"))
-    })
+
+    if (outputSelect.value === "Выберите вариант") {
+        showModalError("Ошибка", "Исходящее письмо не выбрано")
+        return;
+    }
 
     const response = await fetch("/letters/api/inputLetters", {
         method: "POST",
@@ -723,21 +366,36 @@ async function saveDocument() {
             signerId: signer,
             executorId: executor,
             easdNumber: easdNum,
-            outputNumber: outputNum,
             answer: isAnswer,
             prilojenie: prilojenie,
             topic: topic,
-            tagIds: tags,
+            tagIds: tagsMultiSelect.selectedValues,
             note: note,
             targetWorkerId: target,
             reserve: reserve,
-            file: arrayBufferToBase64(binary)
+            file: arrayBufferToBase64(binary),
+            outputLetterId: outputSelect.value
         }),
     });
 
+    const modal = new bootstrap.Modal(document.getElementById('modal2'));
+    const element = document.getElementById('modal2');
+    const header = element.children[0].children[0].children[0].children[0];
+    const body = element.children[0].children[0].children[1].children[0];
+
     if (!response.ok) {
+        body.innerHTML = await response.text();
+        header.innerHTML = "Ошибка"
+
+        modal.toggle();
         throw new Error(`Response status: ${response.status}`);
     }
+
+    header.innerHTML = "Успешно";
+    body.innerHTML = "Документ был сохранён"
+    modal.toggle();
+
+    getActualNumberIVC();
 }
 
 async function getBinaryFromFile(file) {
@@ -759,264 +417,78 @@ function arrayBufferToBase64( buffer ) {
     return window.btoa( binary );
 }
 
-function onOutputYearChange() {
+async function onOutputYearOrMonthChange() {
+
+    const select = document.getElementById("output-select");
+    select.innerHTML = "";
+    select.disabled = false;
+    const option = document.createElement("option");
+    option.innerText = "Выберите вариант";
+    option.disabled = true;
+    option.selected = true;
+    option.hidden = true;
+    select.appendChild(option)
+
     if (yearMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        select.disabled = true;
         return;
     }
     if (monthMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        select.disabled = true;
         return;
     }
 
-    console.log(yearMultiSelect.data.filter(el => el.selected === true))
-}
-class MultiSelect {
+    keys = Object.keys(outputLetters);
+    neededYears = [];
 
-    constructor(element, options = {}) {
-        let defaults = {
-            placeholder: 'Select item(s)',
-            max: null,
-            search: true,
-            selectAll: false,
-            listAll: false,
-            name: '',
-            width: '',
-            height: '',
-            dropdownWidth: '',
-            dropdownHeight: '',
-            data: [],
-            onChange: function() {},
-            onSelect: function() {},
-            onUnselect: function() {}
-        };
-        this.options = Object.assign(defaults, options);
-        this.selectElement = typeof element === 'string' ? document.querySelector(element) : element;
-        for(const prop in this.selectElement.dataset) {
-            if (this.options[prop] !== undefined) {
-                this.options[prop] = this.selectElement.dataset[prop];
-            }
+    yearMultiSelect.selectedValues.forEach(el => {
+        if (!keys.includes(el)) {
+            neededYears.push(el);
         }
-        this.name = this.selectElement.getAttribute('name') ? this.selectElement.getAttribute('name') : 'multi-select-' + Math.floor(Math.random() * 1000000);
-        if (!this.options.data.length) {
-            let options = this.selectElement.querySelectorAll('option');
-            for (let i = 0; i < options.length; i++) {
-                this.options.data.push({
-                    value: options[i].value,
-                    text: options[i].innerHTML,
-                    selected: options[i].selected,
-                    html: options[i].getAttribute('data-html')
-                });
-            }
-        }
-        this.element = this._template();
-        this.selectElement.replaceWith(this.element);
-        this._updateSelected();
-        this._eventHandlers();
-    }
+    })
 
-    _template() {
-        let optionsHTML = '';
-        for (let i = 0; i < this.data.length; i++) {
-            optionsHTML += `
-                <div class="multi-select-option${this.selectedValues.includes(this.data[i].value) ? ' multi-select-selected' : ''}" data-value="${this.data[i].value}">
-                    <span class="multi-select-option-radio"></span>
-                    <span class="multi-select-option-text">${this.data[i].html ? this.data[i].html : this.data[i].text}</span>
-                </div>
-            `;
-        }
-        let selectAllHTML = '';
-        if (this.options.selectAll === true || this.options.selectAll === 'true') {
-            selectAllHTML = `<div class="multi-select-all">
-                <span class="multi-select-option-radio"></span>
-                <span class="multi-select-option-text">Выбрать всё</span>
-            </div>`;
-        }
-        let template = `
-            <div class="multi-select ${this.name}"${this.selectElement.id ? ' id="' + this.selectElement.id + '"' : ''} style="${this.width ? 'width:' + this.width + ';' : ''}${this.height ? 'height:' + this.height + ';' : ''}">
-                ${this.selectedValues.map(value => `<input type="hidden" name="${this.name}[]" value="${value}">`).join('')}
-                <div class="multi-select-header" style="${this.width ? 'width:' + this.width + ';' : ''}${this.height ? 'height:' + this.height + ';' : ''}">
-                    <span class="multi-select-header-max">${this.options.max ? this.selectedValues.length + '/' + this.options.max : ''}</span>
-                    <span class="multi-select-header-placeholder">${this.placeholder}</span>
-                </div>
-                <div class="multi-select-options" style="${this.options.dropdownWidth ? 'width:' + this.options.dropdownWidth + ';' : ''}${this.options.dropdownHeight ? 'height:' + this.options.dropdownHeight + ';' : ''}">
-                    ${this.options.search === true || this.options.search === 'true' ? '<input type="text" class="multi-select-search" placeholder="Search...">' : ''}
-                    ${selectAllHTML}
-                    ${optionsHTML}
-                </div>
-            </div>
-        `;
-        let element = document.createElement('div');
-        element.innerHTML = template;
-        return element;
-    }
+    neededYears.forEach(el => {
+        outputLetters[el] = [];
+    })
 
-    _eventHandlers() {
-        let headerElement = this.element.querySelector('.multi-select-header');
-        this.element.querySelectorAll('.multi-select-option').forEach(option => {
-            option.onclick = () => {
-                let selected = true;
-                this.scroll = this.element.querySelector('.multi-select-options').scrollTop;
-                if (!option.classList.contains('multi-select-selected')) {
-                    if (this.options.max && this.selectedValues.length >= this.options.max) {
-                        return;
-                    }
-                    option.classList.add('multi-select-selected');
-                    if (this.options.listAll === true || this.options.listAll === 'true') {
-                        headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
-                    }
-                    this.element.querySelector('.multi-select').insertAdjacentHTML('afterbegin', `<input type="hidden" name="${this.name}[]" value="${option.dataset.value}">`);
-                    this.data.filter(data => data.value == option.dataset.value)[0].selected = true;
-                } else {
-                    option.classList.remove('multi-select-selected');
-                    this.element.querySelectorAll('.multi-select-header-option').forEach(headerOption => headerOption.dataset.value == option.dataset.value ? headerOption.remove() : '');
-                    this.element.querySelector(`input[value="${option.dataset.value}"]`).remove();
-                    this.data.filter(data => data.value == option.dataset.value)[0].selected = false;
-                    selected = false;
-                }
-                if (this.options.listAll === false || this.options.listAll === 'false') {
-                    if (this.element.querySelector('.multi-select-header-option')) {
-                        this.element.querySelector('.multi-select-header-option').remove();
-                    }
-                    headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option">${this.selectedValues.length} выбрано</span>`);
-                }
-                if (!this.element.querySelector('.multi-select-header-option')) {
-                    headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-placeholder">${this.placeholder}</span>`);
-                } else if (this.element.querySelector('.multi-select-header-placeholder')) {
-                    this.element.querySelector('.multi-select-header-placeholder').remove();
-                }
-                if (this.options.max) {
-                    this.element.querySelector('.multi-select-header-max').innerHTML = this.selectedValues.length + '/' + this.options.max;
-                }
-                if (this.options.search === true || this.options.search === 'true') {
-                    this.element.querySelector('.multi-select-search').value = '';
-                }
-                this.element.querySelectorAll('.multi-select-option').forEach(option => option.style.display = 'flex');
-                //headerElement.classList.remove('multi-select-header-active');
-                this.options.onChange(option.dataset.value, option.querySelector('.multi-select-option-text').innerHTML, option);
-                if (selected) {
-                    this.options.onSelect(option.dataset.value, option.querySelector('.multi-select-option-text').innerHTML, option);
-                } else {
-                    this.options.onUnselect(option.dataset.value, option.querySelector('.multi-select-option-text').innerHTML, option);
-                }
-            };
+    if (neededYears.length > 0) {
+        const response = await fetch("/letters/api/outputLetters/findByYears", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                years: neededYears
+            }),
         });
-        headerElement.onclick = () => headerElement.classList.toggle('multi-select-header-active');
-        if (this.options.search === true || this.options.search === 'true') {
-            let search = this.element.querySelector('.multi-select-search');
-            search.oninput = () => {
-                this.element.querySelectorAll('.multi-select-option').forEach(option => {
-                    option.style.display = option.querySelector('.multi-select-option-text').innerHTML.toLowerCase().indexOf(search.value.toLowerCase()) > -1 ? 'flex' : 'none';
-                });
-            };
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
         }
-        if (this.options.selectAll === true || this.options.selectAll === 'true') {
-            let selectAllButton = this.element.querySelector('.multi-select-all');
-            selectAllButton.onclick = () => {
-                let allSelected = selectAllButton.classList.contains('multi-select-selected');
-                let buffer = this.options.onChange;
-                this.options.onChange = function (){}
-                this.element.querySelectorAll('.multi-select-option').forEach(option => {
-                    let dataItem = this.data.find(data => data.value == option.dataset.value);
-                    if (dataItem && ((allSelected && dataItem.selected) || (!allSelected && !dataItem.selected))) {
-                        option.click();
-                    }
-                });
-                this.options.onChange = buffer;
-                this.options.onChange(null, null, null);
-                selectAllButton.classList.toggle('multi-select-selected');
-            };
-        }
-        if (this.selectElement.id && document.querySelector('label[for="' + this.selectElement.id + '"]')) {
-            document.querySelector('label[for="' + this.selectElement.id + '"]').onclick = () => {
-                headerElement.classList.toggle('multi-select-header-active');
-            };
-        }
-        document.addEventListener('click', event => {
-            if (!event.target.closest('.' + this.name) && !event.target.closest('label[for="' + this.selectElement.id + '"]')) {
-                headerElement.classList.remove('multi-select-header-active');
-            }
-            this.element.querySelector('.multi-select-options').scrollTop = this.scroll;
-        });
+
+        const data = await response.json();
+
+        data.forEach(el => {
+            outputLetters[el.year].push(el);
+        })
     }
 
-    _updateSelected() {
-        if (this.options.listAll === true || this.options.listAll === 'true') {
-            this.element.querySelectorAll('.multi-select-option').forEach(option => {
-                if (option.classList.contains('multi-select-selected')) {
-                    this.element.querySelector('.multi-select-header').insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
-                }
-            });
-        } else {
-            if (this.selectedValues.length > 0) {
-                this.element.querySelector('.multi-select-header').insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option">${this.selectedValues.length} выбрано</span>`);
-            }
-        }
-        if (this.element.querySelector('.multi-select-header-option')) {
-            this.element.querySelector('.multi-select-header-placeholder').remove();
-        }
-    }
+    outputLettersFiltered = Object.values(outputLetters)
+        .flat()
+        .filter(el => yearMultiSelect.selectedValues.includes(el.year.toString()))
+        .filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()))
 
-    get selectedValues() {
-        return this.data.filter(data => data.selected).map(data => data.value);
+    if(outputLettersFiltered.length === 0) {
+        option.innerText = "Нет писем";
+        select.disabled = true;
     }
-
-    get selectedItems() {
-        return this.data.filter(data => data.selected);
-    }
-
-    set data(value) {
-        this.options.data = value;
-    }
-
-    get data() {
-        return this.options.data;
-    }
-
-    set selectElement(value) {
-        this.options.selectElement = value;
-    }
-
-    get selectElement() {
-        return this.options.selectElement;
-    }
-
-    set element(value) {
-        this.options.element = value;
-    }
-
-    get element() {
-        return this.options.element;
-    }
-
-    set placeholder(value) {
-        this.options.placeholder = value;
-    }
-
-    get placeholder() {
-        return this.options.placeholder;
-    }
-
-    set name(value) {
-        this.options.name = value;
-    }
-
-    get name() {
-        return this.options.name;
-    }
-
-    set width(value) {
-        this.options.width = value;
-    }
-
-    get width() {
-        return this.options.width;
-    }
-
-    set height(value) {
-        this.options.height = value;
-    }
-
-    get height() {
-        return this.options.height;
-    }
-
+    
+    outputLettersFiltered.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.documentNum;
+        option.value = element.id
+        select.appendChild(option)
+    })
 }

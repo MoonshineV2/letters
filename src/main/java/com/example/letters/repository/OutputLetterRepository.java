@@ -21,6 +21,13 @@ public class OutputLetterRepository {
     public Optional<OutputLetter> findById(int id) {
         return Optional.ofNullable(entityManager.find(OutputLetter.class, id));
     }
+
+    //@SuppressWarnings("uncheked")
+    public List<OutputLetter> findByYears(List<Integer> years) {
+        return (List<OutputLetter>) entityManager.createQuery("SELECT ol from OutputLetter ol where ol.year in :years")
+                .setParameter("years", years)
+                .getResultList();
+    }
     public void create(OutputLetter outputLetter) {
         entityManager.persist(outputLetter);
     }

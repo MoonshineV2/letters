@@ -1,7 +1,9 @@
 package com.example.letters.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -10,6 +12,8 @@ import java.util.List;
 @Entity
 @Table(schema = "letter", name = "output_letters")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OutputLetter {
 
     @Id
@@ -26,10 +30,12 @@ public class OutputLetter {
     private Timestamp createDate;
 
     @Column(name = "registration_date", columnDefinition = "date")
+    @Temporal(TemporalType.DATE)
     private Date registrationDate;
 
 
     @Column(name = "document_date", columnDefinition = "date")
+    @Temporal(TemporalType.DATE)
     private Date documentDate;
 
     @Column(name = "document_name", columnDefinition = "bpchar", length = 100)
@@ -58,8 +64,9 @@ public class OutputLetter {
     @Column(name = "easd_num", columnDefinition = "numeric")
     private int easdNumber;
 
-    @Column(name = "input_num")
-    private String outputNumber;
+    @ManyToOne
+    @JoinColumn(name="input_letter_id")
+    private InputLetter inputLetter;
 
     @Column(name = "is_answer")
     private boolean isAnswer;
@@ -86,4 +93,11 @@ public class OutputLetter {
 
     @Column(name = "file")
     private byte[] file;
+
+    @Column(name = "document_num")
+    private String documentNum;
+
+    public OutputLetter(int id) {
+        this.id = id;
+    }
 }

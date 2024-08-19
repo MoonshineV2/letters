@@ -2,11 +2,15 @@ package com.example.letters.controller;
 
 import com.example.letters.dto.ActualNumberIVC;
 import com.example.letters.dto.OutputLetterDto;
+import com.example.letters.dto.Years;
 import com.example.letters.model.OutputLetter;
 import com.example.letters.service.OutputLetterService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("outputLetters")
 public class OutputLetterController {
@@ -20,6 +24,17 @@ public class OutputLetterController {
     public OutputLetterDto find(@PathParam("id") int id) {
         OutputLetter outputLetter = outputLetterService.findById(id);
         return OutputLetterDto.fromOutputLetter(outputLetter);
+    }
+
+    @POST
+    @Path("findByYears")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public List<OutputLetterDto> getByYears(Years years) {
+        List<OutputLetter> letters = outputLetterService.findByYears(years.getYears());
+        return letters.stream()
+                .map(OutputLetterDto::fromOutputLetter)
+                .collect(Collectors.toList());
     }
 
     @POST

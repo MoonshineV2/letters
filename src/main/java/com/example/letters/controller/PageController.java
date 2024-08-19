@@ -74,6 +74,34 @@ public class PageController {
     }
 
     @GET
+    @Path("multiselect.js")
+    public Response getMultiselectJSFile() {
+        String filePath = servletContext.getRealPath("/js/multiselect.js");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in, MediaType.MULTIPART_FORM_DATA).build();
+    }
+
+    @GET
+    @Path("modals.js")
+    public Response getModalsJSFile() {
+        String filePath = servletContext.getRealPath("/js/modals.js");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in, MediaType.MULTIPART_FORM_DATA).build();
+    }
+
+    @GET
     @Path("output.js")
     public Response getOutputJSFile() {
         String filePath = servletContext.getRealPath("/js/output.js");

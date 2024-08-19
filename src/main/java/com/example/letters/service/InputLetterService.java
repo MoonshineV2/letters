@@ -57,6 +57,18 @@ public class InputLetterService {
             throw new RuntimeException("Кому расписано не задано(id = 0)");
         }
 
+        if (inputLetter.isAnswer()) {
+            if (inputLetter.getOutputLetter() == null) {
+                throw new RuntimeException("Ответное письмо не выбрано");
+            }
+            if (inputLetter.getOutputLetter().getId() == 0) {
+                throw new RuntimeException("Ответное письмо не выбрано");
+            }
+        }
+        else {
+            inputLetter.setOutputLetter(null);
+        }
+
         List<InputLetter> list = inputLetterRepository.findAll().stream()
                 .filter(el -> el.getYear() == LocalDateTime.now().getYear())
                 .collect(Collectors.toList());

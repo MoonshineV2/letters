@@ -28,11 +28,11 @@ public class OriginAndAddressesService {
         }
 
         if (originAndAddress.getShortName() == null) {
-            throw new RuntimeException("Полное наименование не задано");
+            throw new RuntimeException("Краткое наименование не задано");
         }
 
         if (originAndAddress.getShortName().isEmpty()) {
-            throw new RuntimeException("Полное наименование не задано");
+            throw new RuntimeException("Краткое наименование не задано");
         }
 
         return originAndAddressRepository.create(originAndAddress);

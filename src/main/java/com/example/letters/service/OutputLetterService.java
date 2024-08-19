@@ -34,6 +34,10 @@ public class OutputLetterService {
         return outputLetter;
     }
 
+    public List<OutputLetter> findByYears(List<Integer> years) {
+        return outputLetterRepository.findByYears(years);
+    }
+
     public void create(OutputLetter outputLetter) {
 
         if (outputLetter.getDocumentType().getId() == 0) {

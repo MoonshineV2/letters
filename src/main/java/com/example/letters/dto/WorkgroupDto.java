@@ -16,7 +16,9 @@ public class WorkgroupDto {
         WorkgroupDto workgroupDto = new WorkgroupDto();
         workgroupDto.id = workgroup.getId();
         workgroupDto.name = workgroup.getName();
-        workgroupDto.leaderId = workgroup.getLeader().getId();
+        if (workgroup.getLeader() != null) {
+            workgroupDto.leaderId = workgroup.getLeader().getId();
+        }
 
         return workgroupDto;
     }

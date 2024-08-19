@@ -40,7 +40,7 @@ public class InputLetterDto {
 
     private int easdNumber;
 
-    private String outputNumber;
+    private int outputLetterId;
 
     private boolean answer;
 
@@ -82,34 +82,36 @@ public class InputLetterDto {
         dto.targetWorkerId = inputLetter.getTargetWorker().getId();
         dto.isReserve = inputLetter.isReserve();
         dto.file = inputLetter.getFile();
+        dto.outputLetterId = inputLetter.getOutputLetter() != null  ? inputLetter.getOutputLetter().getId() : 0;
 
         return dto;
     }
 
     public InputLetter toInputLetter() {
         InputLetter inputLetter = new InputLetter();
-        inputLetter.setId(getId());
-        inputLetter.setYear(getYear());
-        inputLetter.setNumberIVC(getNumberIVC());
-        inputLetter.setCreateDate(getCreateDate());
-        inputLetter.setRegistrationDate(getRegistrationDate());
-        inputLetter.setPostuplenieDate(getPostuplenieDate());
-        inputLetter.setDocumentDate(getDocumentDate());
-        inputLetter.setDocumentNumber(getDocumentNumber());
-        inputLetter.setDocumentName(getDocumentName());
-        inputLetter.setDocumentType(new DocumentType(getDocumentTypeId()));
-        inputLetter.setOrigin(new OriginAndAddress(getOriginId()));
-        inputLetter.setSigner(new Participant(getSignerId()));
-        inputLetter.setExecutor(new Participant(getExecutorId()));
-        inputLetter.setEasdNumber(getEasdNumber());
-        inputLetter.setAnswer(isAnswer());
-        inputLetter.setPrilojenie(isPrilojenie());
-        inputLetter.setTopic(getTopic());
-        inputLetter.setTags(getTagIds().stream().map(Tag::new).collect(Collectors.toList()));
-        inputLetter.setNote(getNote());
-        inputLetter.setTargetWorker(new Worker(getTargetWorkerId()));
-        inputLetter.setReserve(isReserve());
+        inputLetter.setId(id);
+        inputLetter.setYear(year);
+        inputLetter.setNumberIVC(numberIVC);
+        inputLetter.setCreateDate(createDate);
+        inputLetter.setRegistrationDate(registrationDate);
+        inputLetter.setPostuplenieDate(postuplenieDate);
+        inputLetter.setDocumentDate(documentDate);
+        inputLetter.setDocumentNumber(documentNumber);
+        inputLetter.setDocumentName(documentName);
+        inputLetter.setDocumentType(new DocumentType(documentTypeId));
+        inputLetter.setOrigin(new OriginAndAddress(originId));
+        inputLetter.setSigner(new Participant(signerId));
+        inputLetter.setExecutor(new Participant(executorId));
+        inputLetter.setEasdNumber(easdNumber);
+        inputLetter.setAnswer(answer);
+        inputLetter.setPrilojenie(prilojenie);
+        inputLetter.setTopic(topic);
+        inputLetter.setTags(tagIds.stream().map(Tag::new).collect(Collectors.toList()));
+        inputLetter.setNote(note);
+        inputLetter.setTargetWorker(new Worker(targetWorkerId));
+        inputLetter.setReserve(isReserve);
         inputLetter.setFile(file);
+        inputLetter.setOutputLetter(new OutputLetter(outputLetterId));
 
         return inputLetter;
     }
