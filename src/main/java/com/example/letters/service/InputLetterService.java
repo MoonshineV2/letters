@@ -1,6 +1,7 @@
 package com.example.letters.service;
 
 import com.example.letters.model.InputLetter;
+import com.example.letters.model.OutputLetter;
 import com.example.letters.repository.InputLetterRepository;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;
@@ -35,33 +36,34 @@ public class InputLetterService {
         return inputLetter;
     }
 
+    public List<InputLetter> findByYears(List<Integer> years) {
+        return inputLetterRepository.findByYears(years);
+    }
+
     public void create(InputLetter inputLetter) {
 
-        if (inputLetter.getDocumentType().getId() == 0) {
-            inputLetter.setDocumentType(null);
+        if (inputLetter.getOrigin() == null) {
+            throw new RuntimeException("Источник письма не задан");
         }
 
-        if (inputLetter.getOrigin().getId() == 0) {
-            throw new RuntimeException("Источник не задан(id = 0)");
+        if (inputLetter.getSigner() == null) {
+            throw new RuntimeException("Подписант письма не задан");
         }
 
-        if (inputLetter.getSigner().getId() == 0) {
-            throw new RuntimeException("Подписант не задан(id = 0)");
+        if (inputLetter.getExecutor() == null) {
+            throw new RuntimeException("Исполнитель письма не задан");
         }
 
-        if (inputLetter.getExecutor().getId() == 0) {
-            throw new RuntimeException("Исполнитель не задан(id = 0)");
+        if (inputLetter.getTargetWorker() == null) {
+            throw new RuntimeException("\"Кому расписано\" не задано");
         }
 
-        if (inputLetter.getTargetWorker().getId() == 0) {
-            throw new RuntimeException("Кому расписано не задано(id = 0)");
+        if (inputLetter.getDocumentNumber().isEmpty()) {
+            throw new RuntimeException("Номер документа не задан");
         }
 
         if (inputLetter.isAnswer()) {
             if (inputLetter.getOutputLetter() == null) {
-                throw new RuntimeException("Ответное письмо не выбрано");
-            }
-            if (inputLetter.getOutputLetter().getId() == 0) {
                 throw new RuntimeException("Ответное письмо не выбрано");
             }
         }

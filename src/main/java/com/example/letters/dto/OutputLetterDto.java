@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Data
 public class OutputLetterDto {
 
@@ -39,7 +40,7 @@ public class OutputLetterDto {
 
     private int inputLetterId;
 
-    private boolean isAnswer;
+    private boolean answer;
 
     private boolean prilojenie;
 
@@ -49,7 +50,7 @@ public class OutputLetterDto {
 
     private String note;
 
-    private boolean isReserve;
+    private boolean reserve;
 
     private byte[] file;
 
@@ -83,12 +84,14 @@ public class OutputLetterDto {
         if (outputLetter.getInputLetter() != null) {
             dto.inputLetterId =outputLetter.getInputLetter().getId();
         }
-        dto.isAnswer = outputLetter.isAnswer();
+        dto.answer = outputLetter.isAnswer();
         dto.prilojenie = outputLetter.isPrilojenie();
         dto.topic = outputLetter.getTopic();
-        dto.tagIds = outputLetter.getTags().stream().map(Tag::getId).collect(Collectors.toList());
+        if (outputLetter.getTags() != null) {
+            dto.tagIds = outputLetter.getTags().stream().map(Tag::getId).collect(Collectors.toList());
+        }
         dto.note = outputLetter.getNote();
-        dto.isReserve = outputLetter.isReserve();
+        dto.reserve = outputLetter.isReserve();
         dto.file = outputLetter.getFile();
         dto.documentNum = outputLetter.getDocumentNum();
 
@@ -97,13 +100,28 @@ public class OutputLetterDto {
 
     public OutputLetter toOutputLetter() {
         OutputLetter outputLetter = new OutputLetter();
-        outputLetter.setId(getId());
-        outputLetter.setYear(getYear());
-        outputLetter.setNumberIVC(getNumberIVC());
-        outputLetter.setCreateDate(getCreateDate());
-        outputLetter.setRegistrationDate(getRegistrationDate());
-        outputLetter.setDocumentDate(getDocumentDate());
-        outputLetter.setDocumentName(getDocumentName());
+        outputLetter.setId(id);
+        outputLetter.setYear(year);
+        outputLetter.setNumberIVC(numberIVC);
+        outputLetter.setCreateDate(createDate);
+        outputLetter.setRegistrationDate(registrationDate);
+        outputLetter.setDocumentDate(documentDate);
+        outputLetter.setDocumentName(documentName);
+        if (documentTypeId > 0) outputLetter.setDocumentType(new DocumentType(documentTypeId));
+        if (addressId > 0) outputLetter.setAddress(new OriginAndAddress(addressId));
+        if (targetParticipantId > 0) outputLetter.setTargetParticipant(new Participant(targetParticipantId));
+        if (signerId > 0) outputLetter.setSigner(new Participant(signerId));
+        if (executorId > 0) outputLetter.setExecutor(new Participant(executorId));
+        outputLetter.setEasdNumber(easdNumber);
+        if (inputLetterId > 0) outputLetter.setInputLetter(new InputLetter(inputLetterId));
+        outputLetter.setAnswer(answer);
+        outputLetter.setPrilojenie(prilojenie);
+        outputLetter.setTopic(topic);
+        outputLetter.setTags(tagIds.stream().map(Tag::new).collect(Collectors.toList()));
+        outputLetter.setNote(note);
+        outputLetter.setReserve(reserve);
+        outputLetter.setFile(file);
+        outputLetter.setDocumentNum(documentNum);
 
         return outputLetter;
     }

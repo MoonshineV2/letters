@@ -40,24 +40,20 @@ public class OutputLetterService {
 
     public void create(OutputLetter outputLetter) {
 
-        if (outputLetter.getDocumentType().getId() == 0) {
-            outputLetter.setDocumentType(null);
+        if (outputLetter.getAddress() == null) {
+            throw new RuntimeException("Адрес письма не задан");
         }
 
-        if (outputLetter.getAddress().getId() == 0) {
-            throw new RuntimeException("Источник не задан(id = 0)");
+        if (outputLetter.getSigner() == null) {
+            throw new RuntimeException("Подписант письма не задан");
         }
 
-        if (outputLetter.getSigner().getId() == 0) {
-            throw new RuntimeException("Подписант не задан(id = 0)");
+        if (outputLetter.getExecutor() == null) {
+            throw new RuntimeException("Исполнитель письма не задан");
         }
 
-        if (outputLetter.getExecutor().getId() == 0) {
-            throw new RuntimeException("Исполнитель не задан(id = 0)");
-        }
-
-        if (outputLetter.getTargetParticipant().getId() == 0) {
-            throw new RuntimeException("Кому расписано не задано(id = 0)");
+        if (outputLetter.getTargetParticipant() == null) {
+            throw new RuntimeException("\"Кому направлено письмо\" не задано");
         }
 
         outputLetter.setYear(LocalDateTime.now().getYear());

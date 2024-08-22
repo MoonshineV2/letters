@@ -239,7 +239,7 @@ async function createParticipantRequest(fullName, initials, post, canSign, modal
     return await response.json();
 }
 
-async function openModalCreateWorker(modalToShow, selectToAddOption, modalError) {
+async function openModalCreateWorker(modalToShow, selectToAddOption, modalError, headerText, otherSelectsToAddOption) {
     const modalShowInstance = new bootstrap.Modal(modalToShow);
 
     const footer = modalToShow.children[0].children[0].children[2];
@@ -247,7 +247,7 @@ async function openModalCreateWorker(modalToShow, selectToAddOption, modalError)
 
     const optionsCount = selectToAddOption.options.length;
 
-    document.getElementsByClassName("modal-title")[0].innerHTML = "Создание сотрудника отдела";
+    document.getElementsByClassName("modal-title")[0].innerHTML = headerText;
 
     body.innerHTML = "";
 
@@ -371,6 +371,20 @@ async function openModalCreateWorker(modalToShow, selectToAddOption, modalError)
         selectToAddOption.insertBefore(optionWorker, selectToAddOption.options[selectToAddOption.options.length-1]);
         optionWorker.selected = true;
 
+        if (otherSelectsToAddOption !== undefined) {
+            otherSelectsToAddOption.forEach(el => {
+                if (el.signFlag === true) {
+                    if (!checkSign.checked) {
+                        return;
+                    }
+                }
+                const option = document.createElement("option");
+                option.innerText = data.initials
+                option.value = data.id
+                el.selectNode.insertBefore(option, el.selectNode.options[el.selectNode.options.length-1]);
+            })
+        }
+
         modalShowInstance.hide();
     }
 
@@ -407,7 +421,6 @@ async function createWorkerRequest(fullName, initials, post, canSign, workgroupI
 function showModalError(headerText, bodyText, modalError, modalToToggle) {
 
     const modalErrorInstance = bootstrap.Modal.getOrCreateInstance(modalError);
-    const modalToToggleInstance = bootstrap.Modal.getOrCreateInstance(modalToToggle);
 
     const header = modalError.children[0].children[0].children[0].children[0];
     const body = modalError.children[0].children[0].children[1].children[0];
@@ -415,7 +428,8 @@ function showModalError(headerText, bodyText, modalError, modalToToggle) {
     header.innerHTML = headerText;
     body.innerHTML = bodyText;
 
-    if (typeof modalToToggleInstance !== "undefined") {
+    if (typeof modalToToggle !== "undefined") {
+        const modalToToggleInstance = bootstrap.Modal.getOrCreateInstance(modalToToggle);
         modalToToggleInstance.hide();
 
         function hideListener() {
@@ -426,4 +440,19 @@ function showModalError(headerText, bodyText, modalError, modalToToggle) {
     }
 
     modalErrorInstance.toggle();
+}
+
+async function getWorkgroupsData() {
+    let response = await fetch('/letters/api/workgroups');
+    const originsAndAddresses = await response.json();
+
+    const select = document.getElementById("workgroup-select");
+
+
+    originsAndAddresses.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.name
+        option.value = element.id
+        select.appendChild(option)
+    })
 }

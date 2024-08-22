@@ -27,6 +27,10 @@ public class WorkerService {
                 .orElseThrow(() -> new WebApplicationException(Response.Status.NOT_FOUND));
     }
 
+    public List<Worker> findSigners() {
+        return workerRepository.findSigners();
+    }
+
     public Worker create(Worker worker) {
         return workerRepository.create(worker);
     }

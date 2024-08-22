@@ -69,20 +69,34 @@ public class InputLetterDto {
         dto.documentDate = inputLetter.getDocumentDate();
         dto.documentNumber = inputLetter.getDocumentNumber();
         dto.documentName = inputLetter.getDocumentName();
-        dto.documentTypeId = inputLetter.getDocumentType() != null ? inputLetter.getDocumentType().getId() : 0;
-        dto.originId = inputLetter.getOrigin().getId();
-        dto.signerId = inputLetter.getSigner().getId();
-        dto.executorId = inputLetter.getExecutor().getId();
+        if (inputLetter.getDocumentType() != null) {
+            dto.documentTypeId = inputLetter.getDocumentType().getId();
+        }
+        if (inputLetter.getOrigin() != null) {
+            dto.originId = inputLetter.getOrigin().getId();
+        }
+        if (inputLetter.getSigner() != null) {
+            dto.signerId = inputLetter.getSigner().getId();
+        }
+        if (inputLetter.getExecutor() != null) {
+            dto.executorId = inputLetter.getExecutor().getId();
+        }
         dto.easdNumber = inputLetter.getEasdNumber();
         dto.answer = inputLetter.isAnswer();
         dto.prilojenie = inputLetter.isPrilojenie();
         dto.topic = inputLetter.getTopic();
-        dto.tagIds = inputLetter.getTags().stream().map(Tag::getId).collect(Collectors.toList());
+        if (inputLetter.getTags() != null) {
+            dto.tagIds = inputLetter.getTags().stream().map(Tag::getId).collect(Collectors.toList());
+        }
         dto.note = inputLetter.getNote();
-        dto.targetWorkerId = inputLetter.getTargetWorker().getId();
+        if (inputLetter.getTargetWorker() != null) {
+            dto.targetWorkerId = inputLetter.getTargetWorker().getId();
+        }
         dto.isReserve = inputLetter.isReserve();
         dto.file = inputLetter.getFile();
-        dto.outputLetterId = inputLetter.getOutputLetter() != null  ? inputLetter.getOutputLetter().getId() : 0;
+        if (inputLetter.getOutputLetter() != null) {
+            dto.outputLetterId = inputLetter.getOutputLetter().getId();
+        }
 
         return dto;
     }
@@ -98,20 +112,21 @@ public class InputLetterDto {
         inputLetter.setDocumentDate(documentDate);
         inputLetter.setDocumentNumber(documentNumber);
         inputLetter.setDocumentName(documentName);
-        inputLetter.setDocumentType(new DocumentType(documentTypeId));
-        inputLetter.setOrigin(new OriginAndAddress(originId));
-        inputLetter.setSigner(new Participant(signerId));
-        inputLetter.setExecutor(new Participant(executorId));
+        System.out.println(originId);
+        if (documentTypeId > 0) inputLetter.setDocumentType(new DocumentType(documentTypeId));
+        if (originId > 0) inputLetter.setOrigin(new OriginAndAddress(originId));
+        if (signerId > 0) inputLetter.setSigner(new Participant(signerId));
+        if (executorId > 0) inputLetter.setExecutor(new Participant(executorId));
         inputLetter.setEasdNumber(easdNumber);
         inputLetter.setAnswer(answer);
         inputLetter.setPrilojenie(prilojenie);
         inputLetter.setTopic(topic);
         inputLetter.setTags(tagIds.stream().map(Tag::new).collect(Collectors.toList()));
         inputLetter.setNote(note);
-        inputLetter.setTargetWorker(new Worker(targetWorkerId));
+        if (targetWorkerId > 0) inputLetter.setTargetWorker(new Worker(targetWorkerId));
         inputLetter.setReserve(isReserve);
         inputLetter.setFile(file);
-        inputLetter.setOutputLetter(new OutputLetter(outputLetterId));
+        if (outputLetterId > 0) inputLetter.setOutputLetter(new OutputLetter(outputLetterId));
 
         return inputLetter;
     }

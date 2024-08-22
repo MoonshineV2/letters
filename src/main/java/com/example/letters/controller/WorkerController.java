@@ -1,6 +1,7 @@
 package com.example.letters.controller;
 
 import com.example.letters.dto.WorkerDto;
+import com.example.letters.model.Participant;
 import com.example.letters.model.Worker;
 import com.example.letters.service.WorkerService;
 import jakarta.inject.Inject;
@@ -32,6 +33,15 @@ public class WorkerController {
                 .collect(Collectors.toList());
 
         return workers;
+    }
+
+    @GET
+    @Path("signers")
+    @Produces("application/json")
+    public List<WorkerDto> getSigners() {
+        return workerService.findSigners().stream()
+                .map(WorkerDto::fromWorker)
+                .collect(Collectors.toList());
     }
 
     @POST

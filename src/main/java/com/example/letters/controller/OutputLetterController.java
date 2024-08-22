@@ -40,8 +40,8 @@ public class OutputLetterController {
     @POST
     @Path("")
     @Consumes("application/json")
-    public Response create(OutputLetter outputLetter) {
-        outputLetterService.create(outputLetter);
+    public Response create(OutputLetterDto outputLetterDto) {
+        outputLetterService.create(outputLetterDto.toOutputLetter());
 
         return Response.ok().build();
     }

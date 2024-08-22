@@ -67,7 +67,7 @@ class MultiSelect {
                     <span class="multi-select-header-placeholder">${this.placeholder}</span>
                 </div>
                 <div class="multi-select-options" style="${this.options.dropdownWidth ? 'width:' + this.options.dropdownWidth + ';' : ''}${this.options.dropdownHeight ? 'height:' + this.options.dropdownHeight + ';' : ''}">
-                    ${this.options.search === true || this.options.search === 'true' ? '<input type="text" class="multi-select-search" placeholder="Search...">' : ''}
+                    ${this.options.search === true || this.options.search === 'true' ? '<input type="text" class="multi-select-search" placeholder="Поиск...">' : ''}
                     ${selectAllHTML}
                     ${optionsHTML}
                 </div>

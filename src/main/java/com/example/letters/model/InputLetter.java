@@ -1,7 +1,9 @@
 package com.example.letters.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -10,6 +12,8 @@ import java.util.List;
 @Entity
 @Table(schema = "letter", name = "input_letters")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class InputLetter {
 
     @Id
@@ -92,4 +96,8 @@ public class InputLetter {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="output_letter_id")
     private OutputLetter outputLetter;
+
+    public InputLetter(int id) {
+        this.id = id;
+    }
 }

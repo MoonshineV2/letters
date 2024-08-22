@@ -115,17 +115,12 @@ function openModalTopic() {
 
     footer.children[2].innerHTML = "Сохранить";
     footer.children[2].onclick = () => {
-        closeModalTopic();
+        document.getElementById("topic").value = document.getElementById("message-text").value
         myModal.hide();
     }
 
     myModal.toggle();
 }
-
-function closeModalTopic() {
-    document.getElementById("topic").value = document.getElementById("message-text").value
-}
-
 function openModalNote() {
     var myModal = new bootstrap.Modal(document.getElementById('modal'));
 
@@ -165,15 +160,11 @@ function openModalNote() {
 
     footer.children[2].innerHTML = "Сохранить";
     footer.children[2].onclick = () => {
-        closeModalNote();
+        document.getElementById("note").value = document.getElementById("message-text").value
         myModal.hide();
     }
 
     myModal.toggle();
-}
-
-function closeModalNote() {
-    document.getElementById("note").value = document.getElementById("message-text").value
 }
 
 async function getSignersData() {
@@ -214,21 +205,6 @@ async function getDocumentTypesData() {
     const select = document.getElementById("doc-type-select");
 
     response.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.name
-        option.value = element.id
-        select.appendChild(option)
-    })
-}
-
-async function getWorkgroupsData() {
-    let response = await fetch('/letters/api/workgroups');
-    const originsAndAddresses = await response.json();
-
-    const select = document.getElementById("workgroup-select");
-
-
-    originsAndAddresses.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.name
         option.value = element.id
@@ -288,7 +264,7 @@ async function getWorkersData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            openModalCreateWorker(modal, select, modalError);
+            openModalCreateWorker(modal, select, modalError, "Создание сотрудника отдела");
         }
     }
 }
@@ -343,9 +319,9 @@ async function saveDocument() {
         binary = await getBinaryFromFile(file);
     }
 
-
-    if (outputSelect.value === "Выберите вариант") {
-        showModalError("Ошибка", "Исходящее письмо не выбрано")
+    if (isAnswer && outputSelect.children.length === 1 || isAnswer && outputSelect.value === "Выберите вариант") {
+        const modalError = document.getElementById("modal2");
+        showModalError("Ошибка", "Исходящее письмо не выбрано", modalError)
         return;
     }
 
@@ -475,10 +451,11 @@ async function onOutputYearOrMonthChange() {
         })
     }
 
-    outputLettersFiltered = Object.values(outputLetters)
+    let outputLettersFiltered = Object.values(outputLetters)
         .flat()
         .filter(el => yearMultiSelect.selectedValues.includes(el.year.toString()))
         .filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()))
+
 
     if(outputLettersFiltered.length === 0) {
         option.innerText = "Нет писем";
@@ -487,7 +464,7 @@ async function onOutputYearOrMonthChange() {
     
     outputLettersFiltered.forEach(element => {
         const option = document.createElement("option");
-        option.innerText = element.documentNum;
+        option.innerText = element.numberIVC;
         option.value = element.id
         select.appendChild(option)
     })

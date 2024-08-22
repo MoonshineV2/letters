@@ -21,8 +21,46 @@
             <input class="custom-input" style="max-width: 100px" id="ivc-num" type="text">
         </label>
         <label>
+            <input id="is-answer" type="checkbox">
+            Ответ на входящее
+        </label>
+    </div>
+    <div id="answer-row" class="horizontal-view" style="justify-content: end; display: none">
+        <label>
+            Год входящего
+            <select id="years" name="years" data-placeholder="Год" data-search="false" data-select-all="true" multiple data-multi-select>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2021">2021</option>
+                <option value="2020">2010</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+            </select>
+        </label>
+        <label>
+            Месяц входящего
+            <select id="months" name="months" data-placeholder="Месяц" data-search="false" data-select-all="true" multiple data-multi-select>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+        </label>
+        <label>
             Номер входящего
-            <input class="custom-input" style="max-width: 100px" id="input-num" type="text">
+            <div class="custom-select">
+                <select name="doc-num" id="input-select" disabled>
+                    <option value="" disabled selected hidden>Нет писем</option>
+                </select>
+            </div>
         </label>
     </div>
     <div class="horizontal-view">
@@ -80,26 +118,30 @@
         </label>
     </div>
     <div class="horizontal-view">
-        <label>
+        <label class="custom-label">
             Тема
-            <input class="custom-input" id="topic" type="text">
+            <input class="custom-input" onclick="openModalTopic()" id="topic" type="text">
         </label>
-    </div>
-    <div class="horizontal-view">
-        <label style="display: flex">
+        <label>
             Теги
             <select id="tags" name="tags"></select>
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Примечание
-            <input class="custom-input" id="note" type="text">
         </label>
         <label>
             <input id="reserve" type="checkbox" checked="checked">
             Резерв
         </label>
+    </div>
+    <div class="horizontal-view">
+        <label class="custom-label">
+            Примечание
+            <input class="custom-input" onclick="openModalNote()" id="note" type="text">
+        </label>
+        <input type="file" id="file" />
+    </div>
+    <div class="horizontal-view">
+        <button onclick="saveDocument()">
+            Сохранить
+        </button>
     </div>
     <div class="modal" id="modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-scrollable">

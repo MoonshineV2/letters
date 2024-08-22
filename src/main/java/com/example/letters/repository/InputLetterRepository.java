@@ -1,6 +1,7 @@
 package com.example.letters.repository;
 
 import com.example.letters.model.InputLetter;
+import com.example.letters.model.OutputLetter;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -27,6 +28,12 @@ public class InputLetterRepository {
                 .createQuery("select il from InputLetter il where il.id = :id")
                 .setParameter("id", id)
                 .getSingleResult());
+    }
+
+    public List<InputLetter> findByYears(List<Integer> years) {
+        return (List<InputLetter>) entityManager.createQuery("SELECT il from InputLetter il where il.year in :years")
+                .setParameter("years", years)
+                .getResultList();
     }
     public void create(InputLetter inputLetter) {
         entityManager.persist(inputLetter);

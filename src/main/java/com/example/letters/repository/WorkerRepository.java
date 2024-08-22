@@ -1,6 +1,7 @@
 package com.example.letters.repository;
 
 import com.example.letters.model.InputLetter;
+import com.example.letters.model.Participant;
 import com.example.letters.model.Tag;
 import com.example.letters.model.Worker;
 import jakarta.ejb.Stateless;
@@ -20,6 +21,10 @@ public class WorkerRepository {
     }
     public Optional<Worker> findById(Long id) {
         return Optional.ofNullable(entityManager.find(Worker.class, id));
+    }
+
+    public List<Worker> findSigners() {
+        return entityManager.createQuery("SELECT w FROM Worker w WHERE w.canSign = true", Worker.class).getResultList();
     }
 
     public Worker create(Worker worker) {
