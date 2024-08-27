@@ -93,7 +93,7 @@ public class InputLetterDto {
             dto.targetWorkerId = inputLetter.getTargetWorker().getId();
         }
         dto.isReserve = inputLetter.isReserve();
-        dto.file = inputLetter.getFile();
+        //dto.file = inputLetter.getFile();
         if (inputLetter.getOutputLetter() != null) {
             dto.outputLetterId = inputLetter.getOutputLetter().getId();
         }

@@ -47,6 +47,20 @@ public class PageController {
     }
 
     @GET
+    @Path("search")
+    public Response showSearchPage() {
+        String filePath = servletContext.getRealPath("/html/searchPage.html");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in, MediaType.TEXT_HTML).build();
+    }
+
+    @GET
     @Path("letters.css")
     public Response getCssFile() {
         String filePath = servletContext.getRealPath("/css/letters.css");
@@ -102,9 +116,37 @@ public class PageController {
     }
 
     @GET
+    @Path("table.js")
+    public Response getTableJSFile() {
+        String filePath = servletContext.getRealPath("/js/table.js");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in, MediaType.MULTIPART_FORM_DATA).build();
+    }
+
+    @GET
     @Path("output.js")
     public Response getOutputJSFile() {
         String filePath = servletContext.getRealPath("/js/output.js");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in, MediaType.MULTIPART_FORM_DATA).build();
+    }
+
+    @GET
+    @Path("search.js")
+    public Response getSearchJSFile() {
+        String filePath = servletContext.getRealPath("/js/search.js");
         File file = new File(filePath);
         InputStream in = null;
         try {

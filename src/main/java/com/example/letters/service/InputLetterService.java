@@ -1,7 +1,6 @@
 package com.example.letters.service;
 
 import com.example.letters.model.InputLetter;
-import com.example.letters.model.OutputLetter;
 import com.example.letters.repository.InputLetterRepository;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;
@@ -19,6 +18,10 @@ import java.util.stream.Collectors;
 public class InputLetterService {
     @Inject
     private InputLetterRepository inputLetterRepository;
+
+    public List<InputLetter> findAll() {
+        return inputLetterRepository.findAll();
+    }
 
     public int getActualNumberIVC() {
         List<InputLetter> inputLetters = inputLetterRepository.findAll();

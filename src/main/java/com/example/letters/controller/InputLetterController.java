@@ -17,6 +17,15 @@ public class InputLetterController {
 
     @Inject
     private InputLetterService inputLetterService;
+
+    @GET
+    @Produces("application/json")
+    public List<InputLetterDto> getAll() {
+        List<InputLetter> inputLetters = inputLetterService.findAll();
+        return inputLetters.stream()
+                .map(InputLetterDto::fromInputLetter)
+                .collect(Collectors.toList());
+    }
     @GET
     @Path("{id}")
     @Produces("application/json")

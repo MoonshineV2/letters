@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+    <title>Поиск</title>
+    <link rel="stylesheet" type="text/css" href="letters.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="search.js"></script>
+    <script src="multiselect.js"></script>
+    <script src="modals.js"></script>
+    <script src="table.js"></script>
+</head>
+<body>
+<nav id='menu'>
+    <ul>
+        <li><a id="input-ref" href='http://localhost:8080/letters/api/pages/input'>Входящие</a></li>
+        <li><a id="output-ref" href='http://localhost:8080/letters/api/pages/output'>Исходящие</a></li>
+        <li><a id="db-ref" href='http://localhost:8080/letters/api/pages/search'>Поиск</a></li>
+    </ul>
+</nav>
+<div class="horizontal-view">
+    <label>
+        <div class="custom-select">
+            <select name="letterType" id="letterType-select">
+                <option value="" disabled selected hidden>Тип письма</option>
+                <option value="input">Входящие</option>
+                <option value="output">Исходящие</option>
+            </select>
+        </div>
+    </label>
+    <label class="custom-label custom-label-right">
+        Номер ИВЦ ЖА
+        <input class="custom-input custom-input-small" id="ivc-num" type="text">
+    </label>
+</div>
+<div class="horizontal-view">
+    <div></div>
+    <label class="custom-label custom-label-right">
+        Номер письма
+        <input class="custom-input custom-input-small" id="doc-num" type="text">
+    </label>
+</div>
+<div class="horizontal-view">
+    <div></div>
+    <label class="custom-label custom-label-right">
+        Номер ЕАСД
+        <input class="custom-input custom-input-small" id="easd-num" type="text">
+    </label>
+</div>
+<div class="horizontal-view">
+    <div>
+        <label>
+            Дата регистрации c
+            <input class="custom-date" id="registration-date" type="date"/>
+        </label>
+        <label>
+            до
+            <input class="custom-date" id="registration-date-2" type="date"/>
+        </label>
+    </div>
+</div>
+<div class="horizontal-view">
+    <label>
+        Источник
+        <div class="custom-select">
+            <select name="origins" id="origin-select">
+                <option value="" disabled selected hidden>Выберите вариант</option>
+            </select>
+        </div>
+    </label>
+    <label>
+        Подписант
+        <div class="custom-select">
+            <select name="signers" id="signer-select">
+                <option value="" disabled selected hidden>Выберите вариант</option>
+            </select>
+        </div>
+    </label>
+</div>
+<div class="horizontal-view">
+    <label>
+        Исполнитель
+        <div class="custom-select">
+            <select name="executors" id="executor-select">
+                <option value="" disabled selected hidden>Выберите вариант</option>
+            </select>
+        </div>
+    </label>
+    <label class="custom-label">
+        Ответ на
+        <input class="custom-input custom-input-small" id="answer-num" type="text">
+    </label>
+</div>
+<div class="horizontal-view">
+    <label>
+        Теги
+        <select id="tags" name="tags"></select>
+    </label>
+</div>
+<div class="horizontal-view">
+    <button onclick="saveDocument()">
+        Найти
+    </button>
+</div>
+<div class="table-responsive" style="margin-left: 4%; margin-right: 4%; max-height: 95%">
+    <table id="table" class="table table-striped table-hover table-bordered " style="table-layout:fixed; width: auto">
+    </table>
+</div>
+<div class="modal" id="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="modal2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ошибка</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
