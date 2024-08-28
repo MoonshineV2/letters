@@ -348,6 +348,7 @@ thead th {
     z-index: 1;
     background-color: #dddddd !important;
     white-space: nowrap;
+    user-select: none;
 }
 thead th:before,
 thead th:after {
@@ -367,4 +368,20 @@ thead th:before {
 thead th:after {
     border-top-color: #666;
     margin-top: 1px;
+}
+
+thead th.sort-asc:before {
+    visibility: hidden;
+}
+
+thead th.sort-desc:after {
+    visibility: hidden;
+}
+
+tbody td {
+    max-width: 400px;
+    overflow-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

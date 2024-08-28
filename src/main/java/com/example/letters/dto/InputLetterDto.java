@@ -1,10 +1,6 @@
 package com.example.letters.dto;
 
 import com.example.letters.model.*;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 import java.sql.Timestamp;
