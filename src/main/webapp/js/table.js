@@ -16,7 +16,6 @@ class Table {
             let th = document.createElement("th");
             th.innerHTML = col;
             th.scope = "col";
-            th.style.whiteSpace = "nowrap";
             trHTML.appendChild(th);
         })
 
@@ -27,11 +26,13 @@ class Table {
 
             for (const [key, value] of Object.entries(el)) {
                 let td = document.createElement("td");
-                if (Object.keys(this.fieldsPreset).includes(key)) {
-                    this.fieldsPreset[key](td, value);
-                }
-                else {
-                    td.innerHTML = value;
+                if (value !== null && value !== "") {
+                    if (Object.keys(this.fieldsPreset).includes(key)) {
+                        this.fieldsPreset[key](td, value);
+                    }
+                    else {
+                        td.innerHTML = value;
+                    }
                 }
                 row.appendChild(td);
             }
@@ -121,6 +122,23 @@ function getInputLettersPreset() {
             documentDate: function (td, data) {
                 td.innerHTML = new Date(data).toISOString().split('T')[0];
             },
+            documentType: function (td, data) {
+                td.innerHTML = data.name;
+            },
+            origin: function (td, data) {
+                if (data.shortName) {
+                    td.innerHTML = data.shortName;
+                }
+                else {
+                    td.innerHTML = data.name;
+                }
+            },
+            signer: function (td, data) {
+                td.innerHTML = data.initials;
+            },
+            executor: function (td, data) {
+                td.innerHTML = data.initials;
+            },
             answer: function (td, data) {
                 if (data === "true" || data === true) {
                     td.innerHTML = "Да";
@@ -136,6 +154,9 @@ function getInputLettersPreset() {
                 else {
                     td.innerHTML = "Нет";
                 }
+            },
+            targetWorker: function (td, data) {
+                td.innerHTML = data.initials;
             },
             reserve: function (td, data) {
                 if (data === "true" || data === true) {

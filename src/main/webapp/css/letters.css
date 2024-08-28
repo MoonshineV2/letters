@@ -338,3 +338,33 @@ select:disabled {
     color: #212529;
     background-color: white;
 }
+
+thead th {
+    padding-right: 18px !important;
+    /*position: relative;*/
+    cursor: pointer;
+    position: sticky;
+    top: -1;
+    z-index: 1;
+    background-color: #dddddd !important;
+    white-space: nowrap;
+}
+thead th:before,
+thead th:after {
+    border: 4px solid transparent;
+    content: "";
+    display: block;
+    height: 0;
+    right: 5px;
+    top: 50%;
+    position: absolute;
+    width: 0;
+}
+thead th:before {
+    border-bottom-color: #666;
+    margin-top: -9px;
+}
+thead th:after {
+    border-top-color: #666;
+    margin-top: 1px;
+}
