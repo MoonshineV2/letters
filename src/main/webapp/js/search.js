@@ -11,10 +11,10 @@ window.onload = async function () {
         el.origin = new Origin(el.origin);
     })
 
-    console.log(data);
-
     new Table(document.getElementById("table"), getInputLettersPreset(), data);
 
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 }
 
 async function getInputLettersData() {

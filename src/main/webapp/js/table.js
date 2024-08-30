@@ -58,6 +58,14 @@ class Table {
                         td.innerHTML = value;
                     }
                 }
+
+                if (key !== "id") {
+                    const span = document.createElement("span");
+                    td.appendChild(span);
+                    const image = document.createElement("img");
+                    image.src = "../icons/edit.svg";
+                    span.appendChild(image);
+                }
                 row.appendChild(td);
             }
 
@@ -111,26 +119,36 @@ class Table {
                     if (cell.classList.contains("sort-asc")) {
                         cell.classList.remove("sort-asc");
                         cell.classList.add("sort-desc");
-                        this.sort(this.data, field, "DESC");
+                        this.sortData(this.data, field, "DESC");
                     }
                     else if (cell.classList.contains("sort-desc")) {
                         cell.classList.remove("sort-desc");
                         cell.classList.add("sort-asc");
-                        this.sort(this.data, field, "ASC");
+                        this.sortData(this.data, field, "ASC");
                     }
                     else {
                         cell.classList.add("sort-asc");
-                        this.sort(this.data, field, "ASC");
+                        this.sortData(this.data, field, "ASC");
                     }
 
+                    for (let rows of this.header.children) {
+                        for (let cellToResetArrows of tr.children) {
+                            if (cellToResetArrows !== cell) {
+                                cellToResetArrows.classList.remove("sort-asc");
+                                cellToResetArrows.classList.remove("sort-desc");
+                            }
+                        }
+                    }
 
-                    this.updateUI();
+                    this.sortUI(this.body, this.data);
+
+                    //this.updateUI();
                 }
             }
         }
     }
 
-    sort(data, field, order) {
+    sortData(data, field, order) {
         if (typeof data[0][field] === "number") {
             if (order === "ASC") {
                 data.sort((a,b) => a[field] - b[field]);
@@ -167,7 +185,14 @@ class Table {
             }
             return;
         }
-        console.log(typeof data[0][field]);
+    }
+
+    sortUI(bodyHTML, data) {
+        let rows = Array.from(bodyHTML.children);
+        data.forEach(el => {
+            const elementToSort = rows.find(row => parseInt(row.getElementsByTagName("th")[0].innerHTML) === el.id);
+            bodyHTML.appendChild(elementToSort);
+        })
     }
 
     set header(value) {
@@ -263,10 +288,14 @@ function getInputLettersPreset() {
                 td.innerHTML = data.name;
             },
             origin: function (td, data) {
-                td.innerHTML = data.shortName;
+                const aHTML = document.createElement("a");
+                aHTML.innerHTML = data.shortName;
+                td.appendChild(aHTML);
             },
             signer: function (td, data) {
-                td.innerHTML = data.initials;
+                const aHTML = document.createElement("a");
+                td.appendChild(aHTML);
+                aHTML.innerHTML = data.initials;
             },
             executor: function (td, data) {
                 td.innerHTML = data.initials;
