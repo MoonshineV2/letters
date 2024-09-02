@@ -22,9 +22,9 @@ window.onload = async function () {
 
     data.sort((a, b) => a.id - b.id);
 
-    data.forEach(el => {
+    /*data.forEach(el => {
         el.origin = new Origin(el.origin);
-    })
+    })*/
 
     new Table(document.getElementById("table"), data, getInputLettersPreset());
 
