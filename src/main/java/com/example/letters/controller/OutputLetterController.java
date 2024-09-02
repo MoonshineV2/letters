@@ -19,6 +19,14 @@ public class OutputLetterController {
     private OutputLetterService outputLetterService;
 
     @GET
+    @Produces("application/json")
+    public List<OutputLetterDto> getAll() {
+        List<OutputLetter> inputLetters = outputLetterService.findAll();
+        return inputLetters.stream()
+                .map(OutputLetterDto::fromOutputLetter)
+                .collect(Collectors.toList());
+    }
+    @GET
     @Path("{id}")
     @Produces("application/json")
     public OutputLetterDto find(@PathParam("id") int id) {

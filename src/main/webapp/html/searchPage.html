@@ -13,7 +13,7 @@
     <ul>
         <li><a id="input-ref" href='http://localhost:8080/letters/api/pages/input'>Входящие</a></li>
         <li><a id="output-ref" href='http://localhost:8080/letters/api/pages/output'>Исходящие</a></li>
-        <li><a id="db-ref" href='http://localhost:8080/letters/api/pages/search'>Поиск</a></li>
+        <li><a id="search-ref" href='http://localhost:8080/letters/api/pages/search'>Поиск</a></li>
     </ul>
 </nav>
 <div class="horizontal-view">
@@ -31,7 +31,7 @@
         <input class="custom-input custom-input-small" id="ivc-num" type="text">
     </label>
 </div>
-<div class="horizontal-view">
+<div class="horizontal-view" id="doc-num-display">
     <div></div>
     <label class="custom-label custom-label-right">
         Номер письма
@@ -58,15 +58,15 @@
     </div>
 </div>
 <div class="horizontal-view">
-    <label>
+    <label id="origin-display">
         Источник
         <div class="custom-select">
             <select name="origins" id="origin-select">
-                <option value="" disabled selected hidden>Выберите вариант</option>
+                <option value="" selected>Без фильтра</option>
             </select>
         </div>
     </label>
-    <label>
+    <label class="custom-label custom-label-right" id="signer-display">
         Подписант
         <div class="custom-select">
             <select name="signers" id="signer-select">
@@ -84,7 +84,7 @@
             </select>
         </div>
     </label>
-    <label class="custom-label">
+    <label class="custom-label custom-label-right">
         Ответ на
         <input class="custom-input custom-input-small" id="answer-num" type="text">
     </label>
@@ -96,9 +96,11 @@
     </label>
 </div>
 <div class="horizontal-view">
+    <div></div>
     <button onclick="saveDocument()">
         Найти
     </button>
+    <div></div>
 </div>
 <div class="table-responsive" style="margin-left: 4%; margin-right: 4%; max-height: 95%">
     <table id="table" class="table table-striped table-hover table-bordered " style="table-layout:fixed; width: auto">

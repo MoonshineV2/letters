@@ -18,6 +18,10 @@ public class OutputLetterService {
     @Inject
     private OutputLetterRepository outputLetterRepository;
 
+    public List<OutputLetter> findAll() {
+        return outputLetterRepository.findAll();
+    }
+
     public int getActualNumberIVC() {
         List<OutputLetter> outputLetters = outputLetterRepository.findAll();
         return outputLetters.stream()

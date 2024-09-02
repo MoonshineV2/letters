@@ -1,11 +1,19 @@
 class Table {
-    constructor(element, options = {}, data) {
+    constructor(element, data, options = {}) {
         this.options = options;
         this.element = element;
         this.data = data;
 
         if (!this.options.locale) {
             this.options.locale = {}
+        }
+
+        if (!this.options.fieldsPreset) {
+            this.options.fieldsPreset = {};
+        }
+
+        if (!this.options.modalToModify) {
+            this.options.modalToModify = function (){console.log("modal")}
         }
 
         this.initialize();
@@ -25,6 +33,8 @@ class Table {
         this.body = tbodyHTML;
 
         this.InitUI();
+
+        //console.log(this.data);
     }
 
     InitUI() {
@@ -64,6 +74,9 @@ class Table {
                     td.appendChild(span);
                     const image = document.createElement("img");
                     image.src = "../icons/edit.svg";
+                    image.onclick = () => {
+                        this.modalToModify;
+                    }
                     span.appendChild(image);
                 }
                 row.appendChild(td);
@@ -119,16 +132,22 @@ class Table {
                     if (cell.classList.contains("sort-asc")) {
                         cell.classList.remove("sort-asc");
                         cell.classList.add("sort-desc");
+                        console.time('Function sortData');
                         this.sortData(this.data, field, "DESC");
+                        console.timeEnd('Function sortData');
                     }
                     else if (cell.classList.contains("sort-desc")) {
                         cell.classList.remove("sort-desc");
                         cell.classList.add("sort-asc");
+                        console.time('Function sortData');
                         this.sortData(this.data, field, "ASC");
+                        console.timeEnd('Function sortData');
                     }
                     else {
                         cell.classList.add("sort-asc");
+                        console.time('Function sortData');
                         this.sortData(this.data, field, "ASC");
+                        console.timeEnd('Function sortData');
                     }
 
                     for (let rows of this.header.children) {
@@ -140,16 +159,19 @@ class Table {
                         }
                     }
 
+                    console.time('Function sortUI');
                     this.sortUI(this.body, this.data);
-
-                    //this.updateUI();
+                    console.timeEnd('Function sortUI');
                 }
             }
         }
     }
 
     sortData(data, field, order) {
-        if (typeof data[0][field] === "number") {
+        const fieldType = this.getFieldType(data, field);
+        //console.log(fieldType);
+        if (fieldType === "number") {
+            //console.log("type of number");
             if (order === "ASC") {
                 data.sort((a,b) => a[field] - b[field]);
             }
@@ -158,7 +180,8 @@ class Table {
             }
             return;
         }
-        if (typeof data[0][field] === "string") {
+        if (fieldType === "string") {
+            //console.log("type of string");
             if (order === "ASC") {
                 data.sort((a,b) => a[field].localeCompare(b[field]));
             }
@@ -167,7 +190,8 @@ class Table {
             }
             return;
         }
-        if (typeof data[0][field] === "boolean") {
+        if (fieldType === "boolean") {
+            //console.log("type of boolean");
             if (order === "ASC") {
                 data.sort((a,b) => a[field] - b[field]);
             }
@@ -176,7 +200,8 @@ class Table {
             }
             return;
         }
-        if (data[0][field] instanceof Origin) {
+        if (fieldType === "Origin") {
+            //console.log("type of Origin");
             if (order === "ASC") {
                 data.sort((a,b) => a[field].shortName.localeCompare(b[field].shortName));
             }
@@ -185,6 +210,30 @@ class Table {
             }
             return;
         }
+    }
+
+    getFieldType(data, field) {
+        let type = undefined;
+
+        for (let element of data) {
+            if (element[field]) {
+                if (typeof element[field] !== "object") {
+                    type = typeof element[field];
+                    break;
+                }
+                else {
+                    if(element[field] instanceof Origin) {
+                        type = "Origin";
+                        break;
+                    }
+                    else {
+                        return "object";
+                    }
+                }
+            }
+        }
+
+        return type;
     }
 
     sortUI(bodyHTML, data) {
@@ -241,6 +290,10 @@ class Table {
 
     get fieldsPreset() {
         return this.options.fieldsPreset;
+    }
+
+    get modalToModify() {
+        return this.options.modalToModify;
     }
 }
 
@@ -328,5 +381,19 @@ function getInputLettersPreset() {
                 }
             }
         }
+    }
+}
+
+class Origin {
+    id;
+    name;
+    shortName;
+    kodADM;
+
+    constructor(origin) {
+        this.id = origin.id;
+        this.name = origin.name;
+        this.shortName = origin.shortName;
+        this.kodADM = origin.kodADM;
     }
 }

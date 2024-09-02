@@ -465,7 +465,7 @@ async function onOutputYearOrMonthChange() {
     outputLettersFiltered.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.numberIVC;
-        option.value = element.id
-        select.appendChild(option)
+        option.value = element.id;
+        select.appendChild(option);
     })
 }
