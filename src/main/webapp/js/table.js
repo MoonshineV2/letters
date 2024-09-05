@@ -18,6 +18,8 @@ class Table {
 
         this.initialize();
         this.eventHandlers();
+
+        console.log(this.data);
     }
 
 
@@ -63,6 +65,7 @@ class Table {
                 if (value !== null && value !== "") {
                     if (Object.keys(this.fieldsPreset).includes(key)) {
                         this.fieldsPreset[key](td, value);
+
                     }
                     else {
                         td.innerHTML = value;
@@ -78,33 +81,6 @@ class Table {
                         this.modalToModify;
                     }
                     span.appendChild(image);
-                }
-                row.appendChild(td);
-            }
-
-            let th = document.createElement("th");
-            th.innerHTML = row.children[0].innerHTML;
-            th.scope = "row";
-            row.children[0].parentNode.replaceChild(th, row.children[0]);
-            this.body.appendChild(row);
-        })
-    }
-
-    updateUI() {
-        this.body.innerHTML = "";
-
-        this.data.forEach(el => {
-            let row = document.createElement("tr");
-
-            for (const [key, value] of Object.entries(el)) {
-                let td = document.createElement("td");
-                if (value !== null && value !== "") {
-                    if (Object.keys(this.fieldsPreset).includes(key)) {
-                        this.fieldsPreset[key](td, value);
-                    }
-                    else {
-                        td.innerHTML = value;
-                    }
                 }
                 row.appendChild(td);
             }
@@ -133,20 +109,20 @@ class Table {
                         cell.classList.remove("sort-asc");
                         cell.classList.add("sort-desc");
                         console.time('Function sortData');
-                        this.sortData(this.data, field, "DESC");
+                        this.sortData(field, "DESC");
                         console.timeEnd('Function sortData');
                     }
                     else if (cell.classList.contains("sort-desc")) {
                         cell.classList.remove("sort-desc");
                         cell.classList.add("sort-asc");
                         console.time('Function sortData');
-                        this.sortData(this.data, field, "ASC");
+                        this.sortData(field, "ASC");
                         console.timeEnd('Function sortData');
                     }
                     else {
                         cell.classList.add("sort-asc");
                         console.time('Function sortData');
-                        this.sortData(this.data, field, "ASC");
+                        this.sortData(field, "ASC");
                         console.timeEnd('Function sortData');
                     }
 
@@ -160,53 +136,89 @@ class Table {
                     }
 
                     console.time('Function sortUI');
-                    this.sortUI(this.body, this.data);
+                    this.sortUI();
                     console.timeEnd('Function sortUI');
                 }
             }
         }
     }
 
-    sortData(data, field, order) {
-        const fieldType = this.getFieldType(data, field);
+    sortData(field, order) {
+        const fieldType = this.getFieldType(this.data, field);
         //console.log(fieldType);
         if (fieldType === "number") {
             //console.log("type of number");
             if (order === "ASC") {
-                data.sort((a,b) => a[field] - b[field]);
+                this.data.sort((a,b) => a[field] - b[field]);
             }
             else if (order === "DESC"){
-                data.sort((a,b) => b[field] - a[field]);
+                this.data.sort((a,b) => b[field] - a[field]);
             }
             return;
         }
         if (fieldType === "string") {
             //console.log("type of string");
             if (order === "ASC") {
-                data.sort((a,b) => a[field].localeCompare(b[field]));
+                this.data.sort((a,b) => a[field].localeCompare(b[field]));
             }
             else if (order === "DESC"){
-                data.sort((a,b) => b[field].localeCompare(a[field]));
+                this.data.sort((a,b) => b[field].localeCompare(a[field]));
             }
             return;
         }
         if (fieldType === "boolean") {
             //console.log("type of boolean");
             if (order === "ASC") {
-                data.sort((a,b) => a[field] - b[field]);
+                this.data.sort((a,b) => a[field] - b[field]);
             }
             else if (order === "DESC"){
-                data.sort((a,b) => b[field] - a[field]);
+                this.data.sort((a,b) => b[field] - a[field]);
             }
             return;
         }
         if (fieldType === "Origin") {
             //console.log("type of Origin");
             if (order === "ASC") {
-                data.sort((a,b) => a[field].shortName.localeCompare(b[field].shortName));
+                this.data.sort((a,b) => Origin.compare(a[field],b[field]));
             }
             else if (order === "DESC"){
-                data.sort((a,b) => b[field].shortName.localeCompare(a[field].shortName));
+                this.data.sort((a,b) => Origin.compare(b[field],a[field]));
+            }
+            return;
+        }
+        if (fieldType === "Participant") {
+            if (order === "ASC") {
+                this.data.sort((a,b) => Participant.compare(a[field],b[field]));
+            }
+            else if (order === "DESC"){
+                this.data.sort((a,b) => Participant.compare(b[field],a[field]));
+            }
+            return;
+        }
+        if (fieldType === "DocumentType") {
+            if (order === "ASC") {
+                this.data.sort((a,b) => DocumentType.compare(a[field],b[field]));
+            }
+            else if (order === "DESC"){
+                this.data.sort((a,b) => DocumentType.compare(b[field],a[field]));
+            }
+            return;
+        }
+        if (fieldType === "Worker") {
+            if (order === "ASC") {
+                this.data.sort((a,b) => Worker.compare(a[field],b[field]));
+            }
+            else if (order === "DESC"){
+                this.data.sort((a,b) => Worker.compare(b[field],a[field]));
+            }
+            return;
+        }
+        if (fieldType === "Tags") {
+            if (order === "ASC") {
+                this.data.sort((a,b) => Tags.compare(a[field],b[field]));
+            }
+            else if (order === "DESC"){
+                this.data.sort((a,b) => Tags.compare(b[field],a[field]));
             }
             return;
         }
@@ -226,6 +238,22 @@ class Table {
                         type = "Origin";
                         break;
                     }
+                    if(element[field] instanceof Participant) {
+                        type = "Participant";
+                        break;
+                    }
+                    if(element[field] instanceof DocumentType) {
+                        type = "DocumentType";
+                        break;
+                    }
+                    if(element[field] instanceof Worker) {
+                        type = "Worker";
+                        break;
+                    }
+                    if(element[field] instanceof Tags) {
+                        type = "Tags";
+                        break;
+                    }
                     else {
                         return "object";
                     }
@@ -236,11 +264,11 @@ class Table {
         return type;
     }
 
-    sortUI(bodyHTML, data) {
-        let rows = Array.from(bodyHTML.children);
-        data.forEach(el => {
+    sortUI() {
+        let rows = Array.from(this.body.children);
+        this.data.forEach(el => {
             const elementToSort = rows.find(row => parseInt(row.getElementsByTagName("th")[0].innerHTML) === el.id);
-            bodyHTML.appendChild(elementToSort);
+            this.body.appendChild(elementToSort);
         })
     }
 
@@ -342,8 +370,8 @@ function getInputLettersPreset() {
             },
             origin: function (td, data) {
                 const aHTML = document.createElement("a");
-                aHTML.innerHTML = data.shortName;
                 td.appendChild(aHTML);
+                aHTML.innerHTML = data.shortName;
             },
             signer: function (td, data) {
                 const aHTML = document.createElement("a");
@@ -379,6 +407,16 @@ function getInputLettersPreset() {
                 else {
                     td.innerHTML = "Нет";
                 }
+            },
+            tags: function (td, data) {
+                let string = "";
+                data.tagsArray.forEach(tag => {
+                    string += tag.text + ", ";
+                })
+                if (data.tagsArray.length > 0) {
+                    string = string.substring(0, string.length - 2);
+                }
+                td.innerHTML = string;
             }
         }
     }
@@ -387,7 +425,7 @@ function getInputLettersPreset() {
 class Origin {
     id;
     name;
-    shortName;
+    shortName = "";
     kodADM;
 
     constructor(origin) {
@@ -395,5 +433,116 @@ class Origin {
         this.name = origin.name;
         this.shortName = origin.shortName;
         this.kodADM = origin.kodADM;
+    }
+
+    static compare(o1, o2) {
+        if (!(o1 instanceof Origin)) {
+            return -1;
+        }
+        if (!(o2 instanceof Origin)) {
+            return 1;
+        }
+
+        return o1.shortName.localeCompare(o2.shortName);
+    }
+}
+
+class Participant {
+    id;
+    fullname;
+    initials = "";
+    post;
+    canSign;
+
+    constructor(participant) {
+        this.id = participant.id;
+        this.fullname = participant.fullname;
+        this.initials = participant.initials;
+        this.post = participant.post;
+        this.canSign = participant.canSign;
+    }
+
+    static compare(o1, o2) {
+        if (!(o1 instanceof Participant)) {
+            return -1;
+        }
+        if (!(o2 instanceof Participant)) {
+            return 1;
+        }
+
+        return o1.initials.localeCompare(o2.initials);
+    }
+}
+
+class Worker {
+    id;
+    fullname;
+    initials = "";
+    post;
+    canSign;
+    workgroupId;
+    workgroupName;
+
+    constructor(worker) {
+        this.id = worker.id;
+        this.fullname = worker.fullname;
+        this.initials = worker.initials;
+        this.post = worker.post;
+        this.canSign = worker.canSign;
+        this.workgroupId = worker.workgroupId;
+        this.workgroupName = worker.workgroupName;
+    }
+
+    static compare(o1, o2) {
+        if (!(o1 instanceof Worker)) {
+            return -1;
+        }
+        if (!(o2 instanceof Worker)) {
+            return 1;
+        }
+
+        return o1.initials.localeCompare(o2.initials);
+    }
+}
+
+class DocumentType {
+
+    id;
+    name = "";
+
+    constructor(documentType) {
+        this.id = documentType.id;
+        this.name = documentType.name;
+    }
+
+    static compare(o1, o2) {
+        if (!(o1 instanceof DocumentType)) {
+            return -1;
+        }
+        if (!(o2 instanceof DocumentType)) {
+            return 1;
+        }
+
+        return o1.name.localeCompare(o2.name);
+    }
+}
+
+class Tags {
+
+    tagsArray;
+
+    constructor(tags) {
+        this.tagsArray = tags;
+    }
+
+    static compare(o1, o2) {
+        if (!(o1 instanceof Tags)) {
+            return -1;
+        }
+        if (!(o2 instanceof Tags)) {
+            return 1;
+        }
+
+        return o1.tagsArray.length - o2.tagsArray.length;
     }
 }

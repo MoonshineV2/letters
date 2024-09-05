@@ -28,21 +28,21 @@
     </label>
     <label class="custom-label custom-label-right">
         Номер ИВЦ ЖА
-        <input class="custom-input custom-input-small" id="ivc-num" type="text">
+        <input class="custom-input custom-input-small" id="ivc-num" type="text" placeholder="Без фильтра">
     </label>
 </div>
-<div class="horizontal-view" id="doc-num-display">
+<div class="horizontal-view" id="doc-num-display" style="display: none">
     <div></div>
     <label class="custom-label custom-label-right">
         Номер письма
-        <input class="custom-input custom-input-small" id="doc-num" type="text">
+        <input class="custom-input custom-input-small" id="doc-num" type="text" placeholder="Без фильтра">
     </label>
 </div>
 <div class="horizontal-view">
     <div></div>
     <label class="custom-label custom-label-right">
         Номер ЕАСД
-        <input class="custom-input custom-input-small" id="easd-num" type="text">
+        <input class="custom-input custom-input-small" id="easd-num" type="text" placeholder="Без фильтра">
     </label>
 </div>
 <div class="horizontal-view">
@@ -58,7 +58,7 @@
     </div>
 </div>
 <div class="horizontal-view">
-    <label id="origin-display">
+    <label id="origin-display" style="display: none">
         Источник
         <div class="custom-select">
             <select name="origins" id="origin-select">
@@ -79,9 +79,7 @@
     <label>
         Исполнитель
         <div class="custom-select">
-            <select name="executors" id="executor-select">
-                <option value="" disabled selected hidden>Выберите вариант</option>
-            </select>
+            <select name="executors" id="executor-select"></select>
         </div>
     </label>
     <label class="custom-label custom-label-right">
@@ -97,7 +95,7 @@
 </div>
 <div class="horizontal-view">
     <div></div>
-    <button onclick="saveDocument()">
+    <button onclick="findLetters()">
         Найти
     </button>
     <div></div>
@@ -141,6 +139,7 @@
         </div>
     </div>
 </div>
+<div id="loader" class="loader loader-hidden"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

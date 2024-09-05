@@ -1,5 +1,6 @@
 package com.example.letters.model;
 
+import com.example.letters.dto.InputLetterDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,5 @@ public class Tag {
     public Tag(int id) {
         this.id = id;
     }
+
 }

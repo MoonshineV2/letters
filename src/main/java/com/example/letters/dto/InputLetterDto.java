@@ -47,7 +47,7 @@ public class InputLetterDto {
 
     private String topic;
 
-    private List<Integer> tagIds;
+    private List<Tag> tags;
 
     private String note;
 
@@ -105,7 +105,7 @@ public class InputLetterDto {
         dto.prilojenie = inputLetter.isPrilojenie();
         dto.topic = inputLetter.getTopic();
         if (inputLetter.getTags() != null) {
-            dto.tagIds = inputLetter.getTags().stream().map(Tag::getId).collect(Collectors.toList());
+            dto.tags = inputLetter.getTags();
         }
         dto.note = inputLetter.getNote();
         if (inputLetter.getTargetWorker() != null) {
@@ -147,7 +147,7 @@ public class InputLetterDto {
         inputLetter.setAnswer(answer);
         inputLetter.setPrilojenie(prilojenie);
         inputLetter.setTopic(topic);
-        inputLetter.setTags(tagIds.stream().map(Tag::new).collect(Collectors.toList()));
+        inputLetter.setTags(tags);
         inputLetter.setNote(note);
         if (targetWorker != null) inputLetter.setTargetWorker(new Worker(targetWorker.workgroupId));
         inputLetter.setReserve(isReserve);
@@ -214,6 +214,21 @@ public class InputLetterDto {
             this.workgroupId = workgroupId;
             this.workgroupName = workgroupName;
             this.canSign = canSign;
+        }
+    }
+
+    private static class TagInner {
+        public int id;
+        public String text;
+
+        public TagInner(int id, String text) {
+            this.id = id;
+            this.text = text;
+        }
+
+        public TagInner(Tag tag) {
+            this.id = tag.getId();
+            this.text = tag.getText();
         }
     }
 }
