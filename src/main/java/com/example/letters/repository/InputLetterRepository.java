@@ -1,10 +1,11 @@
 package com.example.letters.repository;
 
 import com.example.letters.model.InputLetter;
-import com.example.letters.model.OutputLetter;
+import com.example.letters.util.DBFile;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Tuple;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,17 @@ public class InputLetterRepository {
         return (List<InputLetter>) entityManager.createQuery("SELECT il from InputLetter il where il.year in :years")
                 .setParameter("years", years)
                 .getResultList();
+    }
+
+    public Optional<DBFile> getFileById(int id) {
+        Tuple tuple = entityManager
+                .createQuery("select il.documentName as fileName, il.file as file from InputLetter il where il.id = :id", Tuple.class)
+                .setParameter("id", id)
+                .getSingleResult();
+
+        DBFile dbFile = new DBFile((String) tuple.get(0),(byte[]) tuple.get(1));
+
+        return Optional.of(dbFile);
     }
     public void create(InputLetter inputLetter) {
         entityManager.persist(inputLetter);

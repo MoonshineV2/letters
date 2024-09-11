@@ -53,6 +53,7 @@ select:disabled {
 
 .custom-input.custom-input-pointer {
     cursor: pointer;
+    text-overflow: ellipsis;
 }
 
 .custom-select {

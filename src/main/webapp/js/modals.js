@@ -1,14 +1,14 @@
 function openModalCreateOrigin(modalToShow, selectToAddOption, modalError) {
     const modalShowInstance = new bootstrap.Modal(modalToShow);
 
-    const footer = modalToShow.children[0].children[0].children[2];
+    const header = modalToShow.children[0].children[0].children[0].children[0];
     const body = modalToShow.children[0].children[0].children[1].children[0];
+    const footer = modalToShow.children[0].children[0].children[2];
 
     const optionsCount = selectToAddOption.options.length;
 
     body.innerHTML = "";
-
-    document.getElementsByClassName("modal-title")[0].innerHTML = "Создание источника";
+    header.innerHTML = "Создание источника";
 
     const labelFullname = document.createElement("label");
     labelFullname.setAttribute("for", "message-text");
@@ -105,14 +105,14 @@ async function createOriginRequest(name, shortName, kodADM, modalError, modalToT
 function openModalCreateParticipant(modalToShow, selectToAddOption, checkDisabled, modalError, headerText, otherSelectsToAddOption) {
     const modalShowInstance = new bootstrap.Modal(modalToShow);
 
-    const footer = modalToShow.children[0].children[0].children[2];
+    const header = modalToShow.children[0].children[0].children[0].children[0];
     const body = modalToShow.children[0].children[0].children[1].children[0];
+    const footer = modalToShow.children[0].children[0].children[2];
 
     const optionsCount = selectToAddOption.options.length;
 
     body.innerHTML = "";
-
-    document.getElementsByClassName("modal-title")[0].innerHTML = headerText;
+    header.innerHTML = headerText;
 
     const labelFullname = document.createElement("label");
     labelFullname.setAttribute("for", "message-text");
@@ -242,13 +242,13 @@ async function createParticipantRequest(fullName, initials, post, canSign, modal
 async function openModalCreateWorker(modalToShow, selectToAddOption, modalError, headerText, otherSelectsToAddOption) {
     const modalShowInstance = new bootstrap.Modal(modalToShow);
 
-    const footer = modalToShow.children[0].children[0].children[2];
+    const header = modalToShow.children[0].children[0].children[0].children[0];
     const body = modalToShow.children[0].children[0].children[1].children[0];
+    const footer = modalToShow.children[0].children[0].children[2];
 
     const optionsCount = selectToAddOption.options.length;
 
-    document.getElementsByClassName("modal-title")[0].innerHTML = headerText;
-
+    header.innerHTML = headerText;
     body.innerHTML = "";
 
     const labelFullname = document.createElement("label");
@@ -455,4 +455,246 @@ async function getWorkgroupsData() {
         option.value = element.id
         select.appendChild(option)
     })
+}
+
+async function openModalСhangeFieldString(modalToShow, field, modalError, headerText) {
+    const modalShowInstance = new bootstrap.Modal(modalToShow);
+
+    const header = modalToShow.children[0].children[0].children[0].children[0];
+    const body = modalToShow.children[0].children[0].children[1].children[0];
+    const footer = modalToShow.children[0].children[0].children[2];
+
+    header.innerHTML = headerText;
+    body.innerHTML = "";
+
+    const labelFullname = document.createElement("label");
+    labelFullname.setAttribute("for", "message-text");
+    labelFullname.classList.add('col-form-label');
+    labelFullname.innerHTML = "Полное имя";
+    body.appendChild(labelFullname)
+
+    const inputFullName = document.createElement("input");
+    inputFullName.classList.add('form-control');
+    inputFullName.type = "text";
+    inputFullName.id = "fullname-input";
+    body.appendChild(inputFullName)
+
+    const labelInitials = document.createElement("label");
+    labelInitials.setAttribute("for", "message-text");
+    labelInitials.classList.add('col-form-label');
+    labelInitials.innerHTML = "Фамилия, инициалы";
+    body.appendChild(labelInitials)
+
+    const inputInitials = document.createElement("input");
+    inputInitials.classList.add('form-control');
+    inputInitials.type = "text";
+    inputInitials.id = "shortname-input";
+    body.appendChild(inputInitials)
+
+    const labelPost = document.createElement("label");
+    labelPost.setAttribute("for", "post-input");
+    labelPost.classList.add('col-form-label');
+    labelPost.innerHTML = "Должность";
+    body.appendChild(labelPost)
+
+    const inputPost = document.createElement("input");
+    inputPost.classList.add('form-control');
+    inputPost.type = "text";
+    inputPost.id = "post-input";
+    body.appendChild(inputPost)
+
+    const labelWorkgroup = document.createElement("label");
+    labelWorkgroup.setAttribute("for", "workgroup-select");
+    labelWorkgroup.classList.add('col-form-label');
+    labelWorkgroup.innerHTML = "Рабочая группа";
+    body.appendChild(labelWorkgroup);
+
+    const divPost = document.createElement("div");
+    divPost.classList.add('custom-select');
+    body.appendChild(divPost)
+
+    const selectWorkgroup = document.createElement("select");
+    selectWorkgroup.name = "workgroups";
+    selectWorkgroup.id = "workgroup-select";
+    divPost.appendChild(selectWorkgroup)
+
+    const option = document.createElement("option");
+    selectWorkgroup.appendChild(option);
+    option.innerText = "Выберите вариант";
+    option.selected = true;
+    option.hidden = true;
+    option.disabled = true;
+
+    const divSign = document.createElement("div");
+    divSign.classList.add('col-form-label');
+    body.appendChild(divSign)
+
+    const checkSign = document.createElement("input");
+    checkSign.classList.add('form-check-input');
+    checkSign.type = "checkbox";
+    checkSign.id = "sign-checkbox";
+    checkSign.checked = false;
+    divSign.appendChild(checkSign);
+
+    const labelSign = document.createElement("label");
+    labelSign.setAttribute("for", "sign-checkbox");
+    labelSign.classList.add('form-check-label');
+    labelSign.innerHTML = "Право подписи";
+    labelSign.style.paddingLeft = "4px";
+    divSign.appendChild(labelSign);
+
+    function hideListener() {
+        modalToShow.removeEventListener('hidden.bs.modal', hideListener);
+
+        if (optionsCount === selectToAddOption.options.length) {
+            selectToAddOption.options[0].selected = true;
+        }
+    }
+
+    modalToShow.addEventListener('hidden.bs.modal', hideListener)
+
+    footer.children[1].innerHTML = "Создать";
+    footer.children[1].onclick = async () => {
+
+        if (inputFullName.value === "" || inputFullName.value === undefined) {
+            showModalError("Ошибка", "Поле:\"Полное имя\" не может быть пустым.", modalError, modalToShow);
+            return;
+        }
+
+        if (inputInitials.value === "" || inputInitials.value === undefined) {
+            showModalError("Ошибка", "Поле:\"Фамилия, инициалы\" не может быть пустым.", modalError, modalToShow);
+            return;
+        }
+
+        if (option.selected) {
+            showModalError("Ошибка", "Выберите рабочую группу.", modalError, modalToShow);
+            return;
+        }
+
+        const data = await createWorkerRequest(
+            inputFullName.value,
+            inputInitials.value,
+            inputPost.value,
+            checkSign.checked,
+            selectWorkgroup.value,
+            modalError,
+            modalToShow
+        )
+
+        const optionWorker = document.createElement("option");
+        optionWorker.innerText = data.initials
+        optionWorker.value = data.id
+        selectToAddOption.insertBefore(optionWorker, selectToAddOption.options[selectToAddOption.options.length-1]);
+        optionWorker.selected = true;
+
+        if (otherSelectsToAddOption !== undefined) {
+            otherSelectsToAddOption.forEach(el => {
+                if (el.signFlag === true) {
+                    if (!checkSign.checked) {
+                        return;
+                    }
+                }
+                const option = document.createElement("option");
+                option.innerText = data.initials
+                option.value = data.id
+                el.selectNode.insertBefore(option, el.selectNode.options[el.selectNode.options.length-1]);
+            })
+        }
+
+        modalShowInstance.hide();
+    }
+
+    modalShowInstance.toggle();
+
+    await getWorkgroupsData();
+}
+
+function openModalTopic(modalToShow, linkedInput, headerText) {
+    const modalShowInstance = new bootstrap.Modal(modalToShow);
+
+    const header = modalToShow.children[0].children[0].children[0].children[0];
+    const body = modalToShow.children[0].children[0].children[1].children[0];
+    const footer = modalToShow.children[0].children[0].children[2];
+
+    header.innerHTML = headerText;
+    body.innerHTML = "";
+
+    const label = document.createElement("label");
+    label.setAttribute("for", "message-text");
+    label.classList.add('col-form-label');
+    label.innerHTML = "Тема";
+    body.appendChild(label)
+
+    const textarea = document.createElement("textarea");
+    textarea.classList.add('form-control');
+    textarea.id = "message-text";
+    textarea.value = linkedInput.value;
+    textarea.oninput = () => {
+        footer.children[0].innerHTML = textarea.value.length + "/100"
+    }
+    body.appendChild(textarea);
+
+    const pElem = document.createElement("p");
+    pElem.innerHTML = textarea.value.length + "/100";
+    footer.insertBefore(pElem, footer.firstChild);
+
+    function hideListener() {
+        footer.removeChild(pElem);
+        modalToShow.removeEventListener('hidden.bs.modal', hideListener);
+    }
+
+    modalToShow.addEventListener('hidden.bs.modal', hideListener);
+
+    footer.children[2].innerHTML = "Сохранить";
+    footer.children[2].onclick = () => {
+        linkedInput.value = document.getElementById("message-text").value
+        modalShowInstance.hide();
+    }
+
+    modalShowInstance.toggle();
+}
+
+function openModalNote(modalToShow, linkedInput, headerText) {
+    const modalShowInstance = new bootstrap.Modal(modalToShow);
+
+    const header = modalToShow.children[0].children[0].children[0].children[0];
+    const body = modalToShow.children[0].children[0].children[1].children[0];
+    const footer = modalToShow.children[0].children[0].children[2];
+
+    header.innerHTML = headerText;
+    body.innerHTML = "";
+
+    const label = document.createElement("label");
+    label.setAttribute("for", "message-text");
+    label.classList.add('col-form-label');
+    label.innerHTML = "Примечание";
+    body.appendChild(label)
+
+    const textarea = document.createElement("textarea");
+    textarea.classList.add('form-control');
+    textarea.id = "message-text";
+    textarea.value = linkedInput.value;
+    textarea.oninput = () => {
+        footer.children[0].innerHTML = textarea.value.length + "/500"
+    }
+    body.appendChild(textarea);
+
+    const pElem = document.createElement("p");
+    pElem.innerHTML = textarea.value.length + "/500";
+    footer.insertBefore(pElem, footer.firstChild);
+
+    function hideListener() {
+        footer.removeChild(pElem);
+        modalToShow.removeEventListener('hidden.bs.modal', hideListener);
+    }
+
+    modalToShow.addEventListener('hidden.bs.modal', hideListener);
+
+    footer.children[2].innerHTML = "Сохранить";
+    footer.children[2].onclick = () => {
+        linkedInput.value = document.getElementById("message-text").value
+        modalShowInstance.hide();
+    }
+
+    modalShowInstance.toggle();
 }

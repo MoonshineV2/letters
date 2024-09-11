@@ -2,6 +2,7 @@ package com.example.letters.service;
 
 import com.example.letters.model.InputLetter;
 import com.example.letters.repository.InputLetterRepository;
+import com.example.letters.util.DBFile;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Model
@@ -43,6 +45,9 @@ public class InputLetterService {
         return inputLetterRepository.findByYears(years);
     }
 
+    public DBFile getFileById(int id) {
+        return inputLetterRepository.getFileById(id).get();
+    }
     public void create(InputLetter inputLetter) {
 
         if (inputLetter.getOrigin() == null) {

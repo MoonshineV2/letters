@@ -76,95 +76,17 @@ async function getOriginsData() {
     }
 }
 
-function openModalTopic() {
-    var myModal = new bootstrap.Modal(document.getElementById('modal'));
+function changeTopic() {
+    const modal = document.getElementById("modal");
+    const input = document.getElementById("topic");
 
-    const elem = document.getElementById('modal');
-    const footer = elem.children[0].children[0].children[2];
-    const body = elem.children[0].children[0].children[1].children[0];
-
-    body.innerHTML = "";
-
-    document.getElementsByClassName("modal-title")[0].innerHTML = "Редактирование темы";
-
-    const label = document.createElement("label");
-    label.setAttribute("for", "message-text");
-    label.classList.add('col-form-label');
-    label.innerHTML = "Тема";
-    body.appendChild(label)
-
-    const textarea = document.createElement("textarea");
-    textarea.classList.add('form-control');
-    textarea.id = "message-text";
-    textarea.value = document.getElementById("topic").value;
-    textarea.oninput = () => {
-        footer.children[0].innerHTML = document.getElementById("message-text").value.length + "/100"
-    }
-    body.appendChild(textarea)
-
-    const pElem = document.createElement("p");
-    pElem.innerHTML = textarea.value.length + "/100";
-    footer.insertBefore(pElem, footer.firstChild);
-
-    function hideListener() {
-        footer.removeChild(pElem);
-        elem.removeEventListener('hidden.bs.modal', hideListener)
-    }
-
-    elem.addEventListener('hidden.bs.modal', hideListener)
-
-    footer.children[2].innerHTML = "Сохранить";
-    footer.children[2].onclick = () => {
-        document.getElementById("topic").value = document.getElementById("message-text").value
-        myModal.hide();
-    }
-
-    myModal.toggle();
+    openModalTopic(modal, input, "Редактирование темы");
 }
-function openModalNote() {
-    var myModal = new bootstrap.Modal(document.getElementById('modal'));
+function changeNote() {
+    const modal = document.getElementById("modal");
+    const input = document.getElementById("note");
 
-    const elem = document.getElementById('modal');
-    const footer = elem.children[0].children[0].children[2];
-    const body = elem.children[0].children[0].children[1].children[0];
-
-    body.innerHTML = "";
-
-    document.getElementsByClassName("modal-title")[0].innerHTML = "Редактирование примечания";
-
-    const label = document.createElement("label");
-    label.setAttribute("for", "message-text");
-    label.classList.add('col-form-label');
-    label.innerHTML = "Примечание";
-    body.appendChild(label)
-
-    const textarea = document.createElement("textarea");
-    textarea.classList.add('form-control');
-    textarea.id = "message-text";
-    textarea.value = document.getElementById("note").value;
-    textarea.oninput = () => {
-        footer.children[0].innerHTML = document.getElementById("message-text").value.length + "/500"
-    }
-    body.appendChild(textarea)
-
-    const pElem = document.createElement("p");
-    pElem.innerHTML = document.getElementById("message-text").value.length + "/500";
-    footer.insertBefore(pElem, footer.firstChild);
-
-    function hideListener() {
-        footer.removeChild(pElem);
-        elem.removeEventListener('hidden.bs.modal', hideListener)
-    }
-
-    elem.addEventListener('hidden.bs.modal', hideListener)
-
-    footer.children[2].innerHTML = "Сохранить";
-    footer.children[2].onclick = () => {
-        document.getElementById("note").value = document.getElementById("message-text").value
-        myModal.hide();
-    }
-
-    myModal.toggle();
+    openModalNote(modal, input, "Редактирование примечания");
 }
 
 async function getSignersData() {
