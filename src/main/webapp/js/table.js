@@ -64,7 +64,7 @@ class Table {
                 let td = document.createElement("td");
                 if (value !== null && value !== "") {
                     if (Object.keys(this.fieldsPreset).includes(key)) {
-                        this.fieldsPreset[key](td, value);
+                        this.fieldsPreset[key](td, el);
 
                     }
                     else {
@@ -353,67 +353,73 @@ function getInputLettersPreset() {
             file:"Файл"
         },
         fieldsPreset: {
-            createDate: function (td, data) {
-                td.innerHTML = new Date(data).toISOString().split('T')[0];
+            createDate: function (td, letter) {
+                td.innerHTML = new Date(letter.createDate).toISOString().split('T')[0];
             },
-            registrationDate: function (td, data) {
-                td.innerHTML = new Date(data).toISOString().split('T')[0];
+            registrationDate: function (td, letter) {
+                td.innerHTML = new Date(letter.registrationDate).toISOString().split('T')[0];
             },
-            postuplenieDate: function (td, data) {
-                td.innerHTML = new Date(data).toISOString().split('T')[0];
+            postuplenieDate: function (td, letter) {
+                td.innerHTML = new Date(letter.postuplenieDate).toISOString().split('T')[0];
             },
-            documentDate: function (td, data) {
-                td.innerHTML = new Date(data).toISOString().split('T')[0];
+            documentDate: function (td, letter) {
+                td.innerHTML = new Date(letter.documentDate).toISOString().split('T')[0];
             },
-            documentType: function (td, data) {
-                td.innerHTML = data.name;
+            documentName: function (td, letter) {
+                const aEl = document.createElement("a");
+                aEl.href = `http://localhost:8080/letters/api/inputLetters/${letter.id}/file`;
+                aEl.innerHTML = letter.documentName;
+                td.appendChild(aEl);
             },
-            origin: function (td, data) {
+            documentType: function (td, letter) {
+                td.innerHTML = letter.documentType.name;
+            },
+            origin: function (td, letter) {
                 const aHTML = document.createElement("a");
                 td.appendChild(aHTML);
-                aHTML.innerHTML = data.shortName;
+                aHTML.innerHTML = letter.origin.shortName;
             },
-            signer: function (td, data) {
+            signer: function (td, letter) {
                 const aHTML = document.createElement("a");
                 td.appendChild(aHTML);
-                aHTML.innerHTML = data.initials;
+                aHTML.innerHTML = letter.signer.initials;
             },
-            executor: function (td, data) {
-                td.innerHTML = data.initials;
+            executor: function (td, letter) {
+                td.innerHTML = letter.executor.initials;
             },
-            answer: function (td, data) {
-                if (data === "true" || data === true) {
+            answer: function (td, letter) {
+                if (letter.answer === "true" || letter.answer === true) {
                     td.innerHTML = "Да";
                 }
                 else {
                     td.innerHTML = "Нет";
                 }
             },
-            prilojenie: function (td, data) {
-                if (data === "true" || data === true) {
+            prilojenie: function (td, letter) {
+                if (letter.prilojenie === "true" || letter.prilojenie === true) {
                     td.innerHTML = "Да";
                 }
                 else {
                     td.innerHTML = "Нет";
                 }
             },
-            targetWorker: function (td, data) {
-                td.innerHTML = data.initials;
+            targetWorker: function (td, letter) {
+                td.innerHTML = letter.targetWorker.initials;
             },
-            reserve: function (td, data) {
-                if (data === "true" || data === true) {
+            reserve: function (td, letter) {
+                if (letter.reserve === "true" || letter.reserve === true) {
                     td.innerHTML = "Да";
                 }
                 else {
                     td.innerHTML = "Нет";
                 }
             },
-            tags: function (td, data) {
+            tags: function (td, letter) {
                 let string = "";
-                data.tagsArray.forEach(tag => {
+                letter.tags.tagsArray.forEach(tag => {
                     string += tag.text + ", ";
                 })
-                if (data.tagsArray.length > 0) {
+                if (letter.tags.tagsArray.length > 0) {
                     string = string.substring(0, string.length - 2);
                 }
                 td.innerHTML = string;

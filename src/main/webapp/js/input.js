@@ -4,8 +4,6 @@ let tagsMultiSelect;
 
 const outputLetters = {};
 
-getActualNumberIVC()
-
 window.onload = async function() {
     document.getElementById("input-ref").style.color = "yellow";
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
@@ -30,13 +28,21 @@ window.onload = async function() {
         }
     })
 
-    tagsMultiSelect = await getTags();
+    Promise.all([
+        getOriginsData(),
+        getSignersData(),
+        getExecutorsData(),
+        getWorkersData(),
+        getDocumentTypesData(),
+        getActualNumberIVC()
+    ]);
 
-    await getOriginsData();
+    tagsMultiSelect = await getTags();
+    /*await getOriginsData();
     await getSignersData();
     await getExecutorsData();
     await getWorkersData();
-    await getDocumentTypesData();
+    await getDocumentTypesData();*/
 
     cutOptionText(16)
 };
