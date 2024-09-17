@@ -6,7 +6,6 @@ let signerMultiSelect;
 let executorMultiSelect;
 
 window.onload = async function () {
-    document.getElementById("search-ref").style.color = "yellow";
 
     document.getElementById("registration-date").value = new Date("2017-01-01").toISOString().split('T')[0];
     document.getElementById("registration-date-2").value = new Date(Date.now()).toISOString().split('T')[0];

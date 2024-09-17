@@ -7,7 +7,6 @@ const inputLetters = {};
 getActualNumberIVC()
 
 window.onload = async function() {
-    document.getElementById("output-ref").style.color = "yellow";
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
 
     document.getElementById("is-answer").onchange = function (ev) {

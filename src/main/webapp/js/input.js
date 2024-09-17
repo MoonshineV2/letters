@@ -5,7 +5,7 @@ let tagsMultiSelect;
 const outputLetters = {};
 
 window.onload = async function() {
-    document.getElementById("input-ref").style.color = "yellow";
+
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
 
     document.getElementById("is-answer").onchange = function (ev) {
