@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Входящие</title>
+    <link rel="stylesheet" href="../fonts/fonts.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../css/global.css">
     <script src="../js/input.js"></script>
@@ -27,30 +28,85 @@
         </nav>
     </header>
     <main>
-        <section class="fields">
-            <div class="custom-input">
-                <label for="ivc-num">Номер входящего ИВЦ ЖА</label>
-                <input class="custom-input custom-input-small" id="ivc-num" type="text">
+        <section class="letter-section">
+            <div class="fields">
+                <div class="custom-input">
+                    <label for="ivc-num">Номер входящего ИВЦ ЖА</label>
+                    <input class="custom-input custom-input-small" id="ivc-num" type="text">
+                </div>
+                <div class="custom-input">
+                    <label for="doc-num">Номер документа</label>
+                    <input class="custom-input custom-input-small" id="doc-num" type="text">
+                </div>
+                <div class="custom-input">
+                    <label for="easd-num">Номер ЕАСД</label>
+                    <input class="custom-input custom-input-small" id="easd-num" type="text">
+                </div>
+                <div class="custom-date">
+                    <label for="registration-date">Дата регистрации</label>
+                    <input class="custom-date" id="registration-date" type="date"/>
+                </div>
+                <div class="custom-date">
+                    <label for="date-doc">Дата документа</label>
+                    <input class="custom-date" id="date-doc" type="date"/>
+                </div>
+                <div class="custom-date">
+                    <label for="postuplenie-date">Дата поступления документа</label>
+                    <input class="custom-date" id="postuplenie-date" type="date"/>
+                </div>
+                <div class="custom-select">
+                    <label for="doc-type-select">Тип документа</label>
+                    <select name="doc-type" id="doc-type-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
+                <div class="custom-select">
+                    <label for="origin-select">Источник письма</label>
+                    <select name="origins" id="origin-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
+                <div class="custom-select">
+                    <label for="signer-select">Подписант</label>
+                    <select name="signers" id="signer-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
+                <div class="custom-select">
+                    <label for="executor-select">Исполнитель</label>
+                    <select name="executors" id="executor-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
+                <div class="custom-select">
+                    <label for="target-select">Кому расписано</label>
+                    <select name="targets" id="target-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
+                <div class="custom-textarea text-area-small">
+                    <label for="topic">Тема</label>
+                    <textarea id="topic"></textarea>
+                </div>
+                <div class="custom-textarea">
+                    <label for="note">Примечание</label>
+                    <textarea id="note"></textarea>
+                </div>
+                <div class="custom-checkbox">
+                    <input id="prilojenie" type="checkbox">
+                    <label for="prilojenie">Приложение</label>
+                </div>
+                <div class="custom-checkbox">
+                    <input id="reserve" type="checkbox">
+                    <label for="reserve">Резерв</label>
+                </div>
+                <div class="drag-and-drop-file">
+                    <img src="../icons/fileIcon.svg" alt="Фоновое изобраение файла">
+                    <p>Выберите файл или перетащите сюда</p>
+                </div>
             </div>
-            <div class="custom-date">
-                <label for="registration-date">Дата регистрации</label>
-                <input class="custom-date" id="registration-date" type="date"/>
-            </div>
-            <div class="custom-input">
-                <label for="doc-num">Номер документа</label>
-                <input class="custom-input custom-input-small" id="doc-num" type="text">
-            </div>
-            <div class="custom-date">
-                <label for="date-doc">Дата документа</label>
-                <input class="custom-date" id="date-doc" type="date"/>
-            </div>
-            <div class="custom-select">
-                <label for="doc-type-select">Тип документа</label>
-                <select name="doc-type" id="doc-type-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-            <button class="letter-save-btn">
+            <div class="dividing-line"></div>
+            <button class="letter-save-btn" onclick="saveDocument()">
                 Сохранить письмо
             </button>
         </section>
@@ -98,94 +154,17 @@
                 <option value="12">12</option>
             </select>
         </label>
-
     </div>
     <div class="horizontal-view">
 
-    </div>
-    <div class="horizontal-view">
-
-    </div>
-    <div class="horizontal-view">
-
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Дата поступления документа
-            <input class="custom-date" id="postuplenie-date" type="date"/>
-        </label>
-        <label class="custom-label custom-label-right">
-            Номер ЕАСД
-            <input class="custom-input custom-input-small" id="easd-num" type="text">
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Источник письма
-            <div class="custom-select">
-                <select name="origins" id="origin-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-        </label>
-        <label>
-            <input id="prilojenie" type="checkbox">
-            приложение
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Подписант
-            <div class="custom-select">
-                <select name="signers" id="signer-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-        </label>
-        <label class="custom-label custom-label-right">
-            Кому расписано
-            <div class="custom-select">
-                <select name="targets" id="target-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Исполнитель
-            <div class="custom-select">
-                <select name="executors" id="executor-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label class="custom-label">
-            Тема
-            <input class="custom-input custom-input-pointer" id="topic" type="text" onclick="changeTopic()">
-        </label>
         <label>
             Теги
             <select id="tags" name="tags"></select>
         </label>
-        <label>
-            <input id="reserve" type="checkbox">
-            резерв
-        </label>
+
     </div>
     <div class="horizontal-view">
-        <label class="custom-label">
-            Примечание
-            <input class="custom-input custom-input-pointer" id="note" type="text" onclick="changeNote()">
-        </label>
         <input type="file" id="file" />
-    </div>
-    <div class="horizontal-view">
-        <button onclick="saveDocument()">
-            Сохранить
-        </button>
     </div>
     <div class="modal" id="modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-scrollable">
