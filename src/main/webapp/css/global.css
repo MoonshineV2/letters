@@ -1,7 +1,28 @@
+*,
+::after,
+::before {
+    box-sizing: border-box;
+}
+
 body {
     background-color: #EDEEF0;
     font-family: Inter, sans-serif;
+    margin: 0;
+    line-height: 1.5;
 }
+
+button,
+input,
+optgroup,
+select,
+textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+
 
 .header {
     width: 100%;
@@ -45,10 +66,10 @@ body {
     padding: 10px 8px;
     margin: 5px 0;
 
-    font-weight: 500;
+    font-weight: 600;
     font-size: 16px;
 
-    border-radius: 5%;
+    border-radius: 5px;
 }
 
 .header nav a:hover{
@@ -70,14 +91,30 @@ body {
     flex-direction: column;
     align-items: stretch;
     row-gap: 15px;
+    word-wrap: break-word;
+}
+
+.field-answer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    column-gap: 15px;
+    row-gap: 15px;
+}
+
+.answer-grid-select {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    display: flex;
+    flex-direction: column;
 }
 
 .custom-input label,
 .custom-date label,
 .custom-select label,
-.custom-textarea label{
+.custom-textarea label,
+.multiselect label {
     display: block;
-    color: #5F6B8F;
     user-select: none;
 }
 
@@ -91,6 +128,17 @@ body {
     border-radius: 5px;
     padding: 7px 12px 7px 12px;
     font-weight: 500;
+    color: #3a435b;
+    cursor: pointer;
+}
+
+select:disabled {
+    background-color: #d5d5d5;
+    cursor: default;
+}
+
+.custom-input input {
+    cursor: auto;
 }
 
 .custom-textarea textarea {
@@ -106,6 +154,7 @@ body {
 .custom-checkbox label {
     padding-left: 4px;
     user-select: none;
+    cursor: pointer;
 }
 
 .custom-checkbox input {
@@ -115,25 +164,42 @@ body {
 .drag-and-drop-file {
     border: 1px dashed #dee2e6;
     border-radius: 5px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 20px;
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: rgba(197, 197, 197, 0.1);
 }
 
-.drag-and-drop-file p {
-    margin: 0;
+.drag-and-drop-file.drag-over {
+    background-color: #F2F7FF;
+    border-color: #76C8F2;
+    cursor: pointer;
 }
 
-.drag-and-drop-file p:before {
-    display: block;
-    background-image: url("../icons/fileIcon.svg");
-    background-size: 30px 30px;
-    width: 30px;
-    height: 30px;
+.drag-and-drop-file img {
+    width: 40px;
+    height: 40px;
+}
+
+.drag-and-drop-file span *{
+    display: inline;
+}
+
+.drag-and-drop-file .drag-and-drop-select-file {
+    text-decoration: underline;
+    cursor: pointer;
+    color: dodgerblue;
+}
+
+.selected-file-zone *{
+    display: inline;
+}
+
+#selected-file-name {
+    font-weight: 500;
 }
 
 .dividing-line {
@@ -148,10 +214,23 @@ body {
     color: white;
     font-weight: bold;
     font-size: 16px;
+    cursor: pointer;
 }
 
 .letter-save-btn:hover {
     background-color: #2759bb;
+}
+
+.field-container {
+    position: relative;
+}
+
+.prompt-underline {
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    margin: 0;
+    padding: 0;
 }
 
 

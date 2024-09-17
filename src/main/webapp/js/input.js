@@ -1,8 +1,11 @@
 let monthMultiSelect;
 let yearMultiSelect;
 let tagsMultiSelect;
-
+let dropArea;
+let fileInput;
 const outputLetters = {};
+
+// Utility function to prevent default browser behavior
 
 window.onload = async function() {
 
@@ -45,6 +48,45 @@ window.onload = async function() {
     await getDocumentTypesData();*/
 
     cutOptionText(16)
+
+    dropArea = document.getElementById('file-drop-zone');
+    fileInput = document.getElementById('file-input');
+    // Preventing default browser behavior when dragging a file over the container
+    dropArea.addEventListener('dragover', preventDefaults);
+    dropArea.addEventListener('dragenter', preventDefaults);
+    dropArea.addEventListener('dragleave', preventDefaults);
+
+// Handling dropping files into the area
+    dropArea.addEventListener('drop', handleDrop);
+
+// We’ll discuss `handleDrop` function down the road
+    function handleDrop(e) {
+        e.preventDefault();
+        dropArea.classList.remove('drag-over');
+        // Getting the list of dragged files
+        const files = e.dataTransfer.files;
+
+        // Checking if there are any files
+        if (files.length === 1) {
+            // Assigning the files to the hidden input from the first step
+            fileInput.files = files;
+
+            // Processing the files for previews (next step)
+            //handleFiles(files);
+        }
+
+        selectedFileShow();
+    }
+
+    dropArea.addEventListener('dragover', () => {
+        dropArea.classList.add('drag-over');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('drag-over');
+    });
+
+    fileInput.onchange = selectedFileShow;
 };
 
 function cutOptionText(maxTextLength) {
@@ -396,4 +438,48 @@ async function onOutputYearOrMonthChange() {
         option.value = element.id;
         select.appendChild(option);
     })
+}
+
+function selectFile() {
+    document.getElementById("file-input").click();
+}
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+function handleFiles(files) {
+    for (const file of files) {
+        // Initializing the FileReader API and reading the file
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        // Once the file has been loaded, fire the processing
+        reader.onloadend = function (e) {
+            const preview = document.createElement('img');
+
+            if (isValidFileType(file)) {
+                preview.src = e.target.result;
+            }
+
+            // Apply styling
+            preview.classList.add('preview-image');
+            const previewContainer = document.getElementById('preview-container');
+            previewContainer.appendChild(preview);
+        };
+    }
+}
+
+function isValidFileType() {
+    return true;
+}
+
+function selectedFileShow() {
+    if (fileInput.files.length === 1) {
+        document.getElementById("selected-file-name").innerText = fileInput.files[0].name;
+    }
+    else {
+        document.getElementById("selected-file-name").innerText = "нет";
+    }
 }
