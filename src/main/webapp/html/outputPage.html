@@ -5,34 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Исходящие</title>
     <link rel="stylesheet" href="../fonts/fonts.css">
-    <link rel="stylesheet" type="text/css" href="letters.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../css/global.css">
-    <script src="output.js"></script>
-    <script src="multiselect.js"></script>
-    <script src="modals.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/multiselect.css">
+    <script src="../js/output.js"></script>
+    <script src="../js/fileUploader.js"></script>
+    <script src="../js/multiselect.js"></script>
+    <script src="../js/modals.js"></script>
 </head>
 <body>
-<header class="header">
-    <nav>
-        <ul>
-            <li>
-                <a href="http://localhost:8080/letters/api/pages/input" id="input-ref">Входящие</a>
-            </li>
-            <li class="li-selected">
-                <a href="http://localhost:8080/letters/api/pages/output" id="output-ref">Исходящие</a>
-            </li>
-            <li>
-                <a href='http://localhost:8080/letters/api/pages/search' id="search-ref">Поиск</a>
-            </li>
-        </ul>
-    </nav>
-</header>
+    <header class="header">
+        <nav>
+            <ul>
+                <li>
+                    <a href="http://localhost:8080/letters/api/pages/input" id="input-ref">Входящие</a>
+                </li>
+                <li class="li-selected">
+                    <a href="http://localhost:8080/letters/api/pages/output" id="output-ref">Исходящие</a>
+                </li>
+                <li>
+                    <a href='http://localhost:8080/letters/api/pages/search' id="search-ref">Поиск</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <section class="letter-section">
+        <div class="fields">
+            <div class="custom-input">
+                <label for="ivc-num">Номер исходящего ИВЦ ЖА</label>
+                <div class="field-container">
+                    <input id="ivc-num" type="text">
+                    <p id="ivc-num-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
+                </div>
+            </div>
+            <div class="custom-input">
+                <label for="easd-num" class="custom-label custom-label-right">Номер ЕАСД</label>
+                <input id="easd-num" type="text">
+            </div>
+            <div class="dividing-line"></div>
+            <div class="custom-date">
+                <label for="registration-date">Дата регистрации</label>
+                <input id="registration-date" type="date" value="2024-07-09" />
+            </div>
+            <div class="dividing-line"></div>
+            <div class="custom-select">
+                <label for="address-select">Куда направлено письмо</label>
+                <select name="address" id="address-select">
+                    <option value="" disabled selected hidden>Выберите вариант</option>
+                </select>
+            </div>
+            <div class="custom-select">
+                <label for="participant-select">Кому направлено письмо</label>
+                <select name="participant" id="participant-select">
+                    <option value="" disabled selected hidden>Выберите вариант</option>
+                </select>
+            </div>
+            <div class="custom-select">
+                <label for="signer-select">Подписант</label>
+                <select name="signers" id="signer-select">
+                    <option value="" disabled selected hidden>Выберите вариант</option>
+                </select>
+            </div>
+            <div class="custom-select">
+                <label for="executor-select">Исполнитель</label>
+                <select name="executors" id="executor-select">
+                    <option value="" disabled selected hidden>Выберите вариант</option>
+                </select>
+            </div>
+            <div class="multiselect">
+                <label for="tags">Теги</label>
+                <select id="tags" name="tags"></select>
+            </div>
+            <div class="dividing-line"></div>
+            <div class="custom-textarea text-area-small">
+                <label for="topic">Тема</label>
+                <textarea id="topic"></textarea>
+            </div>
+            <div class="custom-textarea">
+                <label for="note">Примечание</label>
+                <textarea id="note"></textarea>
+            </div>
+            <div class="custom-checkbox">
+                <input id="prilojenie" type="checkbox">
+                <label for="prilojenie">Приложение</label>
+            </div>
+            <div class="custom-checkbox">
+                <input id="reserve" type="checkbox">
+                <label for="reserve">Резерв</label>
+            </div>
+            <div class="dividing-line"></div>
+            <h2>
+                Файл
+            </h2>
+            <div id="file-drop-zone" class="drag-and-drop-file">
+                <img src="../images/file.svg" alt="Фоновое изображение файла">
+                <span>
+                        <a class="drag-and-drop-select-file" onclick="selectFile()">Выберите файл</a>
+                        <p>или перетащите его сюда</p>
+                    </span>
+            </div>
+            <div id="uploaded-file" class="uploaded-file hidden">
+                <div class="uploaded-file-icon"></div>
+                <div class="uploaded-file-text">
+                    <p id="selected-file-name" class="uploaded-file-text-name"></p>
+                    <p id="selected-file-size" class="uploaded-file-text-size"></p>
+                </div>
+                <img class="cross-mark" src="../images/close.svg" alt="Знак удаления файла" onclick="removeFile()">
+            </div>
+            <input type="file" id="file-input" hidden>
+        </div>
+    </section>
     <div class="horizontal-view">
-        <label>
-            Номер исходящего ИВЦ ЖА
-            <input class="custom-input" style="max-width: 100px" id="ivc-num" type="text">
-        </label>
         <label>
             <input id="is-answer" type="checkbox">
             Ответ на входящее
@@ -67,89 +149,12 @@
                 <option value="12">12</option>
             </select>
         </label>
-        <label>
-            Номер входящего
-            <div class="custom-select">
-                <select name="doc-num" id="input-select" disabled>
-                    <option value="" disabled selected hidden>Нет писем</option>
-                </select>
-            </div>
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Дата регистрации
-            <input class="custom-date" id="registration-date" type="date" value="2024-07-09" />
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Куда направлено письмо
-            <div class="custom-select">
-                <select name="address" id="address-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-        </label>
-        <label class="custom-label custom-label-right">
-            Номер ЕАСД
-            <input class="custom-input custom-input-small" id="easd-num" type="text">
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Кому направлено письмо
-            <div class="custom-select">
-                <select name="participant" id="participant-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-        </label>
-        <label>
-            <input id="prilojenie" type="checkbox">
-            Приложение
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Подписант
-            <div class="custom-select">
-                <select name="signers" id="signer-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label>
-            Исполнитель
-            <div class="custom-select">
-                <select name="executors" id="executor-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label class="custom-label">
-            Тема
-            <input class="custom-input" onclick="changeTopic()" id="topic" type="text">
-        </label>
-        <label>
-            Теги
-            <select id="tags" name="tags"></select>
-        </label>
-        <label>
-            <input id="reserve" type="checkbox">
-            Резерв
-        </label>
-    </div>
-    <div class="horizontal-view">
-        <label class="custom-label">
-            Примечание
-            <input class="custom-input" onclick="changeNote()" id="note" type="text">
-        </label>
-        <input type="file" id="file" />
+        <div class="custom-select">
+            <label for="input-select">Номер входящего</label>
+            <select name="doc-num" id="input-select" disabled>
+                <option value="" disabled selected hidden>Нет писем</option>
+            </select>
+        </div>
     </div>
     <div class="horizontal-view">
         <button onclick="saveDocument()">
@@ -191,6 +196,5 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -81,4 +81,34 @@ public class WebFilesController {
         }
         return Response.ok(in).build();
     }
+
+    @GET
+    @Path("images/close.svg")
+    @Produces("image/svg+xml")
+    public Response getCloseSVGFile() {
+        String filePath = servletContext.getRealPath("/images/close.svg");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in).build();
+    }
+
+    @GET
+    @Path("images/fileFilled.svg")
+    @Produces("image/svg+xml")
+    public Response getfileFilledSVGFile() {
+        String filePath = servletContext.getRealPath("/images/fileFilled.svg");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in).build();
+    }
 }

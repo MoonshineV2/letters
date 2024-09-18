@@ -11,6 +11,20 @@ body {
     line-height: 1.5;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-weight: bold;
+}
+
+p {
+    margin: 0;
+}
+
 button,
 input,
 optgroup,
@@ -86,6 +100,14 @@ textarea {
     border: 1px solid #CDCDCD;
 }
 
+.letter-section h2 {
+    font-size: 20px;
+}
+.letter-section h3 {
+    font-size: 18px;
+}
+
+
 .fields {
     display: flex;
     flex-direction: column;
@@ -144,6 +166,7 @@ select:disabled {
 .custom-textarea textarea {
     resize: vertical;
     min-height: 64px;
+    cursor: auto;
 }
 
 .text-area-small textarea{
@@ -194,19 +217,75 @@ select:disabled {
     color: dodgerblue;
 }
 
-.selected-file-zone *{
+#selected-file-name {
+    font-weight: 500;
+}
+
+.uploaded-file {
+    border: 1px solid #dee2e6;
+    background-color: rgba(197, 197, 197, 0.1);
+    border-radius: 5px;
+    min-height: 20px;
+    padding: 10px 30px 10px 10px;
+
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    column-gap: 10px;
+
+    position: relative;
+}
+
+.uploaded-file-icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #dee2e6;
+    background-color: white;
+    border-radius: 5px;
+
     display: inline;
 }
 
-#selected-file-name {
-    font-weight: 500;
+.uploaded-file-icon::before {
+    display: block;
+    content: '';
+    width: 40px;
+    height: 40px;
+
+    -webkit-mask: url("../images/fileFilled.svg") no-repeat 100% 100%;
+    mask: url("../images/fileFilled.svg") no-repeat 100% 100%;
+    -webkit-mask-size: 30px 30px;
+    mask-size: 30px 30px;
+    background-color: #5b5b5b;
+    mask-position: center;
+}
+
+.uploaded-file-text {
+    font-size: 14px;
+    word-break: break-all;
+}
+
+.uploaded-file-text .uploaded-file-text-name{
+    font-weight: 700;
+}
+
+.uploaded-file-text .uploaded-file-text-size {
+    color: #8f8f8f;
+}
+
+.uploaded-file .cross-mark {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
 }
 
 .dividing-line {
     height: 1px;
     background-color: #CDCDCD;
     margin-top: 15px;
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
 }
 
 .letter-save-btn {
@@ -215,6 +294,7 @@ select:disabled {
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
+    margin-top: 15px;
 }
 
 .letter-save-btn:hover {
@@ -225,12 +305,24 @@ select:disabled {
     position: relative;
 }
 
-.prompt-underline {
+.auto-insert-value {
     position: absolute;
-    bottom: -20px;
-    left: 0;
     margin: 0;
     padding: 0;
+    top: -20px;
+    right: 5px;
+    font-weight: 300;
+    font-size: 14px;
+    font-style: italic;
+    color: #6b6a6a;
+}
+
+.prompt-underline {
+
+}
+
+.hidden {
+    display: none;
 }
 
 

@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="../css/global.css">
     <link rel="stylesheet" type="text/css" href="../css/multiselect.css">
     <script src="../js/input.js"></script>
+    <script src="../js/fileUploader.js"></script>
     <script src="../js/multiselect.js"></script>
     <script src="../js/modals.js"></script>
 </head>
@@ -35,7 +36,7 @@
                     <label for="ivc-num">Номер входящего ИВЦ ЖА</label>
                     <div class="field-container">
                         <input id="ivc-num" type="text">
-                        <p class="prompt-underline">автоматическая вставка значения</p>
+                        <p id="ivc-num-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
                     </div>
                 </div>
                 <div class="custom-input">
@@ -90,7 +91,10 @@
                 <div class="dividing-line"></div>
                 <div class="custom-date">
                     <label for="registration-date">Дата регистрации</label>
-                    <input id="registration-date" type="date"/>
+                    <div class="field-container">
+                        <input id="registration-date" type="date"/>
+                        <p id="registration-date-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
+                    </div>
                 </div>
                 <div class="custom-date">
                     <label for="date-doc">Дата документа</label>
@@ -152,6 +156,9 @@
                     <label for="reserve">Резерв</label>
                 </div>
                 <div class="dividing-line"></div>
+                <h2>
+                    Файл
+                </h2>
                 <div id="file-drop-zone" class="drag-and-drop-file">
                     <img src="../images/file.svg" alt="Фоновое изображение файла">
                     <span>
@@ -159,9 +166,13 @@
                         <p>или перетащите его сюда</p>
                     </span>
                 </div>
-                <div class="selected-file-zone">
-                    <h3>Выбранный файл: </h3>
-                    <span id="selected-file-name">нет</span>
+                <div id="uploaded-file" class="uploaded-file hidden">
+                    <div class="uploaded-file-icon"></div>
+                    <div class="uploaded-file-text">
+                        <p id="selected-file-name" class="uploaded-file-text-name"></p>
+                        <p id="selected-file-size" class="uploaded-file-text-size"></p>
+                    </div>
+                    <img class="cross-mark" src="../images/close.svg" alt="Знак удаления файла" onclick="removeFile()">
                 </div>
                 <input type="file" id="file-input" hidden>
             </div>
@@ -171,9 +182,6 @@
             </button>
         </section>
     </main>
-    <div id="answer-row" class="horizontal-view" style="justify-content: end; display: none">
-
-    </div>
     <div class="modal" id="modal" tabindex="-1">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
@@ -209,6 +217,5 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
