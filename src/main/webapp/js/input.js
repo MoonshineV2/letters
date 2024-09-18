@@ -1,22 +1,10 @@
 let monthMultiSelect;
 let yearMultiSelect;
 let tagsMultiSelect;
+let fileUploader;
 const outputLetters = {};
-
-// Utility function to prevent default browser behavior
-
-window.onload = async function() {
-
+window.addEventListener("load", async () => {
     autoInsertRegistrationDate()
-
-    document.getElementById("is-answer").onchange = function (ev) {
-        if (ev.target.checked) {
-            document.getElementById("answer-row").style.display = "";
-        }
-        else {
-            document.getElementById("answer-row").style.display = "none";
-        }
-    }
 
     monthMultiSelect = new MultiSelect(document.getElementById("months"), {
         onChange: function(value, text, element) {
@@ -29,6 +17,8 @@ window.onload = async function() {
         }
     })
 
+    fileUploader = new FileUploader(document.getElementById("file-uploader"));
+
     Promise.all([
         getOriginsData(),
         getSignersData(),
@@ -39,22 +29,8 @@ window.onload = async function() {
     ]);
 
     tagsMultiSelect = await getTags();
-    /*await getOriginsData();
-    await getSignersData();
-    await getExecutorsData();
-    await getWorkersData();
-    await getDocumentTypesData();*/
+})
 
-    cutOptionText(16)
-};
-
-function cutOptionText(maxTextLength) {
-    var e=document.querySelectorAll('option')
-    e.forEach(x=>{
-        if(x.textContent.length > maxTextLength)
-            x.textContent=x.textContent.substring(0,maxTextLength)+'...';
-    })
-}
 async function getOriginsData() {
     let response = await fetch('/letters/api/originsAndAddresses');
     const originsAndAddresses = await response.json();

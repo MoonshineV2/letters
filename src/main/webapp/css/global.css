@@ -242,14 +242,16 @@ select:disabled {
     background-color: white;
     border-radius: 5px;
 
-    display: inline;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .uploaded-file-icon::before {
     display: block;
     content: '';
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
 
     -webkit-mask: url("../images/fileFilled.svg") no-repeat 100% 100%;
     mask: url("../images/fileFilled.svg") no-repeat 100% 100%;

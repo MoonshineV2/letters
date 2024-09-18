@@ -1,7 +1,48 @@
+class FileUploader {
+
+    constructor(element, options = {}) {
+        this.element = element;
+
+        if (!element) {
+            throw new Error("В конструктор не передан елемент");
+        }
+        this.initialize();
+    }
+
+    initialize() {
+        let dropZone = `
+            <div id="file-drop-zone" class="drag-and-drop-file">
+                <img src="../images/file.svg" alt="Фоновое изображение файла"/>
+                    <span>
+                        <a class="drag-and-drop-select-file" onClick="selectFile()">Выберите файл</a>
+                        <p>или перетащите его сюда</p>
+                    </span>
+            </div>`;
+
+        let uploadedFile = `
+            <div id="uploaded-file" class="uploaded-file hidden">
+                <div class="uploaded-file-icon"></div>
+                <div class="uploaded-file-text">
+                    <p id="selected-file-name" class="uploaded-file-text-name"></p>
+                    <p id="selected-file-size" class="uploaded-file-text-size"></p>
+                </div>
+                <img class="cross-mark" src="../images/close.svg" alt="Знак удаления файла" onClick="removeFile()"/>
+            </div>`;
+
+        let fileInput = `<input type="file" id="file-input" hidden/>`
+
+        this.element.innerHTML = `${dropZone} ${uploadedFile} ${fileInput}`;
+    }
+
+
+}
+
+
 let dropArea;
 let fileInput;
 
-window.onload = async function() {
+
+window.addEventListener("load", () => {
     dropArea = document.getElementById('file-drop-zone');
     fileInput = document.getElementById('file-input');
     // Preventing default browser behavior when dragging a file over the container
@@ -40,7 +81,7 @@ window.onload = async function() {
     });
 
     fileInput.onchange = processFileChange;
-}
+})
 
 function selectFile() {
     document.getElementById("file-input").click();

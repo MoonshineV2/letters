@@ -55,7 +55,7 @@
                 <div class="field-answer-grid">
                     <div class="multiselect">
                         <label for="years">Год исходящего</label>
-                        <select id="years" name="years" data-placeholder="Год" data-search="false" data-select-all="true" multiple data-multi-select>
+                        <select id="years" name="years" data-placeholder="Выберите год" data-search="false" data-select-all="true" multiple data-multi-select>
                             <option value="2024">2024</option>
                             <option value="2023">2023</option>
                             <option value="2021">2021</option>
@@ -66,19 +66,19 @@
                     </div>
                     <div class="multiselect">
                         <label for="months">Месяц исходящего</label>
-                        <select id="months" name="months" data-placeholder="Месяц" data-search="false" data-select-all="true" multiple data-multi-select>
-                            <option value="1">01</option>
-                            <option value="2">02</option>
-                            <option value="3">03</option>
-                            <option value="4">04</option>
-                            <option value="5">05</option>
-                            <option value="6">06</option>
-                            <option value="7">07</option>
-                            <option value="8">08</option>
-                            <option value="9">09</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
+                        <select id="months" name="months" data-placeholder="Выберите месяц" data-search="false" data-select-all="true" multiple data-multi-select>
+                            <option value="1">01 (январь)</option>
+                            <option value="2">02 (февраль)</option>
+                            <option value="3">03 (март)</option>
+                            <option value="4">04 (апрель)</option>
+                            <option value="5">05 (май)</option>
+                            <option value="6">06 (июнь)</option>
+                            <option value="7">07 (июль)</option>
+                            <option value="8">08 (август)</option>
+                            <option value="9">09 (сентябрь)</option>
+                            <option value="10">10 (октябрь)</option>
+                            <option value="11">11 (ноябрь)</option>
+                            <option value="12">12 (декабрь)</option>
                         </select>
                     </div>
                     <div class="custom-select answer-grid-select">
@@ -135,8 +135,8 @@
                         <option value="" disabled selected hidden>Выберите вариант</option>
                     </select>
                 </div>
-                <div>
-                    <label>Теги</label>
+                <div class="multiselect">
+                    <label for="tags">Теги</label>
                     <select id="tags" name="tags"></select>
                 </div>
                 <div class="custom-textarea text-area-small">
@@ -159,8 +159,11 @@
                 <h2>
                     Файл
                 </h2>
+                <div id="file-uploader">
+
+                </div>
                 <div id="file-drop-zone" class="drag-and-drop-file">
-                    <img src="../images/file.svg" alt="Фоновое изображение файла">
+                    <img src="../images/file.svg" alt="Фоновое изображение файла"/>
                     <span>
                         <a class="drag-and-drop-select-file" onclick="selectFile()">Выберите файл</a>
                         <p>или перетащите его сюда</p>

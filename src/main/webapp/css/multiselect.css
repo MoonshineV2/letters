@@ -114,12 +114,12 @@
 .multi-select .multi-select-options .multi-select-option.multi-select-selected .multi-select-option-radio::after, .multi-select .multi-select-options .multi-select-all.multi-select-selected .multi-select-option-radio::after {
     content: "";
     display: block;
-    width: 3px;
-    height: 7px;
-    margin: 0.12em 0 0 0.27em;
+    width: 5px;
+    height: 8px;
+    margin: 0.12em 0 0 0.30em;
     border: solid #fff;
     border-width: 0 0.15em 0.15em 0;
-    transform: rotate(45deg);
+    transform: rotate(35deg);
 }
 .multi-select .multi-select-options .multi-select-option.multi-select-selected .multi-select-option-text, .multi-select .multi-select-options .multi-select-all.multi-select-selected .multi-select-option-text {
     color: #40c979;
