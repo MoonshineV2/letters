@@ -1,10 +1,9 @@
 let monthMultiSelect;
 let yearMultiSelect;
 let tagsMultiSelect;
+let fileUploader;
 
 const inputLetters = {};
-
-getActualNumberIVC()
 
 window.onload = async function() {
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
@@ -29,16 +28,23 @@ window.onload = async function() {
         }
     })
 
+    fileUploader = new FileUploader(document.getElementById("file-uploader"));
+
     tagsMultiSelect = await getTags();
     await getOriginsData();
     await getParticipantsData();
     await getSignersData();
     await getExecutorsData();
+    getActualNumberIVC();
 }
 
 async function getActualNumberIVC() {
     let response = await (await fetch('/letters/api/outputLetters/actualNumberIVC')).json();
     document.getElementById("ivc-num").value = response.numberIVC;
+    document.getElementById("ivc-num-auto-insert-info").hidden = false;
+    document.getElementById("ivc-num").oninput = () => {
+        document.getElementById("ivc-num-auto-insert-info").hidden = true;
+    }
 }
 
 async function getOriginsData() {

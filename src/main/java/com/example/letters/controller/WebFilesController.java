@@ -100,8 +100,23 @@ public class WebFilesController {
     @GET
     @Path("images/fileFilled.svg")
     @Produces("image/svg+xml")
-    public Response getfileFilledSVGFile() {
+    public Response getFileFilledSVGFile() {
         String filePath = servletContext.getRealPath("/images/fileFilled.svg");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in).build();
+    }
+
+    @GET
+    @Path("images/attention.svg")
+    @Produces("image/svg+xml")
+    public Response getAttentionSVGFile() {
+        String filePath = servletContext.getRealPath("/images/attention.svg");
         File file = new File(filePath);
         InputStream in = null;
         try {

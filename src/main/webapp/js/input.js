@@ -4,7 +4,7 @@ let tagsMultiSelect;
 let fileUploader;
 const outputLetters = {};
 window.addEventListener("load", async () => {
-    autoInsertRegistrationDate()
+    autoInsertRegistrationDate();
 
     monthMultiSelect = new MultiSelect(document.getElementById("months"), {
         onChange: function(value, text, element) {

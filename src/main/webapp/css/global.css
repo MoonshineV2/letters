@@ -87,8 +87,8 @@ textarea {
 }
 
 .header nav a:hover{
-    background-color: #FFD7DE;
-    color: #DB0038;
+    background-color: #2f6adddb;
+    color: #ffffff;
 }
 
 .letter-section {
@@ -152,6 +152,7 @@ textarea {
     font-weight: 500;
     color: #3a435b;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 select:disabled {
@@ -217,7 +218,7 @@ select:disabled {
     color: dodgerblue;
 }
 
-#selected-file-name {
+.uploaded-file-text-name {
     font-weight: 500;
 }
 
@@ -317,6 +318,38 @@ select:disabled {
     font-size: 14px;
     font-style: italic;
     color: #6b6a6a;
+}
+
+.errors-container {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.error-on-submit {
+    color: white;
+    background-color: red;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+
+    display: inline-grid;
+    grid-template-columns: auto 1fr;
+    gap: 5px;
+}
+
+.attention-icon {
+    aspect-ratio: 1;
+    height: 100%;
+
+    -webkit-mask: url(../images/attention.svg) no-repeat 100% 100%;
+    mask: url(../images/attention.svg) no-repeat 100% 100%;
+    -webkit-mask-size: 80% 80%;
+    mask-size: 80% 80%;
+    background-color: white;
+    mask-position: center;
 }
 
 .prompt-underline {

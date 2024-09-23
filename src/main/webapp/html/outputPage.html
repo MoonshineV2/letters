@@ -93,25 +93,7 @@
                 <label for="reserve">Резерв</label>
             </div>
             <div class="dividing-line"></div>
-            <h2>
-                Файл
-            </h2>
-            <div id="file-drop-zone" class="drag-and-drop-file">
-                <img src="../images/file.svg" alt="Фоновое изображение файла">
-                <span>
-                        <a class="drag-and-drop-select-file" onclick="selectFile()">Выберите файл</a>
-                        <p>или перетащите его сюда</p>
-                    </span>
-            </div>
-            <div id="uploaded-file" class="uploaded-file hidden">
-                <div class="uploaded-file-icon"></div>
-                <div class="uploaded-file-text">
-                    <p id="selected-file-name" class="uploaded-file-text-name"></p>
-                    <p id="selected-file-size" class="uploaded-file-text-size"></p>
-                </div>
-                <img class="cross-mark" src="../images/close.svg" alt="Знак удаления файла" onclick="removeFile()">
-            </div>
-            <input type="file" id="file-input" hidden>
+            <div id="file-uploader"></div>
         </div>
     </section>
     <div class="horizontal-view">
