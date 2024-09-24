@@ -91,7 +91,8 @@ textarea {
     color: #ffffff;
 }
 
-.letter-section {
+.letter-section,
+.filter-section {
     max-width: 600px;
     margin: 15px auto 15px auto;
     padding: 15px 15px;
@@ -100,10 +101,18 @@ textarea {
     border: 1px solid #CDCDCD;
 }
 
-.letter-section h2 {
+.letter-section h1,
+.filter-section h1 {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.letter-section h2,
+.filter-section h2 {
     font-size: 20px;
 }
-.letter-section h3 {
+.letter-section h3,
+.filter-section h3 {
     font-size: 18px;
 }
 
@@ -288,7 +297,17 @@ select:disabled {
     height: 1px;
     background-color: #CDCDCD;
     margin-top: 15px;
-    /*margin-bottom: 15px;*/
+    margin-bottom: 15px;
+}
+
+.dividing-line.dividing-up {
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+.dividing-line.dividing-down {
+    margin-top: 0;
+    margin-bottom: 15px;
 }
 
 .letter-save-btn {
@@ -355,7 +374,12 @@ select:disabled {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
+.date-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
 

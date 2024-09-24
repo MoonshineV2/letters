@@ -126,4 +126,19 @@ public class WebFilesController {
         }
         return Response.ok(in).build();
     }
+
+    @GET
+    @Path("images/arrow-down.svg")
+    @Produces("image/svg+xml")
+    public Response getArrowDownSVGFile() {
+        String filePath = servletContext.getRealPath("/images/arrow-down.svg");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in).build();
+    }
 }

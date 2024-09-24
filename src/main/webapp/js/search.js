@@ -5,34 +5,21 @@ let originsMultiSelect;
 let signerMultiSelect;
 let executorMultiSelect;
 
+let filterSection;
+let headerFilters;
+
 window.onload = async function () {
 
     document.getElementById("registration-date").value = new Date("2017-01-01").toISOString().split('T')[0];
     document.getElementById("registration-date-2").value = new Date(Date.now()).toISOString().split('T')[0];
 
-    let data = await getInputLettersData();
-    let options = {
-        columns: Object.keys(data[0]),
-        data: data
-    }
-
-    document.getElementById("letterType-select").onchange = function (ev) {
-        if (ev.target.value === "input") {
-            document.getElementById("doc-num-display").style.display = "";
-            document.getElementById("origin-display").style.display = "";
-            document.getElementById("signer-display").classList.add("custom-label-right");
-        }
-        else {
-            document.getElementById("doc-num-display").style.display = "none";
-            document.getElementById("origin-display").style.display = "none";
-            document.getElementById("signer-display").classList.remove("custom-label-right");
-        }
-    }
-
     originsMultiSelect = await getOriginsData();
     signerMultiSelect = await getSignersData();
     tagsMultiSelect = await getTags();
     executorMultiSelect = await getExecutorsData();
+
+    filterSection = document.getElementById("filter-section");
+    headerFilters = document.getElementById('header-filters');
 }
 
 async function getInputLettersData() {
@@ -141,8 +128,12 @@ async function getTags() {
     })
 }
 
+function showFilterSection() {
+    filterSection.classList.remove("hidden");
+    headerFilters.classList.add("hidden");
+}
+
 async function findLetters() {
-    document.getElementById("loader").classList.remove("loader-hidden");
     const letterType = document.getElementById("letterType-select").value;
     const ivcNum = document.getElementById("ivc-num").value;
     const docNum = document.getElementById("doc-num").value;
@@ -229,5 +220,6 @@ async function findLetters() {
         table = new Table(document.getElementById("table"), data);
     }
 
-    document.getElementById("loader").classList.add("loader-hidden");
+    filterSection.classList.add("hidden");
+    headerFilters.classList.remove("hidden");
 }
