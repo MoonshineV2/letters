@@ -3,6 +3,8 @@ let yearMultiSelect;
 let tagsMultiSelect;
 let fileUploader;
 const outputLetters = {};
+
+let attentionContainer;
 window.addEventListener("load", async () => {
     autoInsertRegistrationDate();
 
@@ -29,6 +31,8 @@ window.addEventListener("load", async () => {
     ]);
 
     tagsMultiSelect = await getTags();
+
+    attentionContainer = document.getElementById("attentions-container");
 })
 
 async function getOriginsData() {
@@ -203,6 +207,9 @@ async function getActualNumberIVC() {
 }
 
 async function saveDocument() {
+
+    attentionContainer.innerHTML = "";
+
     const numIVC = document.getElementById("ivc-num").value;
     const isAnswer = document.getElementById("is-answer").checked;
     const registrationDate = document.getElementById("registration-date").value;
@@ -219,18 +226,48 @@ async function saveDocument() {
     const topic = document.getElementById("topic").value;
     const note = document.getElementById("note").value;
     const reserve = document.getElementById("reserve").checked;
-    const file = document.getElementById("file").files[0];
+    const file = fileUploader.file;
     const documentName = file !== undefined ? file.name : "";
     const outputSelect = document.getElementById("output-select");
+
+    let hasAttentions = false;
 
     let binary = "";
     if (file !== undefined) {
         binary = await getBinaryFromFile(file);
     }
 
+    if (!documentNum) {
+        attentionContainer.appendChild(generateAttentionHTML("Номер документа не задан"));
+        hasAttentions = true;
+    }
+
     if (isAnswer && outputSelect.children.length === 1 || isAnswer && outputSelect.value === "Выберите вариант") {
-        const modalError = document.getElementById("modal2");
-        showModalError("Ошибка", "Исходящее письмо не выбрано", modalError)
+        attentionContainer.appendChild(generateAttentionHTML("Исходящее письмо не выбрано"));
+        hasAttentions = true;
+    }
+
+    if (!origin) {
+        attentionContainer.appendChild(generateAttentionHTML("Источник письма не выбран"));
+        hasAttentions = true;
+    }
+
+    if (!signer) {
+        attentionContainer.appendChild(generateAttentionHTML("Подписант не выбран"));
+        hasAttentions = true;
+    }
+
+    if (!executor) {
+        attentionContainer.appendChild(generateAttentionHTML("Исполнитель не выбран"));
+        hasAttentions = true;
+    }
+
+    if (!target) {
+        attentionContainer.appendChild(generateAttentionHTML("Кому расписано не выбрано"));
+        hasAttentions = true;
+    }
+
+    if (hasAttentions) {
         return;
     }
 
@@ -245,40 +282,50 @@ async function saveDocument() {
             postuplenieDate: postuplenieDate,
             documentDate: documentDate,
             documentNumber: documentNum,
-            documentTypeId: documentType,
+            documentType: {id:documentType},
             documentName: documentName,
-            originId: origin,
-            signerId: signer,
-            executorId: executor,
+            origin: {id:origin},
+            signer: {id:signer},
+            executor: {id:executor},
             easdNumber: easdNum,
             answer: isAnswer,
             prilojenie: prilojenie,
             topic: topic,
-            tagIds: tagsMultiSelect.selectedValues,
+            tags: tagsMultiSelect.selectedValues,
             note: note,
-            targetWorkerId: target,
+            targetWorker: {id:target},
             reserve: reserve,
             file: arrayBufferToBase64(binary),
             outputLetterId: outputSelect.value
         }),
     });
 
-    const modal = new bootstrap.Modal(document.getElementById('modal2'));
-    const element = document.getElementById('modal2');
-    const header = element.children[0].children[0].children[0].children[0];
-    const body = element.children[0].children[0].children[1].children[0];
+    console.log(JSON.stringify({
+        numberIVC: numIVC,
+        registrationDate: registrationDate,
+        postuplenieDate: postuplenieDate,
+        documentDate: documentDate,
+        documentNumber: documentNum,
+        documentType: {id:documentType},
+        documentName: documentName,
+        origin: {id:origin},
+        signer: {id:signer},
+        executor: {id:executor},
+        easdNumber: easdNum,
+        answer: isAnswer,
+        prilojenie: prilojenie,
+        topic: topic,
+        tags: tagsMultiSelect.selectedValues,
+        note: note,
+        targetWorker: {id:target},
+        reserve: reserve,
+        file: arrayBufferToBase64(binary),
+        outputLetterId: outputSelect.value
+    }));
 
     if (!response.ok) {
-        body.innerHTML = await response.text();
-        header.innerHTML = "Ошибка"
-
-        modal.toggle();
-        throw new Error(`Response status: ${response.status}`);
+        throw new Error(`Response status: ${response.status}, Response text: ${await response.text()}`);
     }
-
-    header.innerHTML = "Успешно";
-    body.innerHTML = "Документ был сохранён"
-    modal.toggle();
 
     getActualNumberIVC();
 }
@@ -384,4 +431,21 @@ function autoInsertRegistrationDate() {
     document.getElementById("registration-date").oninput = () => {
         document.getElementById("registration-date-auto-insert-info").hidden = true;
     }
+}
+
+function generateAttentionHTML(text) {
+    const attention = document.createElement("div");
+    attention.classList.add("attention-on-submit");
+
+    const icon = document.createElement("div");
+    icon.classList.add("attention-icon");
+
+    const p = document.createElement("p");
+    icon.classList.add("attention-text");
+    p.innerText = text;
+
+    attention.appendChild(icon);
+    attention.appendChild(p);
+
+    return attention;
 }

@@ -2,11 +2,15 @@ package com.example.letters.dto;
 
 import com.example.letters.model.Worker;
 import com.example.letters.model.Workgroup;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class WorkerDto {
-    private long id;
+    private int id;
     private String fullName;
     private String initials;
     private String post;
@@ -14,25 +18,24 @@ public class WorkerDto {
     private boolean canSign;
 
     public static WorkerDto fromWorker(Worker worker) {
-        WorkerDto workerDto = new WorkerDto();
-        workerDto.setId(worker.getId());
-        workerDto.setFullName(worker.getFullName());
-        workerDto.setInitials(worker.getInitials());
-        workerDto.setPost(worker.getPost());
-        workerDto.setWorkgroupId(worker.getId());
-        workerDto.setCanSign(worker.isCanSign());
-
-        return workerDto;
+        return new WorkerDto(
+                worker.getId(),
+                worker.getFullName(),
+                worker.getInitials(),
+                worker.getPost(),
+                worker.getWorkgroup() != null ? worker.getWorkgroup().getId() : 0,
+                worker.isCanSign()
+        );
     }
 
     public Worker toWorker() {
-        Worker worker = new Worker();
-        worker.setFullName(getFullName());
-        worker.setInitials(getInitials());
-        worker.setPost(getPost());
-        worker.setWorkgroup(new Workgroup(getWorkgroupId()));
-        worker.setCanSign(isCanSign());
-
-        return worker;
+        return new Worker(
+                id,
+                fullName,
+                initials,
+                post,
+                workgroupId == 0 ? null : new Workgroup(workgroupId),
+                canSign
+        );
     }
 }

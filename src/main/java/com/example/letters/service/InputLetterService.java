@@ -94,6 +94,7 @@ public class InputLetterService {
         inputLetter.setYear(LocalDateTime.now().getYear());
 
         inputLetter.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
+
         inputLetterRepository.create(inputLetter);
     }
 }

@@ -118,6 +118,10 @@ class FileUploader {
         e.stopPropagation();
     }
 
+    get file() {
+        return this.options.fileInput.files[0];
+    }
+
     set element(value) {
         this.options.element = value;
     }

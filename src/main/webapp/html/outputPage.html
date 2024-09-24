@@ -28,74 +28,76 @@
             </ul>
         </nav>
     </header>
-    <section class="letter-section">
-        <div class="fields">
-            <div class="custom-input">
-                <label for="ivc-num">Номер исходящего ИВЦ ЖА</label>
-                <div class="field-container">
-                    <input id="ivc-num" type="text">
-                    <p id="ivc-num-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
+    <main>
+        <section class="letter-section">
+            <div class="fields">
+                <div class="custom-input">
+                    <label for="ivc-num">Номер исходящего ИВЦ ЖА</label>
+                    <div class="field-container">
+                        <input id="ivc-num" type="text">
+                        <p id="ivc-num-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
+                    </div>
                 </div>
+                <div class="custom-input">
+                    <label for="easd-num" class="custom-label custom-label-right">Номер ЕАСД</label>
+                    <input id="easd-num" type="text">
+                </div>
+                <div class="dividing-line"></div>
+                <div class="custom-date">
+                    <label for="registration-date">Дата регистрации</label>
+                    <input id="registration-date" type="date" value="2024-07-09" />
+                </div>
+                <div class="dividing-line"></div>
+                <div class="custom-select">
+                    <label for="address-select">Куда направлено письмо</label>
+                    <select name="address" id="address-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
+                <div class="custom-select">
+                    <label for="participant-select">Кому направлено письмо</label>
+                    <select name="participant" id="participant-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
+                <div class="custom-select">
+                    <label for="signer-select">Подписант</label>
+                    <select name="signers" id="signer-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
+                <div class="custom-select">
+                    <label for="executor-select">Исполнитель</label>
+                    <select name="executors" id="executor-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
+                <div class="multiselect">
+                    <label for="tags">Теги</label>
+                    <select id="tags" name="tags"></select>
+                </div>
+                <div class="dividing-line"></div>
+                <div class="custom-textarea text-area-small">
+                    <label for="topic">Тема</label>
+                    <textarea id="topic"></textarea>
+                </div>
+                <div class="custom-textarea">
+                    <label for="note">Примечание</label>
+                    <textarea id="note"></textarea>
+                </div>
+                <div class="custom-checkbox">
+                    <input id="prilojenie" type="checkbox">
+                    <label for="prilojenie">Приложение</label>
+                </div>
+                <div class="custom-checkbox">
+                    <input id="reserve" type="checkbox">
+                    <label for="reserve">Резерв</label>
+                </div>
+                <div class="dividing-line"></div>
+                <div id="file-uploader"></div>
             </div>
-            <div class="custom-input">
-                <label for="easd-num" class="custom-label custom-label-right">Номер ЕАСД</label>
-                <input id="easd-num" type="text">
-            </div>
-            <div class="dividing-line"></div>
-            <div class="custom-date">
-                <label for="registration-date">Дата регистрации</label>
-                <input id="registration-date" type="date" value="2024-07-09" />
-            </div>
-            <div class="dividing-line"></div>
-            <div class="custom-select">
-                <label for="address-select">Куда направлено письмо</label>
-                <select name="address" id="address-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-            <div class="custom-select">
-                <label for="participant-select">Кому направлено письмо</label>
-                <select name="participant" id="participant-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-            <div class="custom-select">
-                <label for="signer-select">Подписант</label>
-                <select name="signers" id="signer-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-            <div class="custom-select">
-                <label for="executor-select">Исполнитель</label>
-                <select name="executors" id="executor-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                </select>
-            </div>
-            <div class="multiselect">
-                <label for="tags">Теги</label>
-                <select id="tags" name="tags"></select>
-            </div>
-            <div class="dividing-line"></div>
-            <div class="custom-textarea text-area-small">
-                <label for="topic">Тема</label>
-                <textarea id="topic"></textarea>
-            </div>
-            <div class="custom-textarea">
-                <label for="note">Примечание</label>
-                <textarea id="note"></textarea>
-            </div>
-            <div class="custom-checkbox">
-                <input id="prilojenie" type="checkbox">
-                <label for="prilojenie">Приложение</label>
-            </div>
-            <div class="custom-checkbox">
-                <input id="reserve" type="checkbox">
-                <label for="reserve">Резерв</label>
-            </div>
-            <div class="dividing-line"></div>
-            <div id="file-uploader"></div>
-        </div>
-    </section>
+        </section>
+    </main>
     <div class="horizontal-view">
         <label>
             <input id="is-answer" type="checkbox">
@@ -136,46 +138,6 @@
             <select name="doc-num" id="input-select" disabled>
                 <option value="" disabled selected hidden>Нет писем</option>
             </select>
-        </div>
-    </div>
-    <div class="horizontal-view">
-        <button onclick="saveDocument()">
-            Сохранить
-        </button>
-    </div>
-    <div class="modal" id="modal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary">Сохранить</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal" id="modal2" tabindex="-1">
-        <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Ошибка</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                </div>
-            </div>
         </div>
     </div>
 </body>

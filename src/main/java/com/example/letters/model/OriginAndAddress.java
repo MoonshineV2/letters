@@ -1,6 +1,7 @@
 package com.example.letters.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Table(schema = "letter", name = "origins_adresses")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class OriginAndAddress {
 
     @Id

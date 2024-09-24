@@ -74,7 +74,6 @@ public class InputLetterController {
     @Consumes("application/json")
     public Response create(InputLetterDto inputLetterDto) {
         inputLetterService.create(inputLetterDto.toInputLetter());
-
         return Response.ok().build();
     }
 
