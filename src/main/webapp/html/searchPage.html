@@ -13,123 +13,133 @@
     <script src="../js/table.js"></script>
 </head>
 <body>
-<header class="header">
-    <nav>
-        <ul>
-            <li>
-                <a href="http://localhost:8080/letters/api/pages/input" id="input-ref">Входящие</a>
-            </li>
-            <li>
-                <a href="http://localhost:8080/letters/api/pages/output" id="output-ref">Исходящие</a>
-            </li>
-            <li class="li-selected">
-                <a href='http://localhost:8080/letters/api/pages/search' id="search-ref">Поиск</a>
-            </li>
-        </ul>
-    </nav>
-    <div id="header-filters" class="header-filters hidden" onclick="showFilterSection()">
-        <p class="filters-text">
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:ВходящиеТип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-            Тип писем:Входящие
-        </p>
-        <img class="filters-arrow" src="../images/arrow-down.svg" alt="">
-    </div>
-</header>
-<main>
-    <section id="filter-section" class="filter-section">
-        <h1>
-            Фильтры
-        </h1>
-        <div class="dividing-line dividing-down"></div>
-        <div class="fields">
-            <div class="custom-select">
-                <label for="letterType-select">Тип писем</label>
-                <select name="letterType" id="letterType-select">
-                    <option value="" disabled selected hidden>Выберите вариант</option>
-                    <option value="input">Входящие</option>
-                    <option value="output">Исходящие</option>
-                </select>
-            </div>
-            <div class="dividing-line dividing-up"></div>
-            <div class="custom-input">
-                <label for="ivc-num">Номер ИВЦ ЖА</label>
-                <input id="ivc-num" type="text" placeholder="Без фильтра">
-            </div>
-            <div class="custom-input">
-                <label for="doc-num">Номер письма</label>
-                <input id="doc-num" type="text" placeholder="Без фильтра">
-            </div>
-            <div class="custom-input">
-                <label for="easd-num">Номер ЕАСД</label>
-                <input id="easd-num" type="text" placeholder="Без фильтра">
-            </div>
-            <div class="custom-input">
-                <label for="answer-num">Ответ на</label>
-                <input id="answer-num" type="text" placeholder="Без фильтра">
-            </div>
-            <div class="dividing-line dividing-up"></div>
-            <div class="date-grid">
-                <div class="custom-date">
-                    <label for="registration-date">Дата регистрации (от)</label>
-                    <input class="custom-date" id="registration-date" type="date"/>
-                </div>
-                <div class="custom-date">
-                    <label for="registration-date-2">Дата регистрации (до)</label>
-                    <input class="custom-date" id="registration-date-2" type="date"/>
-                </div>
-            </div>
-            <div class="dividing-line dividing-up"></div>
-            <div class="multiselect">
-                <label for="origin-select">Источник</label>
-                <select name="origins" id="origin-select">
-                    <option value="" selected>Без фильтра</option>
-                </select>
-            </div>
-            <div class="multiselect">
-                <label for="signer-select">Подписант</label>
-                <select name="signers" id="signer-select">
-                    <option value="" selected>Без фильтра</option>
-                </select>
-            </div>
-            <div class="multiselect">
-                <label for="executor-select">Исполнитель</label>
-                <select name="executors" id="executor-select">
-                    <option value="" selected>Без фильтра</option>
-                </select>
-            </div>
-            <div class="multiselect">
-                <label for="tags">Теги</label>
-                <select id="tags" name="tags">
-                    <option value="" selected>Без фильтра</option>
-                </select>
-            </div>
+    <header class="header">
+        <nav>
+            <ul>
+                <li>
+                    <a href="http://localhost:8080/letters/api/pages/input" id="input-ref">Входящие</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8080/letters/api/pages/output" id="output-ref">Исходящие</a>
+                </li>
+                <li class="li-selected">
+                    <a href='http://localhost:8080/letters/api/pages/search' id="search-ref">Поиск</a>
+                </li>
+            </ul>
+        </nav>
+        <div id="header-filters" class="header-filters hidden" onclick="showFilterSection()">
+            <p class="filters-text">
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:ВходящиеТип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+                Тип писем:Входящие
+            </p>
+            <img class="filters-arrow" src="../images/arrow-down.svg" alt="">
         </div>
-        <div class="dividing-line dividing-up"></div>
-        <button class="letter-save-btn" onclick="findLetters()">
-            Найти
-        </button>
-    </section>
-    <section class="table-section">
-        <div class="table-container">
-            <table id="table">
+    </header>
+    <main>
+        <section id="filter-section" class="filter-section">
+            <h1>
+                Фильтры
+            </h1>
+            <div class="dividing-line dividing-down"></div>
+            <div class="fields">
+                <div class="custom-select">
+                    <label for="letterType-select">Тип писем</label>
+                    <select name="letterType" id="letterType-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                        <option value="input">Входящие</option>
+                        <option value="output">Исходящие</option>
+                    </select>
+                </div>
+                <div class="dividing-line dividing-up"></div>
+                <div class="custom-input">
+                    <label for="ivc-num">Номер ИВЦ ЖА</label>
+                    <input id="ivc-num" type="text" placeholder="Без фильтра">
+                </div>
+                <div class="custom-input">
+                    <label for="doc-num">Номер письма</label>
+                    <input id="doc-num" type="text" placeholder="Без фильтра">
+                </div>
+                <div class="custom-input">
+                    <label for="easd-num">Номер ЕАСД</label>
+                    <input id="easd-num" type="text" placeholder="Без фильтра">
+                </div>
+                <div class="custom-input">
+                    <label for="answer-num">Ответ на</label>
+                    <input id="answer-num" type="text" placeholder="Без фильтра">
+                </div>
+                <div class="dividing-line dividing-up"></div>
+                <div class="date-grid">
+                    <div class="custom-date">
+                        <label for="registration-date">Дата регистрации (от)</label>
+                        <input class="custom-date" id="registration-date" type="date"/>
+                    </div>
+                    <div class="custom-date">
+                        <label for="registration-date-2">Дата регистрации (до)</label>
+                        <input class="custom-date" id="registration-date-2" type="date"/>
+                    </div>
+                </div>
+                <div class="dividing-line dividing-up"></div>
+                <div class="multiselect">
+                    <label for="origin-select">Источник</label>
+                    <select name="origins" id="origin-select">
+                        <option value="" selected>Без фильтра</option>
+                    </select>
+                </div>
+                <div class="multiselect">
+                    <label for="signer-select">Подписант</label>
+                    <select name="signers" id="signer-select">
+                        <option value="" selected>Без фильтра</option>
+                    </select>
+                </div>
+                <div class="multiselect">
+                    <label for="executor-select">Исполнитель</label>
+                    <select name="executors" id="executor-select">
+                        <option value="" selected>Без фильтра</option>
+                    </select>
+                </div>
+                <div class="multiselect">
+                    <label for="tags">Теги</label>
+                    <select id="tags" name="tags">
+                        <option value="" selected>Без фильтра</option>
+                    </select>
+                </div>
+            </div>
+            <div class="dividing-line dividing-up"></div>
+            <button class="letter-save-btn" onclick="findLetters()">
+                Найти
+            </button>
+        </section>
+        <section id="table-section" class="table-section">
+            <div class="table-upper">
+                <button class="table-customization-btn">
+                    Настройка таблицы
+                </button>
+            </div>
+            <div class="table-container">
+                <table id="table" class="resizable">
 
-            </table>
-        </div>
-    </section>
-</main>
+                </table>
+            </div>
+        </section>
+        <!--<aside class="right-side-panel">
+            <div>
+                Боковая панель
+            </div>
+        </aside>-->
+    </main>
 </body>
 </html>

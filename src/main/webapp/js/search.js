@@ -222,4 +222,9 @@ async function findLetters() {
 
     filterSection.classList.add("hidden");
     headerFilters.classList.remove("hidden");
+
+    const a = document.createElement("a");
+    a.href = "#table-section";
+    a.click();
+    a.remove();
 }

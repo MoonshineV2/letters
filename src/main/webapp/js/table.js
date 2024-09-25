@@ -19,7 +19,7 @@ class Table {
         this.initialize();
         this.eventHandlers();
 
-        console.log(this.data);
+        //console.log(this.data);
     }
 
 
@@ -35,6 +35,7 @@ class Table {
         this.body = tbodyHTML;
 
         this.InitUI();
+        this.resizableGrid();
 
         //console.log(this.data);
     }
@@ -48,10 +49,14 @@ class Table {
         Object.keys(this.data[0]).forEach(col => {
             let th = document.createElement("th");
             if (Object.keys(this.locale).includes(col)) {
-                th.innerHTML = this.locale[col];
+                const p = document.createElement("p");
+                p.innerText = this.locale[col];
+                th.appendChild(p);
             }
             else {
-                th.innerHTML = col;
+                const p = document.createElement("p");
+                p.innerText = col
+                th.appendChild(p);
             }
             th.scope = "col";
             trHTML.appendChild(th);
@@ -76,7 +81,7 @@ class Table {
                     const span = document.createElement("span");
                     td.appendChild(span);
                     const image = document.createElement("img");
-                    image.src = "../icons/edit.svg";
+                    image.src = "../images/edit.svg";
                     image.onclick = () => {
                         this.modalToModify;
                     }
@@ -95,14 +100,14 @@ class Table {
     eventHandlers() {
         for (let tr of this.header.children) {
             for (let cell of tr.children) {
-                cell.onclick = () => {
+                cell.children[0].onclick = () => {
                     if (this.data.length === 0 || this.data.length === 1) return;
                     let field;
-                    if (Object.values(this.locale).includes(cell.innerHTML)) {
-                        field = Object.keys(this.locale).find(key => this.locale[key] === cell.innerHTML);
+                    if (Object.values(this.locale).includes(cell.children[0].innerText)) {
+                        field = Object.keys(this.locale).find(key => this.locale[key] === cell.children[0].innerText);
                     }
                     else {
-                        field = cell.innerHTML;
+                        field = cell.children[0].innerText;
                     }
 
                     if (cell.classList.contains("sort-asc")) {
@@ -270,6 +275,96 @@ class Table {
             const elementToSort = rows.find(row => parseInt(row.getElementsByTagName("th")[0].innerHTML) === el.id);
             this.body.appendChild(elementToSort);
         })
+    }
+
+    resizableGrid() {
+        const row = this.element.getElementsByTagName('tr')[0],
+            cols = row ? row.children : undefined;
+        if (!cols) return;
+
+
+        let tableHeight = this.element.offsetHeight;
+
+        for (let i = 0; i < cols.length; i++) {
+            let div = createDiv(tableHeight);
+            cols[i].appendChild(div);
+            cols[i].style.position = 'relative';
+            setListeners(this.element, div);
+        }
+
+        function setListeners(table, div) {
+            let pageX, curCol, nxtCol, curColWidth, nxtColWidth, tableWidth;
+
+            div.addEventListener('mousedown', function(e) {
+
+                tableWidth = table.offsetWidth;
+                curCol = e.target.parentElement;
+                nxtCol = curCol.nextElementSibling;
+                pageX = e.pageX;
+
+                let padding = paddingDiff(curCol);
+
+                curColWidth = curCol.offsetWidth - padding;
+                //  if (nxtCol)
+                //nxtColWidth = nxtCol.offsetWidth - padding;
+            });
+
+            div.addEventListener('mouseover', function(e) {
+                e.target.style.borderRight = '2px solid #0000ff';
+            })
+
+            div.addEventListener('mouseout', function(e) {
+                e.target.style.borderRight = '';
+            })
+
+            document.addEventListener('mousemove', function(e) {
+                if (curCol) {
+                    let diffX = e.pageX - pageX;
+
+                    // if (nxtCol)
+                    //nxtCol.style.width = (nxtColWidth - (diffX)) + 'px';
+
+                    curCol.style.width = (curColWidth + diffX) + 'px';
+                    table.style.width = tableWidth + diffX + "px"
+                }
+            });
+
+            document.addEventListener('mouseup', function(e) {
+                curCol = undefined;
+                nxtCol = undefined;
+                pageX = undefined;
+                nxtColWidth = undefined;
+                curColWidth = undefined
+            });
+        }
+
+        function createDiv(height) {
+            let div = document.createElement('div');
+            div.style.top = 0;
+            div.style.right = 0;
+            div.style.width = '5px';
+            div.style.position = 'absolute';
+            div.style.cursor = 'col-resize';
+            div.style.userSelect = 'none';
+            div.style.height = height + 'px';
+            return div;
+        }
+
+        function paddingDiff(col) {
+
+            if (getStyleVal(col, 'box-sizing') == 'border-box') {
+                return 0;
+            }
+
+            let padLeft = getStyleVal(col, 'padding-left');
+            let padRight = getStyleVal(col, 'padding-right');
+            return (parseInt(padLeft) + parseInt(padRight));
+
+        }
+
+        function getStyleVal(elm, css) {
+            return (window.getComputedStyle(elm, null).getPropertyValue(css))
+        }
     }
 
     set header(value) {
