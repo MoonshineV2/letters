@@ -141,4 +141,19 @@ public class WebFilesController {
         }
         return Response.ok(in).build();
     }
+
+    @GET
+    @Path("images/rows.svg")
+    @Produces("image/svg+xml")
+    public Response getRowsSVGFile() {
+        String filePath = servletContext.getRealPath("/images/rows.svg");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in).build();
+    }
 }

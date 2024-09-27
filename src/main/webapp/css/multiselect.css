@@ -5,7 +5,6 @@
     position: relative;
     width: 100%;
     user-select: none;
-    min-width: 150px;
 }
 .multi-select .multi-select-header {
     outline: 1px solid #dee2e6;

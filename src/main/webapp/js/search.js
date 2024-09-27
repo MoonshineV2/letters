@@ -20,6 +20,89 @@ window.onload = async function () {
 
     filterSection = document.getElementById("filter-section");
     headerFilters = document.getElementById('header-filters');
+
+    const options = document.getElementById("table-customization-options");
+    Array.from(options.children).forEach((e) => {
+        e.onclick = () => {
+            e.classList.toggle("table-customization-option-selected");
+        }
+    })
+
+    let dragSrcEl;
+
+    function handleDragStart(e) {
+        //console.log("parent dragstart");
+        e.target.style.opacity = '0.4';
+
+        dragSrcEl = this;
+    }
+
+    function handleDragEnd(e) {
+        //console.log("parent dragend");
+        e.target.style.opacity = '1';
+
+        items.forEach(function (item) {
+            item.classList.remove('over');
+        });
+
+        e.target.classList.remove('over');
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        //console.log("parent dragenter");
+        this.classList.add('events-disabled');
+        this.classList.add('over');
+    }
+
+    function handleDragLeave(e) {
+        //console.log("parent dragleave");
+        this.classList.remove('events-disabled');
+        this.classList.remove('over');
+    }
+
+    function handleDrop(e) {
+        e.stopPropagation(); // stops the browser from redirecting.
+        this.classList.remove('events-disabled');
+        if (this === dragSrcEl) {
+            return ;
+        }
+        swapElements(this, dragSrcEl)
+
+        return false;
+    }
+
+    let items = document.querySelectorAll('.table-customization-options .table-customization-option');
+    items.forEach(function(item) {
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragover', handleDragOver);
+        item.addEventListener('dragenter', handleDragEnter);
+        item.addEventListener('dragleave', handleDragLeave);
+        item.addEventListener('dragend', handleDragEnd);
+        item.addEventListener('drop', handleDrop);
+    });
+
+
+    document.querySelector(".table-customization-btn").onclick = (e) => {
+        e.currentTarget.classList.toggle("table-customization-btn-active");
+    }
+}
+
+function swapElements(node1, node2) {
+    const afterNode2 = node2.nextElementSibling;
+    const parent = node2.parentNode;
+
+    node1.replaceWith(node2);
+    if (node1 === afterNode2) {
+        parent.insertBefore(node1, node2);
+    }
+    else {
+        parent.insertBefore(node1, afterNode2);
+    }
 }
 
 async function getInputLettersData() {
