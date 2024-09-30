@@ -698,3 +698,65 @@ function openModalNote(modalToShow, linkedInput, headerText) {
 
     modalShowInstance.toggle();
 }
+
+class Modal {
+
+    headerName = "";
+    body = '';
+    footer = '';
+    constructor(options = {}) {
+        if (options.headerName) {
+            this.headerName = options.headerName;
+        }
+
+        if (options.body) {
+            this.body = options.body;
+        }
+
+        if (options.footer) {
+            this.footer = options.footer;
+        }
+
+        this.initialize();
+    }
+
+    initialize() {
+        const modal = document.createElement("div");
+        modal.classList.add("modal");
+        document.getElementsByTagName("body")[0].appendChild(modal);
+        document.getElementsByTagName("body")[0].style.overflow = "hidden";
+
+
+        let background = '<div class="modal-background"></div>';
+        let section = `
+            <div class="letter-section section-modal">
+                <header>
+                <h1>${this.headerName}</h1>
+                <img class="modal-close" src="../images/close.svg" alt="Иконка закрытия модального окна">
+                </header>
+                <div class="dividing-line"></div>
+                    ${this.body}
+                <div class="dividing-line"></div>
+                <footer>
+                    ${this.footer}
+                </footer>
+            </div>
+        `;
+
+        modal.innerHTML = background + section;
+
+        modal.querySelector(".modal-background").onclick = () => {
+            modal.remove();
+            document.getElementsByTagName("body")[0].style.overflow = "";
+        }
+
+        modal.querySelector(".modal-close").onclick = () => {
+            modal.remove();
+            document.getElementsByTagName("body")[0].style.overflow = "";
+        }
+
+        modal.querySelectorAll("[data-multi-select]").forEach((ms) => {
+            new MultiSelect(ms);
+        })
+    }
+}

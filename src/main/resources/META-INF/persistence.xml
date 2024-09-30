@@ -15,7 +15,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         &lt;!&ndash; Register all models &ndash;&gt;
-        <class>com.example.letters.model.InputLetter</class>
+        <class>com.example.letters.model.Entities</class>
         <class>com.example.letters.model.Participant</class>
         <class>com.example.letters.model.Worker</class>
         <class>com.example.letters.model.Workgroup</class>

@@ -1,19 +1,33 @@
 class Table {
+
+    locale = {};
+    tableCellsResolver = {};
+
     constructor(element, data, options = {}) {
+
+        if (!data) {
+            return;
+        }
+        if (data.length === 0) {
+            return;
+        }
+
         this.options = options;
         this.element = element;
         this.data = data;
 
-        if (!this.options.locale) {
-            this.options.locale = {}
+        if (options.locale) {
+            this.locale = options.locale;
+        }
+        else if (data[0].constructor.locale) {
+            this.locale = data[0].constructor.locale;
         }
 
-        if (!this.options.fieldsPreset) {
-            this.options.fieldsPreset = {};
+        if (options.tableCellsResolver) {
+            this.tableCellsResolver = options.tableCellsResolver;
         }
-
-        if (!this.options.modalToModify) {
-            this.options.modalToModify = function (){console.log("modal")}
+        else if (data[0].constructor.tableCellsResolver) {
+            this.tableCellsResolver = data[0].constructor.tableCellsResolver;
         }
 
         this.initialize();
@@ -68,8 +82,8 @@ class Table {
             for (const [key, value] of Object.entries(el)) {
                 let td = document.createElement("td");
                 if (value !== null && value !== "") {
-                    if (Object.keys(this.fieldsPreset).includes(key)) {
-                        this.fieldsPreset[key](td, el);
+                    if (Object.keys(this.tableCellsResolver).includes(key)) {
+                        this.tableCellsResolver[key](td, el);
 
                     }
                     else {
@@ -83,7 +97,7 @@ class Table {
                     const image = document.createElement("img");
                     image.src = "../images/edit.svg";
                     image.onclick = () => {
-                        this.modalToModify;
+                        el.editFormInstance();
                     }
                     span.appendChild(image);
                 }
@@ -406,244 +420,10 @@ class Table {
     get data() {
         return this.options.data;
     }
-
-    set fieldsPreset(value) {
-        this.options.fieldsPreset = value;
-    }
-
-    get fieldsPreset() {
-        return this.options.fieldsPreset;
-    }
-
     get modalToModify() {
         return this.options.modalToModify;
     }
 }
 
 function getInputLettersPreset() {
-    return {
-        locale: {
-            id:"Id",
-            year:"Год",
-            numberIVC:"Номер ИВЦ ЖА",
-            createDate:"Дата создания",
-            registrationDate:"Дата регистрации",
-            postuplenieDate:"Дата поступления",
-            documentDate:"Дата письма",
-            documentNumber:"Номер письма",
-            documentName:"Название файла",
-            documentType:"Тип документа",
-            origin:"Источник",
-            signer:"Подписант",
-            executor:"Исполнитель",
-            easdNumber:"Номер ЕАСД",
-            outputLetterId:"Исходящее письмо",
-            answer:"Ответ",
-            prilojenie:"Приложение",
-            topic:"Тема",
-            tagIds:"Теги",
-            note:"Примечание",
-            targetWorker:"Кому расписано",
-            reserve:"Резерв",
-            file:"Файл"
-        },
-        fieldsPreset: {
-            createDate: function (td, letter) {
-                td.innerHTML = new Date(letter.createDate).toISOString().split('T')[0];
-            },
-            registrationDate: function (td, letter) {
-                td.innerHTML = new Date(letter.registrationDate).toISOString().split('T')[0];
-            },
-            postuplenieDate: function (td, letter) {
-                td.innerHTML = new Date(letter.postuplenieDate).toISOString().split('T')[0];
-            },
-            documentDate: function (td, letter) {
-                td.innerHTML = new Date(letter.documentDate).toISOString().split('T')[0];
-            },
-            documentName: function (td, letter) {
-                const aEl = document.createElement("a");
-                aEl.href = `http://localhost:8080/letters/api/inputLetters/${letter.id}/file`;
-                aEl.innerHTML = letter.documentName;
-                td.appendChild(aEl);
-            },
-            documentType: function (td, letter) {
-                td.innerHTML = letter.documentType.name;
-            },
-            origin: function (td, letter) {
-                const aHTML = document.createElement("a");
-                td.appendChild(aHTML);
-                aHTML.innerHTML = letter.origin.shortName;
-            },
-            signer: function (td, letter) {
-                const aHTML = document.createElement("a");
-                td.appendChild(aHTML);
-                aHTML.innerHTML = letter.signer.initials;
-            },
-            executor: function (td, letter) {
-                td.innerHTML = letter.executor.initials;
-            },
-            answer: function (td, letter) {
-                if (letter.answer === "true" || letter.answer === true) {
-                    td.innerHTML = "Да";
-                }
-                else {
-                    td.innerHTML = "Нет";
-                }
-            },
-            prilojenie: function (td, letter) {
-                if (letter.prilojenie === "true" || letter.prilojenie === true) {
-                    td.innerHTML = "Да";
-                }
-                else {
-                    td.innerHTML = "Нет";
-                }
-            },
-            targetWorker: function (td, letter) {
-                td.innerHTML = letter.targetWorker.initials;
-            },
-            reserve: function (td, letter) {
-                if (letter.reserve === "true" || letter.reserve === true) {
-                    td.innerHTML = "Да";
-                }
-                else {
-                    td.innerHTML = "Нет";
-                }
-            },
-            tags: function (td, letter) {
-                let string = "";
-                letter.tags.tagsArray.forEach(tag => {
-                    string += tag.text + ", ";
-                })
-                if (letter.tags.tagsArray.length > 0) {
-                    string = string.substring(0, string.length - 2);
-                }
-                td.innerHTML = string;
-            }
-        }
-    }
-}
-
-class Origin {
-    id;
-    name;
-    shortName = "";
-    kodADM;
-
-    constructor(origin) {
-        this.id = origin.id;
-        this.name = origin.name;
-        this.shortName = origin.shortName;
-        this.kodADM = origin.kodADM;
-    }
-
-    static compare(o1, o2) {
-        if (!(o1 instanceof Origin)) {
-            return -1;
-        }
-        if (!(o2 instanceof Origin)) {
-            return 1;
-        }
-
-        return o1.shortName.localeCompare(o2.shortName);
-    }
-}
-
-class Participant {
-    id;
-    fullname;
-    initials = "";
-    post;
-    canSign;
-
-    constructor(participant) {
-        this.id = participant.id;
-        this.fullname = participant.fullname;
-        this.initials = participant.initials;
-        this.post = participant.post;
-        this.canSign = participant.canSign;
-    }
-
-    static compare(o1, o2) {
-        if (!(o1 instanceof Participant)) {
-            return -1;
-        }
-        if (!(o2 instanceof Participant)) {
-            return 1;
-        }
-
-        return o1.initials.localeCompare(o2.initials);
-    }
-}
-
-class Worker {
-    id;
-    fullname;
-    initials = "";
-    post;
-    canSign;
-    workgroupId;
-    workgroupName;
-
-    constructor(worker) {
-        this.id = worker.id;
-        this.fullname = worker.fullname;
-        this.initials = worker.initials;
-        this.post = worker.post;
-        this.canSign = worker.canSign;
-        this.workgroupId = worker.workgroupId;
-        this.workgroupName = worker.workgroupName;
-    }
-
-    static compare(o1, o2) {
-        if (!(o1 instanceof Worker)) {
-            return -1;
-        }
-        if (!(o2 instanceof Worker)) {
-            return 1;
-        }
-
-        return o1.initials.localeCompare(o2.initials);
-    }
-}
-
-class DocumentType {
-
-    id;
-    name = "";
-
-    constructor(documentType) {
-        this.id = documentType.id;
-        this.name = documentType.name;
-    }
-
-    static compare(o1, o2) {
-        if (!(o1 instanceof DocumentType)) {
-            return -1;
-        }
-        if (!(o2 instanceof DocumentType)) {
-            return 1;
-        }
-
-        return o1.name.localeCompare(o2.name);
-    }
-}
-
-class Tags {
-
-    tagsArray;
-
-    constructor(tags) {
-        this.tagsArray = tags;
-    }
-
-    static compare(o1, o2) {
-        if (!(o1 instanceof Tags)) {
-            return -1;
-        }
-        if (!(o2 instanceof Tags)) {
-            return 1;
-        }
-
-        return o1.tagsArray.length - o2.tagsArray.length;
-    }
 }

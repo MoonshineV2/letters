@@ -3,11 +3,35 @@ let yearMultiSelect;
 let tagsMultiSelect;
 let fileUploader;
 const outputLetters = {};
-
 let attentionContainer;
-window.addEventListener("load", async () => {
-    autoInsertRegistrationDate();
 
+let originsAndAddresses;
+let signers;
+let executors;
+let workers;
+let documentTypes;
+let actualNumberIVC;
+let tags;
+
+let requests = Promise.all([
+    getOriginsAndAddressesData(),
+    getSignersData(),
+    getExecutorsData(),
+    getWorkersData(),
+    getDocumentTypesData(),
+    getActualNumberIVC(),
+    getTagsData()
+]).then((data) => {
+    originsAndAddresses = data[0];
+    signers = data[1];
+    executors = data[2];
+    workers = data[3];
+    documentTypes = data[4];
+    actualNumberIVC = data[5];
+    tags = data[6];
+})
+
+window.addEventListener("load", async () => {
     monthMultiSelect = new MultiSelect(document.getElementById("months"), {
         onChange: function(value, text, element) {
             onOutputYearOrMonthChange();
@@ -18,31 +42,26 @@ window.addEventListener("load", async () => {
             onOutputYearOrMonthChange();
         }
     })
-
     fileUploader = new FileUploader(document.getElementById("file-uploader"));
-
-    Promise.all([
-        getOriginsData(),
-        getSignersData(),
-        getExecutorsData(),
-        getWorkersData(),
-        getDocumentTypesData(),
-        getActualNumberIVC()
-    ]);
-
-    tagsMultiSelect = await getTags();
-
     attentionContainer = document.getElementById("attentions-container");
+
+    await requests;
+
+    document.getElementById("input-ref").classList.add("li-selected");
+
+    tagsMultiSelect = await getTagsMultiselectInstance();
+
+    setOriginsAndAddressesOptions();
+    setSignersOptions();
+    setExecutorsOptions();
+    setWorkersOptions();
+    setDocumentTypesOptions();
+    setActualNumberIVC();
+    autoInsertRegistrationDate();
 })
 
-async function getOriginsData() {
-    let response = await fetch('/letters/api/originsAndAddresses');
-    const originsAndAddresses = await response.json();
-
-    const modal = document.getElementById("modal");
+function setOriginsAndAddressesOptions() {
     const select = document.getElementById("origin-select");
-    const modalError = document.getElementById('modal2');
-
 
     originsAndAddresses.forEach(element => {
         const option = document.createElement("option");
@@ -58,32 +77,14 @@ async function getOriginsData() {
 
     select.onchange = () => {
         if (select.value === 'other') {
-            openModalCreateOrigin(modal, select, modalError);
+            Origin.createFormInstance();
         }
     }
 }
-
-function changeTopic() {
-    const modal = document.getElementById("modal");
-    const input = document.getElementById("topic");
-
-    openModalTopic(modal, input, "Редактирование темы");
-}
-function changeNote() {
-    const modal = document.getElementById("modal");
-    const input = document.getElementById("note");
-
-    openModalNote(modal, input, "Редактирование примечания");
-}
-
-async function getSignersData() {
-    let response = await (await fetch('/letters/api/participants/signers')).json();
-
-    const modal = document.getElementById("modal");
+function setSignersOptions() {
     const select = document.getElementById("signer-select");
-    const modalError = document.getElementById("modal2");
 
-    response.forEach(element => {
+    signers.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.initials
         option.value = element.id
@@ -108,12 +109,10 @@ async function getSignersData() {
 
 }
 
-async function getDocumentTypesData() {
-    let response = await (await fetch('/letters/api/documentTypes')).json();
-
+function setDocumentTypesOptions() {
     const select = document.getElementById("doc-type-select");
 
-    response.forEach(element => {
+    documentTypes.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.name
         option.value = element.id
@@ -121,14 +120,10 @@ async function getDocumentTypesData() {
     })
 }
 
-async function getExecutorsData() {
-    let response = await (await fetch('/letters/api/participants')).json();
-
-    const modal = document.getElementById("modal")
+function setExecutorsOptions() {
     const select = document.getElementById("executor-select");
-    const modalError = document.getElementById("modal2");
 
-    response.forEach(element => {
+    executors.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.initials
         option.value = element.id
@@ -152,14 +147,10 @@ async function getExecutorsData() {
     }
 }
 
-async function getWorkersData() {
-    let response = await (await fetch('/letters/api/workers')).json();
-
-    const modal = document.getElementById("modal");
+function setWorkersOptions() {
     const select = document.getElementById("target-select");
-    const modalError = document.getElementById("modal2");
 
-    response.forEach(element => {
+    workers.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.initials
         option.value = element.id
@@ -178,10 +169,9 @@ async function getWorkersData() {
     }
 }
 
-async function getTags() {
-    let response = await (await fetch('/letters/api/tags')).json();
+function getTagsMultiselectInstance() {
     const data = [];
-    response.forEach(element => {
+    tags.forEach(element => {
         data.push({
             value: element.id,
             text: element.text
@@ -197,9 +187,8 @@ async function getTags() {
     })
 }
 
-async function getActualNumberIVC() {
-    let response = await (await fetch('/letters/api/inputLetters/actualNumberIVC')).json();
-    document.getElementById("ivc-num").value = response.numberIVC;
+function setActualNumberIVC() {
+    document.getElementById("ivc-num").value = actualNumberIVC;
     document.getElementById("ivc-num-auto-insert-info").hidden = false;
     document.getElementById("ivc-num").oninput = () => {
         document.getElementById("ivc-num-auto-insert-info").hidden = true;
@@ -299,29 +288,6 @@ async function saveDocument() {
             outputLetterId: outputSelect.value
         }),
     });
-
-    console.log(JSON.stringify({
-        numberIVC: numIVC,
-        registrationDate: registrationDate,
-        postuplenieDate: postuplenieDate,
-        documentDate: documentDate,
-        documentNumber: documentNum,
-        documentType: {id:documentType},
-        documentName: documentName,
-        origin: {id:origin},
-        signer: {id:signer},
-        executor: {id:executor},
-        easdNumber: easdNum,
-        answer: isAnswer,
-        prilojenie: prilojenie,
-        topic: topic,
-        tags: tagsMultiSelect.selectedValues,
-        note: note,
-        targetWorker: {id:target},
-        reserve: reserve,
-        file: arrayBufferToBase64(binary),
-        outputLetterId: outputSelect.value
-    }));
 
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}, Response text: ${await response.text()}`);

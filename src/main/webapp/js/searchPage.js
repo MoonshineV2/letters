@@ -8,18 +8,45 @@ let executorMultiSelect;
 let filterSection;
 let headerFilters;
 
+let originsAndAddresses;
+let signers;
+let executors;
+let workers;
+let documentTypes;
+let tags;
+
+let requests = Promise.all([
+    getOriginsAndAddressesData(),
+    getSignersData(),
+    getExecutorsData(),
+    getWorkersData(),
+    getDocumentTypesData(),
+    getTagsData()
+]).then((data) => {
+    originsAndAddresses = data[0];
+    signers = data[1];
+    executors = data[2];
+    workers = data[3];
+    documentTypes = data[4];
+    tags = data[5];
+})
+
 window.onload = async function () {
 
     document.getElementById("registration-date").value = new Date("2017-01-01").toISOString().split('T')[0];
     document.getElementById("registration-date-2").value = new Date(Date.now()).toISOString().split('T')[0];
 
-    originsMultiSelect = await getOriginsData();
-    signerMultiSelect = await getSignersData();
-    tagsMultiSelect = await getTags();
-    executorMultiSelect = await getExecutorsData();
-
     filterSection = document.getElementById("filter-section");
     headerFilters = document.getElementById('header-filters');
+
+    await requests;
+
+    document.getElementById("search-ref").classList.add("li-selected");
+
+    originsMultiSelect = getOriginsMultiselectInstance();
+    signerMultiSelect = getSignersMultiselectInstance();
+    tagsMultiSelect = getTagsMultiselectInstance();
+    executorMultiSelect = getExecutorsMultiselectInstance();
 
     const options = document.getElementById("table-customization-options");
     Array.from(options.children).forEach((e) => {
@@ -133,11 +160,10 @@ async function getOutputLettersData() {
     return data;
 }
 
-async function getOriginsData() {
-    let response = await (await fetch('/letters/api/originsAndAddresses')).json();
+function getOriginsMultiselectInstance() {
     const data = [];
-    response = Object.values(response).sort((a,b) => a.id - b.id);
-    response.forEach(element => {
+    originsAndAddresses = Object.values(originsAndAddresses).sort((a,b) => a.id - b.id);
+    originsAndAddresses.forEach(element => {
         data.push({
             value: element.id,
             text: element.shortName
@@ -152,11 +178,10 @@ async function getOriginsData() {
     })
 }
 
-async function getSignersData() {
-    let response = await (await fetch('/letters/api/participants/signers')).json();
+function getSignersMultiselectInstance() {
     const data = [];
-    response = Object.values(response).sort((a,b) => a.id - b.id);
-    response.forEach(element => {
+    signers = Object.values(signers).sort((a,b) => a.id - b.id);
+    signers.forEach(element => {
         data.push({
             value: element.id,
             text: element.initials
@@ -171,12 +196,10 @@ async function getSignersData() {
         listAll: false
     })
 }
-
-async function getExecutorsData() {
-    let response = await (await fetch('/letters/api/participants')).json();
+function getExecutorsMultiselectInstance() {
     const data = [];
-    response = Object.values(response).sort((a,b) => a.id - b.id);
-    response.forEach(element => {
+    executors = Object.values(executors).sort((a,b) => a.id - b.id);
+    executors.forEach(element => {
         data.push({
             value: element.id,
             text: element.initials
@@ -192,10 +215,9 @@ async function getExecutorsData() {
     })
 }
 
-async function getTags() {
-    let response = await (await fetch('/letters/api/tags')).json();
+function getTagsMultiselectInstance() {
     const data = [];
-    response.forEach(element => {
+    tags.forEach(element => {
         data.push({
             value: element.id,
             text: element.text
@@ -232,34 +254,6 @@ async function findLetters() {
     if (letterType === "input") {
         let data = await getInputLettersData();
 
-        //console.log(ivcNum);
-
-        data.forEach(el => {
-            if (el.origin) {
-                el.origin = new Origin(el.origin);
-            }
-
-            if (el.signer) {
-                el.signer = new Participant(el.signer);
-            }
-
-            if (el.executor) {
-                el.executor = new Participant(el.executor);
-            }
-
-            if (el.documentType) {
-                el.documentType = new DocumentType(el.documentType);
-            }
-
-            if (el.targetWorker) {
-                el.targetWorker = new Worker(el.targetWorker);
-            }
-
-            if (el.tags) {
-                el.tags = new Tags(el.tags);
-            }
-        })
-
         if (ivcNum) {
             data = Object.values(data).filter(el => el.numberIVC === parseInt(ivcNum));
         }
@@ -295,7 +289,12 @@ async function findLetters() {
             data = Object.values(data).filter(el => executorMultiSelect.selectedValues.includes(el.executor.id));
         }
 
-        table = new Table(document.getElementById("table"), data, getInputLettersPreset());
+        const letters = [];
+        data.forEach(el => {
+            letters.push(new InputLetter(el));
+        })
+
+        table = new Table(document.getElementById("table"), letters);
     }
     else if (letterType === "output") {
         let data = await getOutputLettersData();

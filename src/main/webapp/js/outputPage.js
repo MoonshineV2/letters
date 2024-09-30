@@ -30,6 +30,8 @@ window.onload = async function() {
 
     fileUploader = new FileUploader(document.getElementById("file-uploader"));
 
+    document.getElementById("output-ref").classList.add("li-selected");
+
     tagsMultiSelect = await getTags();
     await getOriginsData();
     await getParticipantsData();
