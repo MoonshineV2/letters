@@ -1,6 +1,7 @@
 package com.example.letters.service;
 
 import com.example.letters.model.InputLetter;
+import com.example.letters.model.Participant;
 import com.example.letters.repository.InputLetterRepository;
 import com.example.letters.util.DBFile;
 import jakarta.enterprise.inject.Model;
@@ -49,7 +50,6 @@ public class InputLetterService {
         return inputLetterRepository.getFileById(id).get();
     }
     public void create(InputLetter inputLetter) {
-
         if (inputLetter.getOrigin() == null) {
             throw new RuntimeException("Источник письма не задан");
         }
@@ -96,5 +96,17 @@ public class InputLetterService {
         inputLetter.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
 
         inputLetterRepository.create(inputLetter);
+    }
+
+    public InputLetter update(InputLetter inputLetter) {
+        InputLetter fromDB = inputLetterRepository.findById(inputLetter.getId())
+                .orElseThrow(() -> new RuntimeException("Входящего письма с id=" + inputLetter.getId() + " не существует"));
+        if (inputLetter.getDocumentName() != null) {
+            if (inputLetter.getDocumentName().equals(fromDB.getDocumentName())) {
+                inputLetter.setFile(fromDB.getFile());
+            }
+        }
+
+        return inputLetterRepository.update(inputLetter);
     }
 }

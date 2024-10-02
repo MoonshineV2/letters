@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OriginAndAddressDto {
-    private int id;
-    private String name;
-    private String shortName;
-    private int kodADM;
+    int id;
+    String name;
+    String shortName;
+    int kodADM;
 
     public static OriginAndAddressDto fromOriginAndAddress(OriginAndAddress oa) {
         return new OriginAndAddressDto(

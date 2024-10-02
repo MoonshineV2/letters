@@ -50,4 +50,8 @@ public class InputLetterRepository {
     public void create(InputLetter inputLetter) {
         entityManager.persist(inputLetter);
     }
+
+    public InputLetter update(InputLetter inputLetter) {
+        return entityManager.merge(inputLetter);
+    }
 }

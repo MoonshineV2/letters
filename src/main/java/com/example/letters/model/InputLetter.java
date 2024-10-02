@@ -53,7 +53,7 @@ public class InputLetter {
     private OriginAndAddress origin;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="signer_id")
+    @JoinColumn(name="signer_id", referencedColumnName = "id")
     private Participant signer;
 
     @ManyToOne(fetch = FetchType.LAZY)

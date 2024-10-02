@@ -2,7 +2,7 @@ class MultiSelect {
 
     constructor(element, options = {}) {
         let defaults = {
-            placeholder: 'Select item(s)',
+            placeholder: 'Выберите из списка...',
             max: null,
             search: true,
             selectAll: false,

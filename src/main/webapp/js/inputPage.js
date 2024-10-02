@@ -58,6 +58,13 @@ window.addEventListener("load", async () => {
     setDocumentTypesOptions();
     setActualNumberIVC();
     autoInsertRegistrationDate();
+
+    document.querySelectorAll("textarea").forEach((el) => {
+        auto_grow(el);
+        el.oninput = () => {
+            auto_grow(el);
+        };
+    })
 })
 
 function setOriginsAndAddressesOptions() {
@@ -80,6 +87,7 @@ function setOriginsAndAddressesOptions() {
             Origin.createFormInstance();
         }
     }
+
 }
 function setSignersOptions() {
     const select = document.getElementById("signer-select");
@@ -221,11 +229,6 @@ async function saveDocument() {
 
     let hasAttentions = false;
 
-    let binary = "";
-    if (file !== undefined) {
-        binary = await getBinaryFromFile(file);
-    }
-
     if (!documentNum) {
         attentionContainer.appendChild(generateAttentionHTML("Номер документа не задан"));
         hasAttentions = true;
@@ -260,60 +263,44 @@ async function saveDocument() {
         return;
     }
 
-    const response = await fetch("/letters/api/inputLetters", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            numberIVC: numIVC,
-            registrationDate: registrationDate,
-            postuplenieDate: postuplenieDate,
-            documentDate: documentDate,
-            documentNumber: documentNum,
-            documentType: {id:documentType},
-            documentName: documentName,
-            origin: {id:origin},
-            signer: {id:signer},
-            executor: {id:executor},
-            easdNumber: easdNum,
-            answer: isAnswer,
-            prilojenie: prilojenie,
-            topic: topic,
-            tags: tagsMultiSelect.selectedValues,
-            note: note,
-            targetWorker: {id:target},
-            reserve: reserve,
-            file: arrayBufferToBase64(binary),
-            outputLetterId: outputSelect.value
-        }),
+    const inputLetter = new InputLetter({
+        id: 0,
+        numberIVC: numIVC,
+        registrationDate: registrationDate,
+        postuplenieDate: postuplenieDate,
+        documentDate: documentDate,
+        documentNumber: documentNum,
+        documentType: {id:documentType},
+        documentName: documentName,
+        origin: {id:origin},
+        signer: {id:signer},
+        executor: {id:executor},
+        easdNumber: easdNum,
+        answer: isAnswer,
+        prilojenie: prilojenie,
+        topic: topic,
+        tags: tagsMultiSelect.selectedValues,
+        note: note,
+        targetWorker: {id:target},
+        reserve: reserve,
+        file: file,
+        outputLetterId: outputSelect.value
     });
 
-    if (!response.ok) {
-        throw new Error(`Response status: ${response.status}, Response text: ${await response.text()}`);
+    try {
+        await saveOrUpdateInputLetter(inputLetter);
+        informerStatus200Instance(5, "Письмо было успешно сохранено");
+        blockButton(document.querySelector("button[onclick=\"saveDocument()\"]"), 5);
+        actualNumberIVC = await getActualNumberIVC();
+        setActualNumberIVC();
     }
-
-    getActualNumberIVC();
-}
-
-async function getBinaryFromFile(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.addEventListener('load', () => resolve(reader.result))
-        reader.addEventListener('error', (err) => reject(err))
-        reader.readAsArrayBuffer(file)
-    })
-}
-
-function arrayBufferToBase64( buffer ) {
-    var binary = '';
-    var bytes = new Uint8Array( buffer );
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
+    catch (e) {
+        informerStatusNot200Instance(30, "Письмо не было сохранено", e.message);
+        console.error(e.stack);
     }
-    return window.btoa( binary );
 }
+
+
 
 async function onOutputYearOrMonthChange() {
 

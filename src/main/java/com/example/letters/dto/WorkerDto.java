@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkerDto {
-    private int id;
-    private String fullName;
-    private String initials;
-    private String post;
-    private int workgroupId;
-    private boolean canSign;
+    int id;
+    String fullName;
+    String initials;
+    String post;
+    int workgroupId;
+    boolean canSign;
 
     public static WorkerDto fromWorker(Worker worker) {
         return new WorkerDto(

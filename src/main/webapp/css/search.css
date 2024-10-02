@@ -195,7 +195,9 @@ tbody th img{
     top: 100%;
     right: 0;
     background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 0px 3px 6px 2px rgba(187, 187, 187, 0.68);
+    -moz-box-shadow: 0px 3px 6px 2px rgba(187, 187, 187, 0.68);
+    box-shadow: 0px 3px 6px 2px rgba(187, 187, 187, 0.68);
     z-index: 2;
     min-width: 100%;
 

@@ -83,4 +83,12 @@ public class InputLetterController {
     public ActualNumberIVC getActualNumberIVC() {
         return new ActualNumberIVC(inputLetterService.getActualNumberIVC());
     }
+
+    @PUT
+    @Consumes("application/json")
+    @Produces("application/json")
+    public InputLetterDto update(InputLetterDto inputLetterDto) {
+        InputLetter out = inputLetterService.update(inputLetterDto.toInputLetter());
+        return InputLetterDto.fromInputLetter(out);
+    }
 }
