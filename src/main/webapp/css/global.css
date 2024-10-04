@@ -475,7 +475,7 @@ select:disabled {
     min-width: 600px;
     z-index: 4;
 
-    max-height: 90vh;
+    max-height: 95vh;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto 1fr auto auto;
@@ -496,6 +496,7 @@ select:disabled {
     width: 24px;
     height: 24px;
     cursor: pointer;
+    user-select: none;
 }
 
 .section-modal .modal-body {
