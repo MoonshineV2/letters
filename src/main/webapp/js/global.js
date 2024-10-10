@@ -106,6 +106,25 @@ function getHeaderNavigationHTMLInstance() {
     return nav;
 }
 
+async function findInputLetters() {
+    let response = await fetch('/letters/api/inputLetters');
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    let data = await response.json();
+    /*data.forEach(el => {
+        for (const [key, value] of Object.entries(el)) {
+            if (value === null) {
+                el[key] = "";
+            }
+        }
+    })*/
+
+    return data.map(el => new InputLetter(el));
+}
+
 async function saveOrUpdateInputLetter(inputLetter) {
 
     let binary = "";
@@ -160,6 +179,56 @@ async function saveOrUpdateInputLetter(inputLetter) {
     if (!response.ok) {
         throw new Error(await response.text());
     }
+
+    const returned = await response.json();
+
+    return new InputLetter(returned);
+}
+
+async function saveOriginAndAddress(originAndAddress) {
+    const response = await fetch("/letters/api/originsAndAddresses", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            name: originAndAddress.name,
+            shortName: originAndAddress.shortName,
+            kodADM: originAndAddress.kodADM
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    return new Origin(await response.json());
+
+}
+
+async function getInputLetterFileById(id, filename) {
+    const response = await fetch(BACKEND_API_URL + `/api/inputLetters/${id}/file`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/octet-stream"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    let blob =  await response.blob();
+
+    /*const filename = response.headers.get('Content-Disposition')
+
+    console.log(filename);*/
+
+    if (blob.size === 0) {
+        return null;
+    }
+
+   return new File([blob], filename);
 }
 
 function arrayBufferToBase64( buffer ) {

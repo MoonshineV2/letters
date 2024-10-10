@@ -19,19 +19,11 @@ public class OriginAndAddressesService {
     }
 
     public OriginAndAddress create(OriginAndAddress originAndAddress) {
-        if (originAndAddress.getName() == null) {
+        if (originAndAddress.getName() == null || originAndAddress.getName().isEmpty()) {
             throw new RuntimeException("Полное наименование не задано");
         }
 
-        if (originAndAddress.getName().isEmpty()) {
-            throw new RuntimeException("Полное наименование не задано");
-        }
-
-        if (originAndAddress.getShortName() == null) {
-            throw new RuntimeException("Краткое наименование не задано");
-        }
-
-        if (originAndAddress.getShortName().isEmpty()) {
+        if (originAndAddress.getShortName() == null || originAndAddress.getShortName().isEmpty()) {
             throw new RuntimeException("Краткое наименование не задано");
         }
 

@@ -23,16 +23,11 @@ public class ParticipantService {
     }
 
     public Participant create(Participant participant) {
-        if (participant.getFullName() == null) {
+
+        if (participant.getFullName() == null || participant.getFullName().isEmpty()) {
             throw new RuntimeException("Полное имя не задано");
         }
-        if (participant.getFullName().isEmpty()) {
-            throw new RuntimeException("Полное имя не задано");
-        }
-        if (participant.getInitials() == null) {
-            throw new RuntimeException("Инициалы не заданы");
-        }
-        if (participant.getInitials().isEmpty()) {
+        if (participant.getInitials() == null || participant.getInitials().isEmpty()) {
             throw new RuntimeException("Инициалы не заданы");
         }
 

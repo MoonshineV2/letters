@@ -524,6 +524,7 @@ select:disabled {
     flex-direction: column;
     padding: 10px;
     gap: 5px;
+    z-index: 5;
 }
 
 .bottom-informer {

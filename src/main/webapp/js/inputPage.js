@@ -31,6 +31,11 @@ let requests = Promise.all([
     tags = data[6];
 })
 
+document.addEventListener("originsAndAddressesChanged", async() => {
+    originsAndAddresses = await getOriginsAndAddressesData();
+    setOriginsAndAddressesOptions();
+});
+
 window.addEventListener("load", async () => {
     monthMultiSelect = new MultiSelect(document.getElementById("months"), {
         onChange: function(value, text, element) {
@@ -70,6 +75,17 @@ window.addEventListener("load", async () => {
 function setOriginsAndAddressesOptions() {
     const select = document.getElementById("origin-select");
 
+    select.innerHTML = "";
+
+
+    let first = document.createElement("option");
+    first.value = "";
+    first.disabled = true;
+    first.selected = true;
+    first.hidden = true;
+    first.innerText = "Выберите вариант";
+    select.appendChild(first);
+
     originsAndAddresses.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.name
@@ -84,6 +100,7 @@ function setOriginsAndAddressesOptions() {
 
     select.onchange = () => {
         if (select.value === 'other') {
+            select.options[0].selected = true;
             Origin.createFormInstance();
         }
     }
@@ -91,6 +108,7 @@ function setOriginsAndAddressesOptions() {
 }
 function setSignersOptions() {
     const select = document.getElementById("signer-select");
+
 
     signers.forEach(element => {
         const option = document.createElement("option");

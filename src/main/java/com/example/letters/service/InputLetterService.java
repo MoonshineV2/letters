@@ -49,6 +49,7 @@ public class InputLetterService {
     public DBFile getFileById(int id) {
         return inputLetterRepository.getFileById(id).get();
     }
+
     public void create(InputLetter inputLetter) {
         if (inputLetter.getOrigin() == null) {
             throw new RuntimeException("Источник письма не задан");
@@ -79,6 +80,10 @@ public class InputLetterService {
             inputLetter.setOutputLetter(null);
         }
 
+        if (inputLetter.getDocumentName() != null && inputLetter.getDocumentName().length() > 100) {
+            throw new RuntimeException("Название файла не может быть больше 100 символов");
+        }
+
         List<InputLetter> list = inputLetterRepository.findAll().stream()
                 .filter(el -> el.getYear() == LocalDateTime.now().getYear())
                 .collect(Collectors.toList());
@@ -101,12 +106,9 @@ public class InputLetterService {
     public InputLetter update(InputLetter inputLetter) {
         InputLetter fromDB = inputLetterRepository.findById(inputLetter.getId())
                 .orElseThrow(() -> new RuntimeException("Входящего письма с id=" + inputLetter.getId() + " не существует"));
-        if (inputLetter.getDocumentName() != null) {
-            if (inputLetter.getDocumentName().equals(fromDB.getDocumentName())) {
-                inputLetter.setFile(fromDB.getFile());
-            }
+        if (inputLetter.getDocumentName() != null && inputLetter.getDocumentName().length() > 100) {
+            throw new RuntimeException("Название файла не может быть больше 100 символов");
         }
-
         return inputLetterRepository.update(inputLetter);
     }
 }

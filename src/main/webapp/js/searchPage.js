@@ -252,7 +252,9 @@ async function findLetters() {
     const tags = document.getElementById("tags").value;
 
     if (letterType === "input") {
-        let data = await getInputLettersData();
+        let data = await findInputLetters();
+
+        data.sort((e1, e2) => e1.id - e2.id);
 
         if (ivcNum) {
             data = Object.values(data).filter(el => el.numberIVC === parseInt(ivcNum));
@@ -289,12 +291,7 @@ async function findLetters() {
             data = Object.values(data).filter(el => executorMultiSelect.selectedValues.includes(el.executor.id));
         }
 
-        const letters = [];
-        data.forEach(el => {
-            letters.push(new InputLetter(el));
-        })
-
-        table = new Table(document.getElementById("table"), letters);
+        table = new Table(document.getElementById("table"), data);
     }
     else if (letterType === "output") {
         let data = await getOutputLettersData();

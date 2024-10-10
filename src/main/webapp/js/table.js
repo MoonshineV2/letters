@@ -2,7 +2,9 @@ class Table {
 
     locale = {};
     tableCellsResolver = {};
-
+    columns = [];
+    data = [];
+    dataRows = [];
     constructor(element, data, options = {}) {
 
         if (!data) {
@@ -48,19 +50,28 @@ class Table {
         this.element.appendChild(tbodyHTML);
         this.body = tbodyHTML;
 
-        this.InitUI();
+        this.data.forEach(el => {
+            Object.keys(el).forEach(key => {
+                if (!this.columns.includes(key)) {
+                    this.columns.push(key);
+                }
+            })
+        })
+
+        this.initHeader()
+        this.initBody();
         this.resizableGrid();
 
         //console.log(this.data);
+        //console.log(this.dataRows)
     }
 
-    InitUI() {
+    initHeader() {
         this.header.innerHTML = "";
-        this.body.innerHTML = "";
 
         let trHTML = document.createElement("tr");
         this.header.appendChild(trHTML);
-        Object.keys(this.data[0]).forEach(col => {
+        this.columns.forEach(col => {
             let th = document.createElement("th");
             if (Object.keys(this.locale).includes(col)) {
                 const p = document.createElement("p");
@@ -75,41 +86,64 @@ class Table {
             th.scope = "col";
             trHTML.appendChild(th);
         })
+    }
 
-        this.data.forEach(el => {
-            let row = document.createElement("tr");
+    initBody() {
+        this.body.innerHTML = "";
 
-            for (const [key, value] of Object.entries(el)) {
-                let td = document.createElement("td");
-                if (value !== null && value !== "") {
-                    if (Object.keys(this.tableCellsResolver).includes(key)) {
-                        this.tableCellsResolver[key](td, el);
+        this.data.forEach(dataElement => {
+            const createdRow = this.createRow(dataElement);
+            this.body.appendChild(createdRow);
+            this.dataRows.push({id:dataElement.id, row:createdRow, assignedData:dataElement});
+        })
+    }
 
-                    }
-                    else {
-                        td.innerHTML = value;
-                    }
+    createRow(el) {
+        let row = document.createElement("tr");
+
+        const props = Object.keys(el);
+
+        this.columns.forEach(column => {
+            let td = document.createElement("td");
+            if (props.includes(column) && el[column]) {
+                if (Object.keys(this.tableCellsResolver).includes(column)) {
+                    this.tableCellsResolver[column](td, el);
                 }
-
-                if (key !== "id") {
-                    const span = document.createElement("span");
-                    td.appendChild(span);
-                    const image = document.createElement("img");
-                    image.src = "../images/edit.svg";
-                    image.onclick = () => {
-                        el.editFormInstance();
-                    }
-                    span.appendChild(image);
+                else {
+                    td.innerText = el[column];
                 }
-                row.appendChild(td);
             }
 
-            let th = document.createElement("th");
-            th.innerHTML = row.children[0].innerHTML;
-            th.scope = "row";
-            row.children[0].parentNode.replaceChild(th, row.children[0]);
-            this.body.appendChild(row);
+            const span = document.createElement("span");
+            td.appendChild(span);
+            const image = document.createElement("img");
+            image.src = "../images/edit.svg";
+            image.onclick = () => {
+                el.editFormInstance();
+            }
+            span.appendChild(image);
+
+            row.appendChild(td);
         })
+
+        let th = document.createElement("th");
+        th.innerHTML = row.children[0].innerText;
+        th.scope = "row";
+        row.children[0].parentNode.replaceChild(th, row.children[0]);
+
+        return row;
+    }
+
+    updateRow(id) {
+        let dataRow = this.dataRows.find(row => row.id === id);
+        console.log(dataRow);
+        for (const child of dataRow.row.children) {
+            child.innerHTML = "";
+        }
+
+        let created = this.createRow(dataRow.assignedData);
+        dataRow.row.replaceWith(created);
+        dataRow.row = created;
     }
     eventHandlers() {
         for (let tr of this.header.children) {
@@ -160,6 +194,20 @@ class Table {
                 }
             }
         }
+
+        // Подписываемся на ивент, который триггерится при изменении входящего письма
+        const unSubscribe = EventEmitter.subscribe("inputLetterChanged", (inputLetter) => {
+            this.updateRow(inputLetter.id);
+        });
+
+        let observer = new MutationObserver((mutations) => {
+            if (!document.body.contains(this.header)) {
+                unSubscribe();
+                observer.disconnect();
+            }
+
+        });
+        observer.observe(this.element, {childList: true, subtree: true});
     }
 
     sortData(field, order) {
@@ -178,10 +226,10 @@ class Table {
         if (fieldType === "string") {
             //console.log("type of string");
             if (order === "ASC") {
-                this.data.sort((a,b) => a[field].localeCompare(b[field]));
+                this.data.sort((a,b) => compareStrings(a[field], b[field]));
             }
             else if (order === "DESC"){
-                this.data.sort((a,b) => b[field].localeCompare(a[field]));
+                this.data.sort((a,b) => compareStrings(b[field], a[field]));
             }
             return;
         }
@@ -195,51 +243,18 @@ class Table {
             }
             return;
         }
-        if (fieldType === "Origin") {
-            //console.log("type of Origin");
+
+        try {
             if (order === "ASC") {
-                this.data.sort((a,b) => Origin.compare(a[field],b[field]));
+                this.data.sort((a,b) => a[field].compare(b[field]));
             }
             else if (order === "DESC"){
-                this.data.sort((a,b) => Origin.compare(b[field],a[field]));
+                this.data.sort((a,b) => b[field].compare(a[field]));
             }
-            return;
         }
-        if (fieldType === "Participant") {
-            if (order === "ASC") {
-                this.data.sort((a,b) => Participant.compare(a[field],b[field]));
-            }
-            else if (order === "DESC"){
-                this.data.sort((a,b) => Participant.compare(b[field],a[field]));
-            }
-            return;
-        }
-        if (fieldType === "DocumentType") {
-            if (order === "ASC") {
-                this.data.sort((a,b) => DocumentType.compare(a[field],b[field]));
-            }
-            else if (order === "DESC"){
-                this.data.sort((a,b) => DocumentType.compare(b[field],a[field]));
-            }
-            return;
-        }
-        if (fieldType === "Worker") {
-            if (order === "ASC") {
-                this.data.sort((a,b) => Worker.compare(a[field],b[field]));
-            }
-            else if (order === "DESC"){
-                this.data.sort((a,b) => Worker.compare(b[field],a[field]));
-            }
-            return;
-        }
-        if (fieldType === "Tags") {
-            if (order === "ASC") {
-                this.data.sort((a,b) => Tags.compare(a[field],b[field]));
-            }
-            else if (order === "DESC"){
-                this.data.sort((a,b) => Tags.compare(b[field],a[field]));
-            }
-            return;
+        catch (e) {
+            console.error(e.stack);
+            console.error("Не удалось сравнить два объекта. Возможно у объектов нет функции \"compare(o)\"");
         }
     }
 
@@ -251,31 +266,6 @@ class Table {
                 if (typeof element[field] !== "object") {
                     type = typeof element[field];
                     break;
-                }
-                else {
-                    if(element[field] instanceof Origin) {
-                        type = "Origin";
-                        break;
-                    }
-                    if(element[field] instanceof Participant) {
-                        type = "Participant";
-                        break;
-                    }
-                    if(element[field] instanceof DocumentType) {
-                        type = "DocumentType";
-                        break;
-                    }
-                    if(element[field] instanceof Worker) {
-                        type = "Worker";
-                        break;
-                    }
-                    if(element[field] instanceof Tags) {
-                        type = "Tags";
-                        break;
-                    }
-                    else {
-                        return "object";
-                    }
                 }
             }
         }
@@ -412,18 +402,13 @@ class Table {
     get locale() {
         return this.options.locale;
     }
-
-    set data(value) {
-        this.options.data = value;
-    }
-
-    get data() {
-        return this.options.data;
-    }
-    get modalToModify() {
-        return this.options.modalToModify;
-    }
 }
 
-function getInputLettersPreset() {
+const compareStrings = (str1, str2) => {
+    if (!str1)
+        return -1;
+    if (!str2)
+        return 1;
+
+    return  str1.localeCompare(str2);
 }

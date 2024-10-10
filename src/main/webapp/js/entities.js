@@ -34,18 +34,24 @@ class InputLetter {
         this.documentDate = data.documentDate;
         this.documentNumber = data.documentNumber;
         this.documentName = data.documentName;
-        this.documentType = new DocumentType(data.documentType);
-        this.origin = new Origin(data.origin);
-        this.signer = new Participant(data.signer);
-        this.executor = new Participant(data.executor);
+        if (data.documentType)
+            this.documentType = new DocumentType(data.documentType);
+        if (data.origin)
+            this.origin = new Origin(data.origin);
+        if (data.signer)
+            this.signer = new Participant(data.signer);
+        if (data.executor)
+            this.executor = new Participant(data.executor);
         this.easdNumber = data.easdNumber;
         this.outputLetterId = data.outputLetterId;
         this.answer = data.answer;
         this.prilojenie = data.prilojenie;
         this.topic = data.topic;
-        this.tags = new Tags(data.tags);
+        if (data.tags)
+            this.tags = new Tags(data.tags);
         this.note = data.note;
-        this.targetWorker = new Worker(data.targetWorker);
+        if (data.targetWorker)
+            this.targetWorker = new Worker(data.targetWorker);
         this.reserve = data.reserve;
         this.file = data.file;
     }
@@ -78,35 +84,40 @@ class InputLetter {
 
     static tableCellsResolver = {
         createDate: function (td, letter) {
-            td.innerHTML = new Date(letter.createDate).toISOString().split('T')[0];
+            if (letter.createDate)
+                td.innerHTML = new Date(letter.createDate).toISOString().split('T')[0];
         },
         registrationDate: function (td, letter) {
-            td.innerHTML = new Date(letter.registrationDate).toISOString().split('T')[0];
+            if (letter.registrationDate)
+                td.innerHTML = new Date(letter.registrationDate).toISOString().split('T')[0];
         },
         postuplenieDate: function (td, letter) {
-            td.innerHTML = new Date(letter.postuplenieDate).toISOString().split('T')[0];
+            if (letter.postuplenieDate)
+                td.innerHTML = new Date(letter.postuplenieDate).toISOString().split('T')[0];
         },
         documentDate: function (td, letter) {
-            td.innerHTML = new Date(letter.documentDate).toISOString().split('T')[0];
+            if (letter.documentDate)
+                td.innerHTML = new Date(letter.documentDate).toISOString().split('T')[0];
         },
         documentName: function (td, letter) {
-            td.innerText = letter.documentName;
+            if (letter.documentName)
+                td.innerText = letter.documentName;
         },
         documentType: function (td, letter) {
-            td.innerHTML = letter.documentType.name;
+            if (letter.documentType)
+                td.innerHTML = letter.documentType.name;
         },
         origin: function (td, letter) {
-            const aHTML = document.createElement("a");
-            td.appendChild(aHTML);
-            aHTML.innerHTML = letter.origin.shortName;
+            if (letter.origin)
+                td.innerText = letter.origin.shortName;
         },
         signer: function (td, letter) {
-            const aHTML = document.createElement("a");
-            td.appendChild(aHTML);
-            aHTML.innerHTML = letter.signer.initials;
+            if (letter.origin)
+                td.innerText = letter.signer.initials;
         },
         executor: function (td, letter) {
-            td.innerHTML = letter.executor.initials;
+            if (letter.executor)
+                td.innerText = letter.executor.initials;
         },
         answer: function (td, letter) {
             if (letter.answer === "true" || letter.answer === true) {
@@ -123,7 +134,8 @@ class InputLetter {
             }
         },
         targetWorker: function (td, letter) {
-            td.innerHTML = letter.targetWorker.initials;
+            if (td.innerText)
+                td.innerText = letter.targetWorker.initials;
         },
         reserve: function (td, letter) {
             if (letter.reserve === "true" || letter.reserve === true) {
@@ -133,6 +145,8 @@ class InputLetter {
             }
         },
         tags: function (td, letter) {
+            if (!letter.tags)
+                return;
             let string = "";
             letter.tags.array.forEach(tag => {
                 string += tag.text + ", ";
@@ -150,7 +164,7 @@ class InputLetter {
         }
     }
 
-    editFormInstance() {
+    async editFormInstance() {
 
         let documentTypeOptions = '';
         documentTypes.forEach((dt) => {
@@ -163,6 +177,7 @@ class InputLetter {
         })
 
         let originAndAddressOptions = '';
+        originAndAddressOptions += `<option value="" selected>Не выбрано</option>`;
         originsAndAddresses.forEach((oa) => {
             if (oa.id !== this.origin.id) {
                 originAndAddressOptions += `<option value="${oa.id}">${oa.shortName}</option>`;
@@ -274,6 +289,12 @@ class InputLetter {
                 </div>
                 <div class="dividing-line dividing-up"></div>
                 <div class="custom-date">
+                    <label for="il-create-date">Дата создания</label>
+                    <div class="field-container">
+                        <input id="il-create-date" type="date" value="${this.createDate ? new Date(this.createDate).toISOString().split('T')[0] : null}"/>
+                    </div>
+                </div>
+                <div class="custom-date">
                     <label for="il-registration-date">Дата регистрации</label>
                     <div class="field-container">
                         <input id="il-registration-date" type="date" value="${this.registrationDate ? new Date(this.registrationDate).toISOString().split('T')[0] : null}"/>
@@ -281,12 +302,12 @@ class InputLetter {
                     </div>
                 </div>
                 <div class="custom-date">
-                    <label for="il-date-doc">Дата документа</label>
-                    <input id="il-date-doc" type="date" value="${this.documentDate ? new Date(this.documentDate).toISOString().split('T')[0] : null}"/>
-                </div>
-                <div class="custom-date">
                     <label for="input-letter-postuplenie-date">Дата поступления документа</label>
                     <input id="input-letter-postuplenie-date" type="date" value="${this.postuplenieDate ? new Date(this.postuplenieDate).toISOString().split('T')[0] : null}"/>
+                </div>
+                <div class="custom-date">
+                    <label for="il-date-doc">Дата письма</label>
+                    <input id="il-date-doc" type="date" value="${this.documentDate ? new Date(this.documentDate).toISOString().split('T')[0] : null}"/>
                 </div>
                 <div class="custom-select">
                     <label for="il-doc-type-select">Тип документа</label>
@@ -340,6 +361,8 @@ class InputLetter {
                     <input id="il-reserve" type="checkbox" ${this.reserve ? 'checked' : ''}>
                     <label for="il-reserve">Резерв</label>
                 </div>
+                <div class="dividing-line dividing-up"></div>
+                <div id="il-file-uploader"></div>
             </div>
         `;
 
@@ -376,6 +399,13 @@ class InputLetter {
             new MultiSelect(ms);
         })
 
+        const fileUploader = new FileUploader(bodyWrapper.querySelector("#il-file-uploader"));
+        if (this.documentName) {
+            const file = await getInputLetterFileById(this.id, this.documentName)
+            if (file) {
+                fileUploader.file = file;
+            }
+        }
 
         let footer = `
             <button class="letter-save-btn">
@@ -396,10 +426,12 @@ class InputLetter {
             clonedLetter.documentNumber = bodyWrapper.querySelector("#il-doc-num").value;
             clonedLetter.easdNumber = bodyWrapper.querySelector("#il-easdNumber").value;
             clonedLetter.answer = bodyWrapper.querySelector("#il-is-answer").checked;
+            clonedLetter.createDate = bodyWrapper.querySelector("#il-create-date").value;
             clonedLetter.registrationDate = bodyWrapper.querySelector("#il-registration-date").value;
             clonedLetter.documentDate = bodyWrapper.querySelector("#il-date-doc").value;
             clonedLetter.postuplenieDate = bodyWrapper.querySelector("#input-letter-postuplenie-date").value;
             clonedLetter.documentType = {id:bodyWrapper.querySelector("#il-doc-type-select").value};
+            clonedLetter.documentName = fileUploader.file ? fileUploader.file.name : null;
             clonedLetter.origin = {id:bodyWrapper.querySelector("#il-origin-select").value};
             clonedLetter.signer = {id:bodyWrapper.querySelector("#il-signer-select").value};
             clonedLetter.executor = {id:bodyWrapper.querySelector("#il-executor-select").value};
@@ -409,15 +441,21 @@ class InputLetter {
             clonedLetter.note = bodyWrapper.querySelector("#il-note").value;
             clonedLetter.prilojenie = bodyWrapper.querySelector("#il-prilojenie").checked;
             clonedLetter.reserve = bodyWrapper.querySelector("#il-reserve").checked;
+            clonedLetter.file = fileUploader.file ? fileUploader.file : null;
 
             try {
-                await saveOrUpdateInputLetter(clonedLetter);
+                const returnedLetter  = await saveOrUpdateInputLetter(clonedLetter);
 
                 modal.close();
                 informerStatus200Instance(5, "Письмо было изменено");
+
+                Object.assign(this, returnedLetter);
+
+                EventEmitter.dispatch("inputLetterChanged", this);
             }
             catch (e) {
                 console.error(e.stack);
+                informerStatusNot200Instance(30, "Не получилось изменить письмо", e.message);
             }
         }
     }
@@ -425,26 +463,23 @@ class InputLetter {
 
 class Origin {
     id;
-    name;
+    name = "";
     shortName = "";
     kodADM;
 
     constructor(origin) {
         this.id = origin.id;
         this.name = origin.name;
-        this.shortName = origin.shortName;
+        if (origin.shortName)
+            this.shortName = origin.shortName;
         this.kodADM = origin.kodADM;
     }
 
-    static compare(o1, o2) {
-        if (!(o1 instanceof Origin)) {
+    compare(another) {
+        if (!(another instanceof Origin)) {
             return -1;
         }
-        if (!(o2 instanceof Origin)) {
-            return 1;
-        }
-
-        return o1.shortName.localeCompare(o2.shortName);
+        return this.shortName.localeCompare(another.shortName);
     }
 
     static locale = {
@@ -505,7 +540,7 @@ class Origin {
         kodADMInput.oninput = () => {
             bodyWrapper.querySelector("#origin-address-kodadm-empty").hidden = true;
         }
-        footerWrapper.querySelector(".letter-save-btn").onclick = () => {
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
 
 
             let notOkay = false;
@@ -526,14 +561,31 @@ class Origin {
             if (notOkay) {
                 return;
             }
-            modal.close();
+
+            try {
+                await saveOriginAndAddress({
+                    name: nameInput.value,
+                    shortName: shortNameInput.value,
+                    kodADM: kodADMInput.value
+                })
+
+                const event = new Event("originsAndAddressesChanged");
+                document.dispatchEvent(event);
+
+                modal.close();
+                informerStatus200Instance(5, "Источник/Адрес был сохранён");
+            }
+            catch (e) {
+                informerStatusNot200Instance(30, "Источник/Адрес не был сохранён", e.message);
+                console.error(e.stack);
+            }
         }
     }
 }
 
 class Participant {
     id;
-    fullname;
+    fullname = "";
     initials = "";
     post;
     canSign;
@@ -541,20 +593,118 @@ class Participant {
     constructor(participant) {
         this.id = participant.id;
         this.fullname = participant.fullname;
-        this.initials = participant.initials;
+        if (participant.initials)
+            this.initials = participant.initials;
         this.post = participant.post;
         this.canSign = participant.canSign;
     }
 
-    static compare(o1, o2) {
-        if (!(o1 instanceof Participant)) {
+    compare(another) {
+        if (!(another instanceof Participant)) {
             return -1;
         }
-        if (!(o2 instanceof Participant)) {
-            return 1;
-        }
+        return this.initials.localeCompare(another.initials);
+    }
 
-        return o1.initials.localeCompare(o2.initials);
+    static locale = {
+        id:"Id",
+        fullname:"Полное наименование",
+        initials:"Краткое наименование",
+        post:"Код администрации",
+        canSign:"Право подписи"
+    }
+
+    static createFormInstance() {
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <label for="participant-fullname">${this.locale.fullname}</label>
+                        <div class="field-container">
+                            <input id="participant-fullname" type="text">
+                            <p id="participant-fullname-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <label for="participant-initials">${this.locale.initials}</label>
+                        <div class="field-container">
+                            <input id="participant-initials" type="text">
+                            <p id="participant-initials-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <label for=participant-post">${this.locale.post}</label>
+                        <div class="field-container">
+                            <input id="participant-post" type="text">
+                            <p id="participant-post-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                        </div>
+                </div>
+            </div>
+        `;
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        let footer = `
+            <button class="letter-save-btn">
+                Создать
+            </button>
+        `;
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Создание источника/адреса", body:bodyWrapper, footer:footerWrapper});
+
+        const nameInput = bodyWrapper.querySelector("#origin-address-name");
+        const shortNameInput = bodyWrapper.querySelector("#origin-address-shortname");
+        const kodADMInput = bodyWrapper.querySelector("#origin-address-kodadm");
+        nameInput.oninput = () => {
+            bodyWrapper.querySelector("#origin-address-name-empty").hidden = true;
+        }
+        shortNameInput.oninput = () => {
+            bodyWrapper.querySelector("#origin-address-shortname-empty").hidden = true;
+        }
+        kodADMInput.oninput = () => {
+            bodyWrapper.querySelector("#origin-address-kodadm-empty").hidden = true;
+        }
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+
+
+            let notOkay = false;
+
+            if (!nameInput.value) {
+                bodyWrapper.querySelector("#origin-address-name-empty").hidden = false;
+                notOkay = true;
+            }
+            if (!shortNameInput.value) {
+                bodyWrapper.querySelector("#origin-address-shortname-empty").hidden = false;
+                notOkay = true;
+            }
+            if (!kodADMInput.value) {
+                bodyWrapper.querySelector("#origin-address-kodadm-empty").hidden = false;
+                notOkay = true;
+            }
+
+            if (notOkay) {
+                return;
+            }
+
+            try {
+                await saveOriginAndAddress({
+                    name: nameInput.value,
+                    shortName: shortNameInput.value,
+                    kodADM: kodADMInput.value
+                })
+
+                const event = new Event("originsAndAddressesChanged");
+                document.dispatchEvent(event);
+
+                modal.close();
+                informerStatus200Instance(5, "Источник/Адрес был сохранён");
+            }
+            catch (e) {
+                informerStatusNot200Instance(30, "Источник/Адрес не был сохранён", e.message);
+                console.error(e.stack);
+            }
+        }
     }
 }
 
@@ -570,22 +720,18 @@ class Worker {
     constructor(worker) {
         this.id = worker.id;
         this.fullname = worker.fullname;
-        this.initials = worker.initials;
+        if (worker.initials)
+            this.initials = worker.initials;
         this.post = worker.post;
         this.canSign = worker.canSign;
         this.workgroupId = worker.workgroupId;
         this.workgroupName = worker.workgroupName;
     }
-
-    static compare(o1, o2) {
-        if (!(o1 instanceof Worker)) {
+    compare(another) {
+        if (!(another instanceof Worker)) {
             return -1;
         }
-        if (!(o2 instanceof Worker)) {
-            return 1;
-        }
-
-        return o1.initials.localeCompare(o2.initials);
+        return this.initials.localeCompare(another.initials);
     }
 }
 
@@ -596,7 +742,8 @@ class DocumentType {
 
     constructor(documentType) {
         this.id = documentType.id;
-        this.name = documentType.name;
+        if (documentType.name)
+            this.name = documentType.name;
     }
 
     static compare(o1, o2) {
@@ -608,6 +755,13 @@ class DocumentType {
         }
 
         return o1.name.localeCompare(o2.name);
+    }
+
+    compare(another) {
+        if (!(another instanceof DocumentType)) {
+            return -1;
+        }
+        return this.name.localeCompare(another.name);
     }
 }
 
@@ -635,15 +789,36 @@ class Tags {
             })
         }
     }
-
-    static compare(o1, o2) {
-        if (!(o1 instanceof Tags)) {
+    compare(another) {
+        if (!(another instanceof Tags)) {
             return -1;
         }
-        if (!(o2 instanceof Tags)) {
-            return 1;
+
+        return this.array.length - another.array.length;
+    }
+}
+
+class EventEmitter {
+
+    static events = {};
+    static subscribe(eventName, callback) {
+        if(!EventEmitter.events[eventName]) {
+            EventEmitter.events[eventName] = [];
         }
 
-        return o1.array.length - o2.array.length;
+        EventEmitter.events[eventName].push(callback);
+
+        return () => {
+            EventEmitter.events[eventName] = EventEmitter.events[eventName].filter(callbackOnEvent => callback !== callbackOnEvent);
+        }
+    }
+
+    static dispatch(eventName, data) {
+        const event = EventEmitter.events[eventName];
+        if(event) {
+            event.forEach(callback => {
+                callback.call(null, data);
+            });
+        }
     }
 }

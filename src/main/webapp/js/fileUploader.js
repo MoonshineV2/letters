@@ -98,7 +98,6 @@ class FileUploader {
     }
 
     processFileChange() {
-        console.log("processFileChange()");
         if (this.fileInput.files.length > 0) {
 
             this.dropArea.classList.add("hidden");
@@ -118,10 +117,15 @@ class FileUploader {
         e.stopPropagation();
     }
 
+    set file(value) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(value);
+        this.options.fileInput.files = dataTransfer.files;
+        this.processFileChange();
+    }
     get file() {
         return this.options.fileInput.files[0];
     }
-
     set element(value) {
         this.options.element = value;
     }
