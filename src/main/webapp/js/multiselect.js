@@ -7,6 +7,7 @@ class MultiSelect {
             search: true,
             selectAll: false,
             listAll: false,
+            disabled: false,
             name: '',
             width: '',
             height: '',
@@ -24,6 +25,7 @@ class MultiSelect {
                 this.options[prop] = this.selectElement.dataset[prop];
             }
         }
+        this.options.disabled = this.selectElement.getAttribute('disabled') !== null;
         this.name = this.selectElement.getAttribute('name') ? this.selectElement.getAttribute('name') : 'multi-select-' + Math.floor(Math.random() * 1000000);
         if (!this.options.data.length) {
             let options = this.selectElement.querySelectorAll('option');
@@ -62,7 +64,7 @@ class MultiSelect {
         let template = `
             <div class="multi-select ${this.name}"${this.selectElement.id ? ' id="' + this.selectElement.id + '"' : ''} style="${this.width ? 'width:' + this.width + ';' : ''}${this.height ? 'height:' + this.height + ';' : ''}">
                 ${this.selectedValues.map(value => `<input type="hidden" name="${this.name}[]" value="${value}">`).join('')}
-                <div class="multi-select-header" style="${this.width ? 'width:' + this.width + ';' : ''}${this.height ? 'height:' + this.height + ';' : ''}">
+                <div class="multi-select-header ${this.options.disabled ? 'disabled' : ''}" style="${this.width ? 'width:' + this.width + ';' : ''}${this.height ? 'height:' + this.height + ';' : ''}">
                     <span class="multi-select-header-placeholder">${this.placeholder}</span>
                     <span class="multi-select-header-max">${this.options.max ? this.selectedValues.length + '/' + this.options.max : ''}</span>
                 </div>
@@ -193,6 +195,19 @@ class MultiSelect {
 
     get selectedItems() {
         return this.data.filter(data => data.selected);
+    }
+
+    set disabled(value) {
+        this.options.disabled = value;
+        if (value === true || value === 'true')
+            this.element.querySelector(".multi-select-header").classList.add("disabled");
+        else {
+            this.element.querySelector(".multi-select-header").classList.remove("disabled");
+        }
+    }
+
+    get disabled() {
+        return this.options.disabled;
     }
 
     set data(value) {

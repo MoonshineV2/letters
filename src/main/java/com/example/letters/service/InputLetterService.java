@@ -47,10 +47,11 @@ public class InputLetterService {
     }
 
     public DBFile getFileById(int id) {
-        return inputLetterRepository.getFileById(id).get();
+        return inputLetterRepository.getFileById(id).orElseThrow(() ->
+                new RuntimeException("Файл для входящего письма с id=" + id + " не найден"));
     }
 
-    public void create(InputLetter inputLetter) {
+    public InputLetter create(InputLetter inputLetter) {
         if (inputLetter.getOrigin() == null) {
             throw new RuntimeException("Источник письма не задан");
         }
@@ -100,7 +101,7 @@ public class InputLetterService {
 
         inputLetter.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
 
-        inputLetterRepository.create(inputLetter);
+        return inputLetterRepository.create(inputLetter);
     }
 
     public InputLetter update(InputLetter inputLetter) {

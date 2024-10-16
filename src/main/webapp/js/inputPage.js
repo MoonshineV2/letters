@@ -2,7 +2,6 @@ let monthMultiSelect;
 let yearMultiSelect;
 let tagsMultiSelect;
 let fileUploader;
-const outputLetters = {};
 let attentionContainer;
 
 let originsAndAddresses;
@@ -37,20 +36,32 @@ document.addEventListener("originsAndAddressesChanged", async() => {
 });
 
 window.addEventListener("load", async () => {
-    monthMultiSelect = new MultiSelect(document.getElementById("months"), {
-        onChange: function(value, text, element) {
-            onOutputYearOrMonthChange();
-        }
-    })
-    yearMultiSelect = new MultiSelect(document.getElementById("years"), {
-        onChange: function(value, text, element) {
-            onOutputYearOrMonthChange();
-        }
-    })
     fileUploader = new FileUploader(document.getElementById("file-uploader"));
     attentionContainer = document.getElementById("attentions-container");
 
     await requests;
+
+    monthMultiSelect = new MultiSelect(document.getElementById("months"), {
+        onChange: function(value, text, element) {
+            onOutputYearOrMonthChange(document.querySelector("#output-select"), yearMultiSelect, monthMultiSelect);
+        }
+    })
+    yearMultiSelect = new MultiSelect(document.getElementById("years"), {
+        onChange: function(value, text, element) {
+            onOutputYearOrMonthChange(document.querySelector("#output-select"), yearMultiSelect, monthMultiSelect);
+        }
+    })
+
+    document.querySelector("#is-answer").onchange = (e) => {
+        if (e.target.checked) {
+            monthMultiSelect.disabled = false;
+            yearMultiSelect.disabled = false;
+        }
+        else {
+            monthMultiSelect.disabled = true;
+            yearMultiSelect.disabled = true;
+        }
+    }
 
     document.getElementById("input-ref").classList.add("li-selected");
 
@@ -101,7 +112,7 @@ function setOriginsAndAddressesOptions() {
     select.onchange = () => {
         if (select.value === 'other') {
             select.options[0].selected = true;
-            Origin.createFormInstance();
+            OriginAndAddress.createFormInstance();
         }
     }
 
@@ -302,7 +313,7 @@ async function saveDocument() {
         targetWorker: {id:target},
         reserve: reserve,
         file: file,
-        outputLetterId: outputSelect.value
+        outputLetter: {id:outputSelect.value}
     });
 
     try {
@@ -318,84 +329,6 @@ async function saveDocument() {
     }
 }
 
-
-
-async function onOutputYearOrMonthChange() {
-
-    const select = document.getElementById("output-select");
-    select.innerHTML = "";
-    select.disabled = false;
-    const option = document.createElement("option");
-    option.innerText = "Выберите вариант";
-    option.disabled = true;
-    option.selected = true;
-    option.hidden = true;
-    select.appendChild(option)
-
-    if (yearMultiSelect.selectedItems.length === 0) {
-        option.innerText = "Нет писем";
-        select.disabled = true;
-        return;
-    }
-    if (monthMultiSelect.selectedItems.length === 0) {
-        option.innerText = "Нет писем";
-        select.disabled = true;
-        return;
-    }
-
-    keys = Object.keys(outputLetters);
-    neededYears = [];
-
-    yearMultiSelect.selectedValues.forEach(el => {
-        if (!keys.includes(el)) {
-            neededYears.push(el);
-        }
-    })
-
-    neededYears.forEach(el => {
-        outputLetters[el] = [];
-    })
-
-    if (neededYears.length > 0) {
-        const response = await fetch("/letters/api/outputLetters/findByYears", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                years: neededYears
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        data.forEach(el => {
-            outputLetters[el.year].push(el);
-        })
-    }
-
-    let outputLettersFiltered = Object.values(outputLetters)
-        .flat()
-        .filter(el => yearMultiSelect.selectedValues.includes(el.year.toString()))
-        .filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()))
-
-
-    if(outputLettersFiltered.length === 0) {
-        option.innerText = "Нет писем";
-        select.disabled = true;
-    }
-    
-    outputLettersFiltered.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.numberIVC;
-        option.value = element.id;
-        select.appendChild(option);
-    })
-}
 function autoInsertRegistrationDate() {
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
     document.getElementById("registration-date-auto-insert-info").hidden = false;

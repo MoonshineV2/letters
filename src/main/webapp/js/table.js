@@ -58,6 +58,7 @@ class Table {
             })
         })
 
+
         this.initHeader()
         this.initBody();
         this.resizableGrid();
@@ -105,7 +106,7 @@ class Table {
 
         this.columns.forEach(column => {
             let td = document.createElement("td");
-            if (props.includes(column) && el[column]) {
+            if (props.includes(column)) {
                 if (Object.keys(this.tableCellsResolver).includes(column)) {
                     this.tableCellsResolver[column](td, el);
                 }
@@ -329,6 +330,7 @@ class Table {
                     //nxtCol.style.width = (nxtColWidth - (diffX)) + 'px';
 
                     curCol.style.width = (curColWidth + diffX) + 'px';
+                    curCol.style.whiteSpace = 'normal';
                     table.style.width = tableWidth + diffX + "px"
                 }
             });

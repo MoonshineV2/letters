@@ -40,7 +40,7 @@ public class InputLetterDto {
 
     private int easdNumber;
 
-    private int outputLetterId;
+    private OutputLetterDto outputLetter;
 
     private boolean answer;
 
@@ -95,7 +95,8 @@ public class InputLetterDto {
         dto.isReserve = inputLetter.isReserve();
         //dto.file = inputLetter.getFile();
         if (inputLetter.getOutputLetter() != null) {
-            dto.outputLetterId = inputLetter.getOutputLetter().getId();
+            dto.outputLetter = OutputLetterDto.fromOutputLetter(inputLetter.getOutputLetter());
+            dto.outputLetter.setInputLetter(null);
         }
 
         return dto;
@@ -125,7 +126,7 @@ public class InputLetterDto {
         if (targetWorker != null && targetWorker.id != 0) inputLetter.setTargetWorker(targetWorker.toWorker());
         inputLetter.setReserve(isReserve);
         inputLetter.setFile(file);
-        if (outputLetterId > 0) inputLetter.setOutputLetter(new OutputLetter(outputLetterId));
+        if (outputLetter != null) inputLetter.setOutputLetter(outputLetter.toOutputLetter());
 
         return inputLetter;
     }

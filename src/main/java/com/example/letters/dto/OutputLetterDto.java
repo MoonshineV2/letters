@@ -1,15 +1,18 @@
 package com.example.letters.dto;
 
 import com.example.letters.model.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OutputLetterDto {
 
     private int id;
@@ -24,21 +27,23 @@ public class OutputLetterDto {
 
     private Date documentDate;
 
+    private String documentNumber;
+
     private String documentName;
 
-    private int documentTypeId;
+    private DocumentTypeDto documentType;
 
-    private int addressId;
+    private OriginAndAddressDto address;
 
-    private int targetParticipantId;
+    private ParticipantDto targetParticipant;
 
-    private int signerId;
+    private ParticipantDto signer;
 
-    private int executorId;
+    private ParticipantDto executor;
 
     private int easdNumber;
 
-    private int inputLetterId;
+    private InputLetterDto inputLetter;
 
     private boolean answer;
 
@@ -46,15 +51,13 @@ public class OutputLetterDto {
 
     private String topic;
 
-    private List<Integer> tagIds;
+    private List<Tag> tags;
 
     private String note;
 
     private boolean reserve;
 
     private byte[] file;
-
-    private String documentNum;
 
     public static OutputLetterDto fromOutputLetter(OutputLetter outputLetter) {
         OutputLetterDto dto = new OutputLetterDto();
@@ -66,34 +69,35 @@ public class OutputLetterDto {
         dto.documentDate = outputLetter.getDocumentDate();
         dto.documentName = outputLetter.getDocumentName();
         if (outputLetter.getDocumentType() != null) {
-            dto.documentTypeId = outputLetter.getDocumentType().getId();
+            dto.documentType = DocumentTypeDto.fromDocumentType(outputLetter.getDocumentType());
         }
         if (outputLetter.getAddress() != null) {
-            dto.addressId = outputLetter.getAddress().getId();
+            dto.address = OriginAndAddressDto.fromOriginAndAddress(outputLetter.getAddress());
         }
         if (outputLetter.getTargetParticipant() != null) {
-            dto.targetParticipantId = outputLetter.getTargetParticipant().getId();
+            dto.targetParticipant = ParticipantDto.fromParticipant(outputLetter.getTargetParticipant());
         }
         if (outputLetter.getSigner() != null) {
-            dto.signerId = outputLetter.getSigner().getId();
+            dto.signer = ParticipantDto.fromParticipant(outputLetter.getSigner());
         }
         if (outputLetter.getExecutor() != null) {
-            dto.executorId = outputLetter.getExecutor().getId();
+            dto.executor = ParticipantDto.fromParticipant(outputLetter.getExecutor());
         }
         dto.easdNumber = outputLetter.getEasdNumber();
         if (outputLetter.getInputLetter() != null) {
-            dto.inputLetterId =outputLetter.getInputLetter().getId();
+            dto.inputLetter = InputLetterDto.fromInputLetter(outputLetter.getInputLetter());
+            dto.inputLetter.setOutputLetter(null);
         }
         dto.answer = outputLetter.isAnswer();
         dto.prilojenie = outputLetter.isPrilojenie();
         dto.topic = outputLetter.getTopic();
         if (outputLetter.getTags() != null) {
-            dto.tagIds = outputLetter.getTags().stream().map(Tag::getId).collect(Collectors.toList());
+            dto.tags = outputLetter.getTags();
         }
         dto.note = outputLetter.getNote();
         dto.reserve = outputLetter.isReserve();
         //dto.file = outputLetter.getFile();
-        dto.documentNum = outputLetter.getDocumentNum();
+        dto.documentNumber = outputLetter.getDocumentNum();
 
         return dto;
     }
@@ -107,21 +111,21 @@ public class OutputLetterDto {
         outputLetter.setRegistrationDate(registrationDate);
         outputLetter.setDocumentDate(documentDate);
         outputLetter.setDocumentName(documentName);
-        if (documentTypeId > 0) outputLetter.setDocumentType(new DocumentType(documentTypeId));
-        if (addressId > 0) outputLetter.setAddress(new OriginAndAddress(addressId));
-        if (targetParticipantId > 0) outputLetter.setTargetParticipant(new Participant(targetParticipantId));
-        if (signerId > 0) outputLetter.setSigner(new Participant(signerId));
-        if (executorId > 0) outputLetter.setExecutor(new Participant(executorId));
+        if (documentType != null) outputLetter.setDocumentType(documentType.toDocumentType());
+        if (address != null) outputLetter.setAddress(address.toOriginAndAddress());
+        if (targetParticipant != null) outputLetter.setTargetParticipant(targetParticipant.toParticipant());
+        if (signer != null) outputLetter.setSigner(signer.toParticipant());
+        if (executor != null) outputLetter.setExecutor(executor.toParticipant());
         outputLetter.setEasdNumber(easdNumber);
-        if (inputLetterId > 0) outputLetter.setInputLetter(new InputLetter(inputLetterId));
+        if (inputLetter != null) outputLetter.setInputLetter(inputLetter.toInputLetter());
         outputLetter.setAnswer(answer);
         outputLetter.setPrilojenie(prilojenie);
         outputLetter.setTopic(topic);
-        outputLetter.setTags(tagIds.stream().map(Tag::new).collect(Collectors.toList()));
+        outputLetter.setTags(tags);
         outputLetter.setNote(note);
         outputLetter.setReserve(reserve);
         outputLetter.setFile(file);
-        outputLetter.setDocumentNum(documentNum);
+        outputLetter.setDocumentNum(documentNumber);
 
         return outputLetter;
     }

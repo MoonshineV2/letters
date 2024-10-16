@@ -1,5 +1,7 @@
 const BACKEND_API_URL = 'http://localhost:8080/letters';
 
+const outputLetters = {};
+
 window.addEventListener("load",() => {
     document.querySelector(".header-navigation").replaceWith(getHeaderNavigationHTMLInstance());
 });
@@ -114,15 +116,20 @@ async function findInputLetters() {
     }
 
     let data = await response.json();
-    /*data.forEach(el => {
-        for (const [key, value] of Object.entries(el)) {
-            if (value === null) {
-                el[key] = "";
-            }
-        }
-    })*/
 
     return data.map(el => new InputLetter(el));
+}
+
+async function findOutputLetters() {
+    let response = await fetch('/letters/api/outputLetters');
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    let data = await response.json();
+
+    return data.map(el => new OutputLetter(el));
 }
 
 async function saveOrUpdateInputLetter(inputLetter) {
@@ -155,7 +162,7 @@ async function saveOrUpdateInputLetter(inputLetter) {
         targetWorker: inputLetter.targetWorker,
         reserve: inputLetter.reserve,
         file: arrayBufferToBase64(binary),
-        outputLetterId: inputLetter.outputLetterId
+        outputLetter: inputLetter.outputLetter
     });
 
     const getMethodRequest = () => {
@@ -180,9 +187,10 @@ async function saveOrUpdateInputLetter(inputLetter) {
         throw new Error(await response.text());
     }
 
-    const returned = await response.json();
-
-    return new InputLetter(returned);
+    if (getMethodRequest() === "PUT") {
+        const returned = await response.json();
+        return new InputLetter(returned);
+    }
 }
 
 async function saveOriginAndAddress(originAndAddress) {
@@ -202,7 +210,7 @@ async function saveOriginAndAddress(originAndAddress) {
         throw new Error(await response.text());
     }
 
-    return new Origin(await response.json());
+    return new OriginAndAddress(await response.json());
 
 }
 
@@ -229,6 +237,174 @@ async function getInputLetterFileById(id, filename) {
     }
 
    return new File([blob], filename);
+}
+
+async function findOutputLettersByYears(neededYears) {
+    const response = await fetch("/letters/api/outputLetters/findByYears", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            years: neededYears
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.map(el => new OutputLetter(el))
+}
+
+async function findInputLettersByYears(neededYears) {
+    const response = await fetch("/letters/api/inputLetters/findByYears", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            years: neededYears
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.map(el => new InputLetter(el))
+}
+
+async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMultiSelect) {
+
+    outputSelect.innerHTML = "";
+    outputSelect.disabled = false;
+    const option = document.createElement("option");
+    option.innerText = "Выберите вариант";
+    option.disabled = true;
+    option.selected = true;
+    option.hidden = true;
+    outputSelect.appendChild(option)
+
+    if (yearMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+        return;
+    }
+    if (monthMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+        return;
+    }
+
+    keys = Object.keys(outputLetters);
+    neededYears = [];
+
+    yearMultiSelect.selectedValues.forEach(el => {
+        if (!keys.includes(el)) {
+            neededYears.push(el);
+        }
+    })
+
+    neededYears.forEach(el => {
+        outputLetters[el] = [];
+    })
+
+    if (neededYears.length > 0) {
+        const data = await findOutputLettersByYears(neededYears);
+
+        data.forEach(el => {
+            outputLetters[el.year].push(el);
+        })
+    }
+
+    let outputLettersFiltered = Object.values(outputLetters)
+        .flat()
+        .filter(el => yearMultiSelect.selectedValues.includes(el.year.toString()))
+        .filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()))
+
+
+    if(outputLettersFiltered.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+    }
+
+    outputLettersFiltered.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.numberIVC;
+        option.value = element.id;
+        outputSelect.appendChild(option);
+    })
+}
+
+async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMultiSelect) {
+
+    inputSelect.innerHTML = "";
+    inputSelect.disabled = false;
+    const option = document.createElement("option");
+    option.innerText = "Выберите вариант";
+    option.disabled = true;
+    option.selected = true;
+    option.hidden = true;
+    inputSelect.appendChild(option)
+
+    if (yearMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        inputSelect.disabled = true;
+        return;
+    }
+    if (monthMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        inputSelect.disabled = true;
+        return;
+    }
+
+    keys = Object.keys(inputLetters);
+    neededYears = [];
+
+    yearMultiSelect.selectedValues.forEach(el => {
+        if (!keys.includes(el)) {
+            neededYears.push(el);
+        }
+    })
+
+    neededYears.forEach(el => {
+        inputLetters[el] = [];
+    })
+
+    if (neededYears.length > 0) {
+        const data = await findOutputLettersByYears(neededYears);
+
+        data.forEach(el => {
+            inputLetters[el.year].push(el);
+        })
+    }
+
+    let inputLettersFiltered = Object.values(inputLetters)
+        .flat()
+        .filter(el => yearMultiSelect.selectedValues.includes(el.year.toString()))
+        .filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()))
+
+
+    if(inputLettersFiltered.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        inputSelect.disabled = true;
+    }
+
+    inputLettersFiltered.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.numberIVC;
+        option.value = element.id;
+        inputSelect.appendChild(option);
+    })
 }
 
 function arrayBufferToBase64( buffer ) {

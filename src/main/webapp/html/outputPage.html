@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="../fonts/fonts.css">
     <link rel="stylesheet" type="text/css" href="../css/global.css">
     <link rel="stylesheet" type="text/css" href="../css/multiselect.css">
+    <script src="../js/global.js"></script>
     <script src="../js/outputPage.js"></script>
     <script src="../js/fileUploader.js"></script>
     <script src="../js/multiselect.js"></script>
     <script src="../js/modal.js"></script>
+    <script src="../js/entities.js"></script>
 </head>
 <body>
     <header class="header">
@@ -30,6 +32,47 @@
                 <div class="custom-input">
                     <label for="easd-num" class="custom-label custom-label-right">Номер ЕАСД</label>
                     <input id="easd-num" type="text">
+                </div>
+                <div class="dividing-line dividing-up"></div>
+                <div class="custom-checkbox">
+                    <input id="is-answer" type="checkbox">
+                    <label for="is-answer">Ответ на входящее</label>
+                </div>
+                <div class="field-answer-grid">
+                    <div class="multiselect">
+                        <label for="years">Год входящего</label>
+                        <select id="years" name="years" data-placeholder="Выберите год" data-search="false" data-select-all="true" multiple data-multi-select disabled>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2010</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                        </select>
+                    </div>
+                    <div class="multiselect">
+                        <label for="months">Месяц входящего</label>
+                        <select id="months" name="months" data-placeholder="Выберите месяц" data-search="false" data-select-all="true" multiple data-multi-select disabled>
+                            <option value="1">01 (январь)</option>
+                            <option value="2">02 (февраль)</option>
+                            <option value="3">03 (март)</option>
+                            <option value="4">04 (апрель)</option>
+                            <option value="5">05 (май)</option>
+                            <option value="6">06 (июнь)</option>
+                            <option value="7">07 (июль)</option>
+                            <option value="8">08 (август)</option>
+                            <option value="9">09 (сентябрь)</option>
+                            <option value="10">10 (октябрь)</option>
+                            <option value="11">11 (ноябрь)</option>
+                            <option value="12">12 (декабрь)</option>
+                        </select>
+                    </div>
+                    <div class="custom-select answer-grid-select">
+                        <label for="input-select">Номер входящего</label>
+                        <select name="doc-num" id="input-select" disabled>
+                            <option value="0" disabled selected hidden>Нет писем</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="dividing-line dividing-up"></div>
                 <div class="custom-date">
@@ -91,47 +134,5 @@
             </button>
         </section>
     </main>
-    <div class="horizontal-view">
-        <label>
-            <input id="is-answer" type="checkbox">
-            Ответ на входящее
-        </label>
-    </div>
-    <div id="answer-row" class="horizontal-view" style="justify-content: end; display: none">
-        <label>
-            Год входящего
-            <select id="years" name="years" data-placeholder="Год" data-search="false" data-select-all="true" multiple data-multi-select>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-                <option value="2021">2021</option>
-                <option value="2020">2010</option>
-                <option value="2019">2019</option>
-                <option value="2018">2018</option>
-            </select>
-        </label>
-        <label>
-            Месяц входящего
-            <select id="months" name="months" data-placeholder="Месяц" data-search="false" data-select-all="true" multiple data-multi-select>
-                <option value="1">01</option>
-                <option value="2">02</option>
-                <option value="3">03</option>
-                <option value="4">04</option>
-                <option value="5">05</option>
-                <option value="6">06</option>
-                <option value="7">07</option>
-                <option value="8">08</option>
-                <option value="9">09</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-            </select>
-        </label>
-        <div class="custom-select">
-            <label for="input-select">Номер входящего</label>
-            <select name="doc-num" id="input-select" disabled>
-                <option value="" disabled selected hidden>Нет писем</option>
-            </select>
-        </div>
-    </div>
 </body>
 </html>

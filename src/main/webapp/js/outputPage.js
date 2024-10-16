@@ -2,33 +2,64 @@ let monthMultiSelect;
 let yearMultiSelect;
 let tagsMultiSelect;
 let fileUploader;
-
 const inputLetters = {};
+let attentionContainer;
 
-window.onload = async function() {
+let originsAndAddresses;
+let signers;
+let executors;
+let workers;
+let documentTypes;
+let actualNumberIVC;
+let tags;
+
+let requests = Promise.all([
+    getOriginsAndAddressesData(),
+    getSignersData(),
+    getExecutorsData(),
+    getWorkersData(),
+    getDocumentTypesData(),
+    getActualNumberIVC(),
+    getTagsData()
+]).then((data) => {
+    originsAndAddresses = data[0];
+    signers = data[1];
+    executors = data[2];
+    workers = data[3];
+    documentTypes = data[4];
+    actualNumberIVC = data[5];
+    tags = data[6];
+})
+
+window.addEventListener("load", async () => {
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
 
-    document.getElementById("is-answer").onchange = function (ev) {
-        if (ev.target.checked) {
-            document.getElementById("answer-row").style.display = "";
+    fileUploader = new FileUploader(document.getElementById("file-uploader"));
+    attentionContainer = document.getElementById("attentions-container");
+
+    await requests;
+
+    document.querySelector("#is-answer").onchange = (e) => {
+        if (e.target.checked) {
+            monthMultiSelect.disabled = false;
+            yearMultiSelect.disabled = false;
         }
         else {
-            document.getElementById("answer-row").style.display = "none";
+            monthMultiSelect.disabled = true;
+            yearMultiSelect.disabled = true;
         }
     }
 
     monthMultiSelect = new MultiSelect(document.getElementById("months"), {
         onChange: function(value, text, element) {
-            onOutputYearOrMonthChange();
+            onOutputYearOrMonthChange(document.querySelector("#input-select"), yearMultiSelect, monthMultiSelect);
         }
     })
     yearMultiSelect = new MultiSelect(document.getElementById("years"), {
         onChange: function(value, text, element) {
-            onOutputYearOrMonthChange();
+            onOutputYearOrMonthChange(document.querySelector("#input-select"), yearMultiSelect, monthMultiSelect);
         }
     })
-
-    fileUploader = new FileUploader(document.getElementById("file-uploader"));
 
     document.getElementById("output-ref").classList.add("li-selected");
 
@@ -38,7 +69,7 @@ window.onload = async function() {
     await getSignersData();
     await getExecutorsData();
     getActualNumberIVC();
-}
+})
 
 async function getActualNumberIVC() {
     let response = await (await fetch('/letters/api/outputLetters/actualNumberIVC')).json();
@@ -212,11 +243,13 @@ async function onOutputYearOrMonthChange() {
 
     if (yearMultiSelect.selectedItems.length === 0) {
         option.innerText = "Нет писем";
+        option.value = "0";
         select.disabled = true;
         return;
     }
     if (monthMultiSelect.selectedItems.length === 0) {
         option.innerText = "Нет писем";
+        option.value = "0";
         select.disabled = true;
         return;
     }

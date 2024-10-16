@@ -47,8 +47,9 @@ public class InputLetterRepository {
 
         return Optional.of(dbFile);
     }
-    public void create(InputLetter inputLetter) {
+    public InputLetter create(InputLetter inputLetter) {
         entityManager.persist(inputLetter);
+        return inputLetter;
     }
 
     public InputLetter update(InputLetter inputLetter) {

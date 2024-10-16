@@ -156,3 +156,13 @@
     color: #212529;
     background-color: white;
 }
+
+.multi-select .multi-select-header.disabled {
+    background-color: #d5d5d5;
+    cursor: default;
+    pointer-events: none;
+}
+
+.multi-select .multi-select-header.disabled * {
+    background-color: #d5d5d5;
+}
