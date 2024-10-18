@@ -1,30 +1,32 @@
+const form = {};
+
 let monthMultiSelect;
 let yearMultiSelect;
 let tagsMultiSelect;
 let fileUploader;
-const inputLetters = {};
+
 let attentionContainer;
 
 let originsAndAddresses;
-let signers;
-let executors;
+let participants;
+let workerSigners;
 let workers;
 let documentTypes;
 let actualNumberIVC;
 let tags;
 
 let requests = Promise.all([
-    getOriginsAndAddressesData(),
-    getSignersData(),
-    getExecutorsData(),
-    getWorkersData(),
-    getDocumentTypesData(),
-    getActualNumberIVC(),
+    findOriginsAndAddresses(),
+    findParticipants(),
+    findWorkerSigners(),
+    findWorkers(),
+    findDocumentTypes(),
+    getActualOutputNumberIVC(),
     getTagsData()
 ]).then((data) => {
     originsAndAddresses = data[0];
-    signers = data[1];
-    executors = data[2];
+    participants = data[1];
+    workerSigners = data[2];
     workers = data[3];
     documentTypes = data[4];
     actualNumberIVC = data[5];
@@ -64,87 +66,47 @@ window.addEventListener("load", async () => {
     document.getElementById("output-ref").classList.add("li-selected");
 
     tagsMultiSelect = await getTags();
-    await getOriginsData();
-    await getParticipantsData();
-    await getSignersData();
-    await getExecutorsData();
-    getActualNumberIVC();
+
+    setOriginsAndAddressesOptions(document.querySelector("#address-select"), originsAndAddresses);
+    setWorkerSignersOptions(document.querySelector("#signer-select"), workerSigners);
+    setWorkerExecutorsOptions(document.querySelector("#executor-select"), workers);
+    setParticipantsOptions(document.querySelector("#participant-select"), participants);
+    setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes);
+    setActualNumberIVC();
+
+    document.querySelectorAll("textarea").forEach((el) => {
+        auto_grow(el);
+        el.oninput = () => {
+            auto_grow(el);
+        };
+    })
+
+    form.numberIVC = document.querySelector("#ivc-num");
+    form.registrationDate = document.querySelector("#registration-date");
+    form.documentDate = document.querySelector("#date-doc");
+    form.documentNumber = document.querySelector("#doc-num");
+    form.documentType = document.querySelector("#doc-type-select");
+    form.address = document.querySelector("#address-select");
+    form.signer = document.querySelector("#signer-select");
+    form.executor = document.querySelector("#executor-select");
+    form.easdNumber = document.querySelector("#easd-num");
+    form.answer = document.querySelector("#is-answer");
+    form.prilojenie = document.querySelector("#prilojenie");
+    form.topic = document.querySelector("#topic");
+    form.tags = tagsMultiSelect;
+    form.note = document.querySelector("#note");
+    form.targetParticipant = document.querySelector("#participant-select");
+    form.reserve = document.querySelector("#reserve");
+    form.fileUploader = fileUploader;
+    form.inputLetter = document.querySelector("#input-select");
 })
 
-async function getActualNumberIVC() {
-    let response = await (await fetch('/letters/api/outputLetters/actualNumberIVC')).json();
-    document.getElementById("ivc-num").value = response.numberIVC;
+function setActualNumberIVC() {
+    document.getElementById("ivc-num").value = actualNumberIVC;
     document.getElementById("ivc-num-auto-insert-info").hidden = false;
     document.getElementById("ivc-num").oninput = () => {
         document.getElementById("ivc-num-auto-insert-info").hidden = true;
     }
-}
-
-async function getOriginsData() {
-    let response = await fetch('/letters/api/originsAndAddresses');
-    const originsAndAddresses = await response.json();
-
-    const modal = document.getElementById("modal");
-    const select = document.getElementById("address-select");
-    const modalError = document.getElementById('modal2');
-
-
-    originsAndAddresses.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.name
-        option.value = element.id
-        select.appendChild(option)
-    })
-
-    const option = document.createElement("option");
-    option.innerText = "другое"
-    option.value = "other"
-    select.appendChild(option)
-
-    select.onchange = () => {
-        if (select.value === 'other') {
-            openModalCreateOrigin(modal, select, modalError);
-        }
-    }
-}
-
-async function getParticipantsData() {
-    let response = await (await fetch('/letters/api/participants')).json();
-
-    const modal = document.getElementById("modal")
-    const select = document.getElementById("participant-select");
-    const modalError = document.getElementById("modal2");
-
-    response.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.initials
-        option.value = element.id
-        select.appendChild(option)
-    })
-
-    const option = document.createElement("option");
-    option.innerText = "другое"
-    option.value = "other"
-    select.appendChild(option)
-
-    select.onchange = () => {
-        if (select.value === 'other') {
-            openModalCreateParticipant(modal, select, false, modalError, "Создание исполнителя/адресата/подписанта");
-        }
-    }
-}
-
-function changeTopic() {
-    const modal = document.getElementById("modal");
-    const input = document.getElementById("topic");
-
-    openModalTopic(modal, input, "Редактирование темы");
-}
-function changeNote() {
-    const modal = document.getElementById("modal");
-    const input = document.getElementById("note");
-
-    openModalNote(modal, input, "Редактирование примечания");
 }
 
 async function getTags() {
@@ -166,190 +128,32 @@ async function getTags() {
     })
 }
 
-async function getSignersData() {
-    let response = await (await fetch('/letters/api/workers/signers')).json();
-
-    const modal = document.getElementById("modal");
-    const select = document.getElementById("signer-select");
-    const modalError = document.getElementById("modal2");
-
-    response.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.initials
-        option.value = element.id
-        select.appendChild(option)
-    })
-
-    const option = document.createElement("option");
-    option.innerText = "другое"
-    option.value = "other"
-    select.appendChild(option)
-
-    select.onchange = () => {
-        if (select.value === 'other') {
-            const otherSelects = [];
-            otherSelects.push({
-                signFlag: false,
-                selectNode: document.getElementById("executor-select")
-            })
-            openModalCreateWorker(modal, select, modalError,"Создание подписанта", otherSelects);
-        }
-    }
-
-}
-
-async function getExecutorsData() {
-    let response = await (await fetch('/letters/api/workers')).json();
-
-    const modal = document.getElementById("modal");
-    const select = document.getElementById("executor-select");
-    const modalError = document.getElementById("modal2");
-
-    response.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.initials
-        option.value = element.id
-        select.appendChild(option)
-    })
-
-    const option = document.createElement("option");
-    option.innerText = "другое"
-    option.value = "other"
-    select.appendChild(option)
-
-    select.onchange = () => {
-        if (select.value === 'other') {
-            const otherSelects = [];
-            otherSelects.push({
-                signFlag: true,
-                selectNode: document.getElementById("signer-select")
-            })
-            openModalCreateWorker(modal, select, modalError ,"Создание исполнителя", otherSelects);
-        }
-    }
-}
-
-async function onOutputYearOrMonthChange() {
-
-    const select = document.getElementById("input-select");
-    select.innerHTML = "";
-    select.disabled = false;
-    const option = document.createElement("option");
-    option.innerText = "Выберите вариант";
-    option.disabled = true;
-    option.selected = true;
-    option.hidden = true;
-    select.appendChild(option)
-
-    if (yearMultiSelect.selectedItems.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        select.disabled = true;
-        return;
-    }
-    if (monthMultiSelect.selectedItems.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        select.disabled = true;
-        return;
-    }
-
-    keys = Object.keys(inputLetters);
-    neededYears = [];
-
-    yearMultiSelect.selectedValues.forEach(el => {
-        if (!keys.includes(el)) {
-            neededYears.push(el);
-        }
-    })
-
-    neededYears.forEach(el => {
-        inputLetters[el] = [];
-    })
-
-    if (neededYears.length > 0) {
-        const response = await fetch("/letters/api/inputLetters/findByYears", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                years: neededYears
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        data.forEach(el => {
-            inputLetters[el.year].push(el);
-        })
-    }
-
-    let inputLettersFiltered = Object.values(inputLetters)
-        .flat()
-        .filter(el => yearMultiSelect.selectedValues.includes(el.year.toString()))
-        .filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()))
-
-    if(inputLettersFiltered.length === 0) {
-        option.innerText = "Нет писем";
-        select.disabled = true;
-    }
-
-    inputLettersFiltered.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.documentNumber;
-        option.value = element.id
-        select.appendChild(option)
-    })
-}
-
 async function saveDocument() {
-    const numIVC = document.getElementById("ivc-num").value;
-    const isAnswer = document.getElementById("is-answer").checked;
-    const inputSelect = document.getElementById("input-select");
-    const registrationDate = document.getElementById("registration-date").value;
-    const adress = document.getElementById("address-select").value;
-    const easdNum = document.getElementById("easd-num").value;
-    const participant = document.getElementById("participant-select").value;
-    const prilojenie = document.getElementById("prilojenie").checked;
-    const signer = document.getElementById("signer-select").value;
-    const executor = document.getElementById("executor-select").value;
-    const topic = document.getElementById("topic").value;
-    const reserve = document.getElementById("reserve").checked;
-    const note = document.getElementById("note").value;
-    const file = document.getElementById("file").files[0];
-    const documentName = file !== undefined ? file.name : "";
 
-    //const documentDate = document.getElementById("date-doc").value;
+    const outputLetter = new OutputLetter({
+        id: 0,
+        numberIVC: form.numberIVC.value,
+        registrationDate: form.registrationDate.value,
+        documentDate: form.documentDate.value,
+        //documentNumber: form.documentNumber.value,
+        documentType: {id:form.documentType.value},
+        documentName: form.fileUploader.file ? form.fileUploader.file.name : "",
+        address: {id:form.address.value},
+        signer: {id:form.signer.value},
+        executor: {id:form.executor.value},
+        easdNumber: form.easdNumber.value,
+        answer: form.answer.checked,
+        prilojenie: form.prilojenie.checked,
+        topic: form.topic.value,
+        tags: form.tags.selectedValues,
+        note: form.note.value,
+        targetParticipant: {id:form.targetParticipant.value},
+        reserve: form.reserve.checked,
+        file: form.fileUploader.file,
+        inputLetter: {id:form.inputLetter.value}
+    });
 
-    let binary = "";
-    if (file !== undefined) {
-        binary = await getBinaryFromFile(file);
-    }
-
-    if (!isNumeric(adress)) {
-        const modalError = document.getElementById("modal2");
-        showModalError("Ошибка", "\"Куда направлено письмо\" не выбрано", modalError)
-        return;
-    }
-
-    /*if (!isNumeric(participant)) {
-        const modalError = document.getElementById("modal2");
-        showModalError("Ошибка", "\"Кому направлено письмо\" не выбрано", modalError)
-        return;
-    }*/
-
-    if (isAnswer && inputSelect.children.length === 1 || isAnswer && inputSelect.value === "Выберите вариант") {
-        const modalError = document.getElementById("modal2");
-        showModalError("Ошибка", "Входящее письмо не выбрано", modalError)
-        return;
-    }
-
-    const response = await fetch("/letters/api/outputLetters", {
+    /*const response = await fetch("/letters/api/outputLetters", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -373,47 +177,20 @@ async function saveDocument() {
             file: arrayBufferToBase64(binary),
             inputLetterId: inputSelect.value
         }),
-    });
+    });*/
 
-    const modal = new bootstrap.Modal(document.getElementById('modal2'));
-    const element = document.getElementById('modal2');
-    const header = element.children[0].children[0].children[0].children[0];
-    const body = element.children[0].children[0].children[1].children[0];
-
-    if (!response.ok) {
-        body.innerHTML = await response.text();
-        header.innerHTML = "Ошибка"
-
-        modal.toggle();
-        throw new Error(`Response status: ${response.status}`);
+    try {
+        await saveOrUpdateOutputLetter(outputLetter);
+        informerStatus200Instance(5, "Письмо было успешно сохранено");
+        blockButton(document.querySelector("button[onclick=\"saveDocument()\"]"), 5);
+        actualNumberIVC = await getActualOutputNumberIVC()
+        setActualNumberIVC();
     }
-
-    header.innerHTML = "Успешно";
-    body.innerHTML = "Документ был сохранён"
-    modal.toggle();
-
-    getActualNumberIVC();
-}
-
-async function getBinaryFromFile(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.addEventListener('load', () => resolve(reader.result))
-        reader.addEventListener('error', (err) => reject(err))
-        reader.readAsArrayBuffer(file)
-    })
-}
-
-function arrayBufferToBase64( buffer ) {
-    var binary = '';
-    var bytes = new Uint8Array( buffer );
-    var len = bytes.byteLength;
-    for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
+    catch (e) {
+        informerStatusNot200Instance(30, "Письмо не было сохранено", e.message);
+        console.error(e.stack);
     }
-    return window.btoa( binary );
 }
-
 function isNumeric(value) {
     return /^-?\d+$/.test(value);
 }

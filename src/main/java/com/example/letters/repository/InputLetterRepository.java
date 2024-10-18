@@ -44,9 +44,13 @@ public class InputLetterRepository {
                 .getSingleResult();
 
         DBFile dbFile = new DBFile((String) tuple.get(0),(byte[]) tuple.get(1));
+        if (dbFile.fileName == null || dbFile.file.length == 0) {
+            return Optional.empty();
+        }
 
         return Optional.of(dbFile);
     }
+
     public InputLetter create(InputLetter inputLetter) {
         entityManager.persist(inputLetter);
         return inputLetter;

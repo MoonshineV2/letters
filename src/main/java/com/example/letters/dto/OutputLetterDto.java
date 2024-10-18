@@ -15,49 +15,49 @@ import java.util.List;
 @AllArgsConstructor
 public class OutputLetterDto {
 
-    private int id;
+    public int id;
 
-    private int year;
+    public int year;
 
-    private int numberIVC;
+    public int numberIVC;
 
-    private Timestamp createDate;
+    public Timestamp createDate;
 
-    private Date registrationDate;
+    public Date registrationDate;
 
-    private Date documentDate;
+    public Date documentDate;
 
-    private String documentNumber;
+    public String documentNumber;
 
-    private String documentName;
+    public String documentName;
 
-    private DocumentTypeDto documentType;
+    public DocumentTypeDto documentType;
 
-    private OriginAndAddressDto address;
+    public OriginAndAddressDto address;
 
-    private ParticipantDto targetParticipant;
+    public ParticipantDto targetParticipant;
 
-    private ParticipantDto signer;
+    public WorkerDto signer;
 
-    private ParticipantDto executor;
+    public ParticipantDto executor;
 
-    private int easdNumber;
+    public int easdNumber;
 
-    private InputLetterDto inputLetter;
+    public InputLetterDto inputLetter;
 
-    private boolean answer;
+    public boolean answer;
 
-    private boolean prilojenie;
+    public boolean prilojenie;
 
-    private String topic;
+    public String topic;
 
-    private List<Tag> tags;
+    public List<Tag> tags;
 
-    private String note;
+    public String note;
 
-    private boolean reserve;
+    public boolean reserve;
 
-    private byte[] file;
+    public byte[] file;
 
     public static OutputLetterDto fromOutputLetter(OutputLetter outputLetter) {
         OutputLetterDto dto = new OutputLetterDto();
@@ -78,7 +78,7 @@ public class OutputLetterDto {
             dto.targetParticipant = ParticipantDto.fromParticipant(outputLetter.getTargetParticipant());
         }
         if (outputLetter.getSigner() != null) {
-            dto.signer = ParticipantDto.fromParticipant(outputLetter.getSigner());
+            dto.signer = WorkerDto.fromWorker(outputLetter.getSigner());
         }
         if (outputLetter.getExecutor() != null) {
             dto.executor = ParticipantDto.fromParticipant(outputLetter.getExecutor());
@@ -97,7 +97,7 @@ public class OutputLetterDto {
         dto.note = outputLetter.getNote();
         dto.reserve = outputLetter.isReserve();
         //dto.file = outputLetter.getFile();
-        dto.documentNumber = outputLetter.getDocumentNum();
+        dto.documentNumber = outputLetter.getDocumentNumber();
 
         return dto;
     }
@@ -111,13 +111,13 @@ public class OutputLetterDto {
         outputLetter.setRegistrationDate(registrationDate);
         outputLetter.setDocumentDate(documentDate);
         outputLetter.setDocumentName(documentName);
-        if (documentType != null) outputLetter.setDocumentType(documentType.toDocumentType());
-        if (address != null) outputLetter.setAddress(address.toOriginAndAddress());
-        if (targetParticipant != null) outputLetter.setTargetParticipant(targetParticipant.toParticipant());
-        if (signer != null) outputLetter.setSigner(signer.toParticipant());
-        if (executor != null) outputLetter.setExecutor(executor.toParticipant());
+        if (documentType != null && documentType.id != 0) outputLetter.setDocumentType(documentType.toDocumentType());
+        if (address != null && address.id != 0) outputLetter.setAddress(address.toOriginAndAddress());
+        if (targetParticipant != null && targetParticipant.id != 0) outputLetter.setTargetParticipant(targetParticipant.toParticipant());
+        if (signer != null && signer.id != 0) outputLetter.setSigner(signer.toWorker());
+        if (executor != null && executor.id != 0) outputLetter.setExecutor(executor.toParticipant());
         outputLetter.setEasdNumber(easdNumber);
-        if (inputLetter != null) outputLetter.setInputLetter(inputLetter.toInputLetter());
+        if (inputLetter != null && inputLetter.id != 0) outputLetter.setInputLetter(inputLetter.toInputLetter());
         outputLetter.setAnswer(answer);
         outputLetter.setPrilojenie(prilojenie);
         outputLetter.setTopic(topic);
@@ -125,7 +125,7 @@ public class OutputLetterDto {
         outputLetter.setNote(note);
         outputLetter.setReserve(reserve);
         outputLetter.setFile(file);
-        outputLetter.setDocumentNum(documentNumber);
+        outputLetter.setDocumentNumber(documentNumber);
 
         return outputLetter;
     }

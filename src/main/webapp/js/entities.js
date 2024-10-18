@@ -201,7 +201,7 @@ class InputLetter {
         })
 
         let signerOptions = '';
-        signers.forEach((sr) => {
+        participantSigners.forEach((sr) => {
             if (sr.id !== this.signer.id) {
                 signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
             }
@@ -503,7 +503,7 @@ class OutputLetter {
     createDate;
     registrationDate;
     documentDate;
-    documentNumber
+    documentNumber = '';
     documentName;
     documentType;
     address;
@@ -527,7 +527,8 @@ class OutputLetter {
         this.createDate = data.createDate;
         this.registrationDate = data.registrationDate;
         this.documentDate = data.documentDate;
-        this.documentNumber = data.documentNumber;
+        if (data.documentNumber)
+            this.documentNumber = data.documentNumber;
         this.documentName = data.documentName;
         if (data.documentType)
             this.documentType = new DocumentType(data.documentType);
@@ -536,12 +537,12 @@ class OutputLetter {
         if (data.targetParticipant)
             this.targetParticipant = new Participant(data.targetParticipant);
         if (data.signer)
-            this.signer = new Participant(data.signer);
+            this.signer = new Worker(data.signer);
         if (data.executor)
             this.executor = new Participant(data.executor);
         this.easdNumber = data.easdNumber;
         if (data.inputLetter)
-            this.inputLetter = data.inputLetter;
+            this.inputLetter = new InputLetter(data.inputLetter);
         this.answer = data.answer;
         this.prilojenie = data.prilojenie;
         this.topic = data.topic;
@@ -562,13 +563,13 @@ class OutputLetter {
         documentNumber:"Номер письма",
         documentName:"Название файла",
         documentType:"Тип документа",
+        address:"Куда направлено",
         targetParticipant:"Кому направлено",
-        address:"Адрес",
         signer:"Подписант",
         executor:"Исполнитель",
         easdNumber:"Номер ЕАСД",
         inputLetter:"Входящее письмо",
-        answer:"Ответ",
+        answer:"Ответ на входящее",
         prilojenie:"Приложение",
         topic:"Тема",
         tags:"Теги",
@@ -625,13 +626,6 @@ class OutputLetter {
                 td.innerText = "Нет";
             }
         },
-        prilojenie: function (td, letter) {
-            if (letter.prilojenie === "true" || letter.prilojenie === true) {
-                td.innerText = "Да";
-            } else {
-                td.innerText = "Нет";
-            }
-        },
         reserve: function (td, letter) {
             if (letter.reserve === "true" || letter.reserve === true) {
                 td.innerText = "Да";
@@ -661,12 +655,12 @@ class OutputLetter {
 
     async editFormInstance() {
 
-        let outputLetterOptions = '';
-        if (this.outputLetter) {
-            outputLetterOptions += `<option value="${this.outputLetter.id}">${this.outputLetter.numberIVC}</option>`;
+        let inputLetterOptions = '';
+        if (this.inputLetter) {
+            inputLetterOptions += `<option value="${this.inputLetter.id}">${this.inputLetter.numberIVC}</option>`;
         }
         else {
-            outputLetterOptions += `<option value="0">Не выбрано</option>`;
+            inputLetterOptions += `<option value="0">Не выбрано</option>`;
         }
 
         let documentTypeOptions = '';
@@ -691,7 +685,7 @@ class OutputLetter {
         })
 
         let signerOptions = '';
-        signers.forEach((sr) => {
+        workersSigners.forEach((sr) => {
             if (this.signer && sr.id === this.signer.id) {
                 signerOptions += `<option value="${sr.id}" selected>${sr.initials}</option>`;
             }
@@ -752,7 +746,7 @@ class OutputLetter {
                 <div class="dividing-line dividing-up"></div>
                 <div class="custom-checkbox">
                     <input id="il-is-answer" type="checkbox" ${this.answer ? 'checked' : ''}>
-                    <label for="il-is-answer">Ответ на исходящее</label>
+                    <label for="il-is-answer">${OutputLetter.locale.answer}</label>
                 </div>
                 <div class="field-answer-grid">
                     <div class="multiselect">
@@ -760,8 +754,9 @@ class OutputLetter {
                         <select id="il-years" name="years" data-placeholder="Выберите год" data-search="false" data-select-all="true" multiple data-multi-select disabled>
                             <option value="2024">2024</option>
                             <option value="2023">2023</option>
+                            <option value="2022">2022</option>
                             <option value="2021">2021</option>
-                            <option value="2020">2010</option>
+                            <option value="2020">2020</option>
                             <option value="2019">2019</option>
                             <option value="2018">2018</option>
                         </select>
@@ -784,85 +779,81 @@ class OutputLetter {
                         </select>
                     </div>
                     <div class="custom-select answer-grid-select">
-                        <label for="il-output-select">Номер исходящего</label>
-                        <select name="doc-num" id="il-output-select" disabled>
-                            ${outputLetterOptions}
+                        <label for="il-input-select">${OutputLetter.locale.inputLetter}</label>
+                        <select name="doc-num" id="il-input-select" disabled>
+                            ${inputLetterOptions}
                         </select>
                     </div>
                 </div>
                 <div class="dividing-line dividing-up"></div>
                 <div class="custom-date">
-                    <label for="il-create-date">Дата создания</label>
+                    <label for="il-create-date">${OutputLetter.locale.createDate}</label>
                     <div class="field-container">
                         <input id="il-create-date" type="date" value="${this.createDate ? new Date(this.createDate).toISOString().split('T')[0] : null}"/>
                     </div>
                 </div>
                 <div class="custom-date">
-                    <label for="il-registration-date">Дата регистрации</label>
+                    <label for="il-registration-date">${OutputLetter.locale.registrationDate}</label>
                     <div class="field-container">
                         <input id="il-registration-date" type="date" value="${this.registrationDate ? new Date(this.registrationDate).toISOString().split('T')[0] : null}"/>
                         <p id="registration-date-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
                     </div>
                 </div>
                 <div class="custom-date">
-                    <label for="input-letter-postuplenie-date">Дата поступления документа</label>
-                    <input id="input-letter-postuplenie-date" type="date" value="${this.postuplenieDate ? new Date(this.postuplenieDate).toISOString().split('T')[0] : null}"/>
-                </div>
-                <div class="custom-date">
-                    <label for="il-date-doc">Дата письма</label>
+                    <label for="il-date-doc">${OutputLetter.locale.documentDate}</label>
                     <input id="il-date-doc" type="date" value="${this.documentDate ? new Date(this.documentDate).toISOString().split('T')[0] : null}"/>
                 </div>
                 <div class="custom-select">
-                    <label for="il-doc-type-select">Тип документа</label>
+                    <label for="il-doc-type-select">${OutputLetter.locale.documentType}</label>
                     <select name="doc-type" id="il-doc-type-select">
                         ${documentTypeOptions}
                     </select>
                 </div>
                 <div class="custom-select">
-                    <label for="il-origin-select">Источник письма</label>
-                    <select name="origins" id="il-origin-select">
+                    <label for="il-address-select">${OutputLetter.locale.address}</label>
+                    <select name="addresses" id="il-address-select">
                         ${originAndAddressOptions}
                     </select>
                 </div>
                 <div class="custom-select">
-                    <label for="il-signer-select">Подписант</label>
+                    <label for="il-target-select">${OutputLetter.locale.targetParticipant}</label>
+                    <select name="targets" id="il-target-select">
+                        ${targetOptions}
+                    </select>
+                </div>
+                <div class="custom-select">
+                    <label for="il-signer-select">${OutputLetter.locale.signer}</label>
                     <select name="signers" id="il-signer-select">
                         ${signerOptions}
                     </select>
                 </div>
                 <div class="custom-select">
-                    <label for="il-executor-select">Исполнитель</label>
+                    <label for="il-executor-select">${OutputLetter.locale.executor}</label>
                     <select name="executors" id="il-executor-select">
                         ${executorOptions}
                     </select>
                 </div>
-                <div class="custom-select">
-                    <label for="il-target-select">Кому расписано</label>
-                    <select name="targets" id="il-target-select">
-                        ${targetOptions}
-                    </select>
-                </div>
                 <div class="multiselect">
-                    <label for="il-tags">Теги</label>
+                    <label for="il-tags">${OutputLetter.locale.tags}</label>
                     <select id="il-tags" name="tags" multiple data-multi-select>
                         ${tagsOptions}
                     </select>
                 </div>
                 <div class="custom-textarea text-area-small">
-                    <label for="il-topic">Тема</label>
+                    <label for="il-topic">${OutputLetter.locale.topic}</label>
                     <textarea id="il-topic">${this.topic}</textarea>
                 </div>
                 <div class="custom-textarea">
-                    <label for="il-note">Примечание</label>
+                    <label for="il-note">${OutputLetter.locale.note}</label>
                     <textarea id="il-note">${this.note}</textarea>
                 </div>
                 <div class="custom-checkbox">
                     <input id="il-prilojenie" type="checkbox" ${this.prilojenie ? 'checked' : ''}>
-                    <label for="il-prilojenie">Приложение</label>
+                    <label for="il-prilojenie">${OutputLetter.locale.prilojenie}</label>
                 </div>
                 <div class="custom-checkbox">
                     <input id="il-reserve" type="checkbox" ${this.reserve ? 'checked' : ''}>
-                    <label for="il-reserve">Резерв</label>
+                    <label for="il-reserve">${OutputLetter.locale.reserve}</label>
                 </div>
                 <div class="dividing-line dividing-up"></div>
                 <div id="il-file-uploader"></div>
@@ -898,15 +889,15 @@ class OutputLetter {
 
         const tagsMultiSelectModal = new MultiSelect(bodyWrapper.querySelector("#il-tags"));
 
-        const outputSelect = bodyWrapper.querySelector("#il-output-select");
+        const inputSelect = bodyWrapper.querySelector("#il-input-select");
         const yearMultiSelect = new MultiSelect(bodyWrapper.querySelector("#il-years"), {
             onChange: function(value, text, element) {
-                onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMultiSelect);
+                onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMultiSelect);
             }
         });
         const monthMultiSelect = new MultiSelect(bodyWrapper.querySelector("#il-months"), {
             onChange: function(value, text, element) {
-                onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMultiSelect);
+                onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMultiSelect);
             }
         });
 
@@ -921,11 +912,10 @@ class OutputLetter {
             }
         }
 
-
         const fileUploader = new FileUploader(bodyWrapper.querySelector("#il-file-uploader"));
         if (this.documentName) {
             try {
-                const file = await getInputLetterFileById(this.id, this.documentName)
+                const file = await getOutputLetterFileById(this.id, this.documentName)
                 if (file) {
                     fileUploader.file = file;
                 }
@@ -954,17 +944,16 @@ class OutputLetter {
             clonedLetter.documentNumber = bodyWrapper.querySelector("#il-doc-num").value;
             clonedLetter.easdNumber = bodyWrapper.querySelector("#il-easdNumber").value;
             clonedLetter.answer = bodyWrapper.querySelector("#il-is-answer").checked;
-            clonedLetter.outputLetter = {id:outputSelect.value};
+            clonedLetter.inputLetter = {id:inputSelect.value};
             clonedLetter.createDate = bodyWrapper.querySelector("#il-create-date").value;
             clonedLetter.registrationDate = bodyWrapper.querySelector("#il-registration-date").value;
             clonedLetter.documentDate = bodyWrapper.querySelector("#il-date-doc").value;
-            clonedLetter.postuplenieDate = bodyWrapper.querySelector("#input-letter-postuplenie-date").value;
             clonedLetter.documentType = {id:bodyWrapper.querySelector("#il-doc-type-select").value};
             clonedLetter.documentName = fileUploader.file ? fileUploader.file.name : null;
-            clonedLetter.origin = {id:bodyWrapper.querySelector("#il-origin-select").value};
+            clonedLetter.address = {id:bodyWrapper.querySelector("#il-address-select").value};
+            clonedLetter.targetParticipant = {id:bodyWrapper.querySelector("#il-target-select").value};
             clonedLetter.signer = {id:bodyWrapper.querySelector("#il-signer-select").value};
             clonedLetter.executor = {id:bodyWrapper.querySelector("#il-executor-select").value};
-            clonedLetter.targetWorker = {id:bodyWrapper.querySelector("#il-target-select").value};
             clonedLetter.tags = new Tags(tagsMultiSelectModal.selectedValues);
             clonedLetter.topic = bodyWrapper.querySelector("#il-topic").value;
             clonedLetter.note = bodyWrapper.querySelector("#il-note").value;
@@ -1324,6 +1313,16 @@ class Tags {
         }
 
         return this.array.length - another.array.length;
+    }
+}
+
+class Tag {
+    id;
+    name;
+
+    constructor(data) {
+        this.id = data.id;
+        this.name = data.name;
     }
 }
 

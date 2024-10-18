@@ -12,51 +12,51 @@ import java.util.List;
 @AllArgsConstructor
 public class InputLetterDto {
 
-    private int id;
+    public int id;
 
-    private int year;
+    public int year;
 
-    private int numberIVC;
+    public int numberIVC;
 
-    private Timestamp createDate;
+    public Timestamp createDate;
 
-    private Date registrationDate;
+    public Date registrationDate;
 
-    private Date postuplenieDate;
+    public Date postuplenieDate;
 
-    private Date documentDate;
+    public Date documentDate;
 
-    private String documentNumber;
+    public String documentNumber;
 
-    private String documentName;
+    public String documentName;
 
-    private DocumentTypeDto documentType;
+    public DocumentTypeDto documentType;
 
-    private OriginAndAddressDto origin;
+    public OriginAndAddressDto origin;
 
-    private ParticipantDto signer;
+    public ParticipantDto signer;
 
-    private ParticipantDto executor;
+    public ParticipantDto executor;
 
-    private int easdNumber;
+    public int easdNumber;
 
-    private OutputLetterDto outputLetter;
+    public OutputLetterDto outputLetter;
 
-    private boolean answer;
+    public boolean answer;
 
-    private boolean prilojenie;
+    public boolean prilojenie;
 
-    private String topic;
+    public String topic;
 
-    private List<Tag> tags;
+    public List<Tag> tags;
 
-    private String note;
+    public String note;
 
-    private WorkerDto targetWorker;
+    public WorkerDto targetWorker;
 
-    private boolean isReserve;
+    public boolean isReserve;
 
-    private byte[] file;
+    public byte[] file;
 
     public static InputLetterDto fromInputLetter(InputLetter inputLetter) {
         InputLetterDto dto = new InputLetterDto();
@@ -126,7 +126,7 @@ public class InputLetterDto {
         if (targetWorker != null && targetWorker.id != 0) inputLetter.setTargetWorker(targetWorker.toWorker());
         inputLetter.setReserve(isReserve);
         inputLetter.setFile(file);
-        if (outputLetter != null) inputLetter.setOutputLetter(outputLetter.toOutputLetter());
+        if (outputLetter != null && outputLetter.id != 0) inputLetter.setOutputLetter(outputLetter.toOutputLetter());
 
         return inputLetter;
     }

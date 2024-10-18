@@ -8,26 +8,29 @@ let filterSection;
 let headerFilters;
 
 let originsAndAddresses;
-let signers;
+let participantSigners;
 let executors;
 let workers;
+let workersSigners;
 let documentTypes;
 let tags;
 
 let requests = Promise.all([
-    getOriginsAndAddressesData(),
-    getSignersData(),
-    getExecutorsData(),
-    getWorkersData(),
-    getDocumentTypesData(),
+    findOriginsAndAddresses(),
+    findParticipantSigners(),
+    findParticipants(),
+    findWorkers(),
+    findWorkerSigners(),
+    findDocumentTypes(),
     getTagsData()
 ]).then((data) => {
     originsAndAddresses = data[0];
-    signers = data[1];
+    participantSigners = data[1];
     executors = data[2];
     workers = data[3];
-    documentTypes = data[4];
-    tags = data[5];
+    workersSigners = data[4];
+    documentTypes = data[5];
+    tags = data[6];
 })
 
 window.onload = async function () {
@@ -46,13 +49,6 @@ window.onload = async function () {
     signerMultiSelect = getSignersMultiselectInstance();
     tagsMultiSelect = getTagsMultiselectInstance();
     executorMultiSelect = getExecutorsMultiselectInstance();
-
-    const options = document.getElementById("table-customization-options");
-    Array.from(options.children).forEach((e) => {
-        e.onclick = () => {
-            e.classList.toggle("table-customization-option-selected");
-        }
-    })
 
     let dragSrcEl;
 
@@ -113,9 +109,14 @@ window.onload = async function () {
     });
 
 
-    document.querySelector(".table-customization-btn").onclick = (e) => {
-        e.currentTarget.classList.toggle("table-customization-btn-active");
-    }
+    document.querySelectorAll(".table-customization-btn").forEach(el =>
+    el.onclick = (e) => e.currentTarget.classList.toggle("table-customization-btn-active")
+    )
+
+    /*const options = document.querySelectorAll(".table-customization-option:has(.table-customization-option-checkbox)");
+    options.forEach(el => el.onclick = () => {
+        e.classList.toggle("table-customization-option-selected");
+    })*/
 }
 
 function swapElements(node1, node2) {
@@ -151,8 +152,8 @@ function getOriginsMultiselectInstance() {
 
 function getSignersMultiselectInstance() {
     const data = [];
-    signers = Object.values(signers).sort((a,b) => a.id - b.id);
-    signers.forEach(element => {
+    participantSigners = Object.values(participantSigners).sort((a,b) => a.id - b.id);
+    participantSigners.forEach(element => {
         data.push({
             value: element.id,
             text: element.initials
@@ -216,11 +217,6 @@ async function findLetters() {
     const easdNum = document.getElementById("easd-num").value;
     const registrationDate = document.getElementById("registration-date").value;
     const registrationDate2 = document.getElementById("registration-date-2").value;
-    const origin = document.getElementById("origin-select").value;
-    const signer = document.getElementById("signer-select").value;
-    const executor = document.getElementById("signer-select").value;
-    const answerNum = document.getElementById("answer-num").value;
-    const tags = document.getElementById("tags").value;
 
     if (letterType === "input") {
         let data = await findInputLetters();
@@ -262,6 +258,7 @@ async function findLetters() {
             data = Object.values(data).filter(el => executorMultiSelect.selectedValues.includes(el.executor.id));
         }
 
+        document.querySelector("#table-section").classList.remove("hidden");
         table = new Table(document.getElementById("table"), data);
     }
     else if (letterType === "output") {
@@ -269,24 +266,31 @@ async function findLetters() {
 
         data.sort((e1, e2) => e1.id - e2.id);
 
+        console.log(data);
+
         if (ivcNum) {
             data = Object.values(data).filter(el => el.numberIVC === parseInt(ivcNum));
+            console.log(data);
         }
 
         if (easdNum) {
             data = Object.values(data).filter(el => el.easdNumber === parseInt(easdNum));
+            console.log(data);
         }
 
         if (registrationDate) {
             data = Object.values(data).filter(el => el.registrationDate >= new Date(registrationDate).getTime());
+            console.log(data);
         }
 
         if (registrationDate2) {
             data = Object.values(data).filter(el => el.registrationDate <= new Date(registrationDate2).getTime());
+            console.log(data);
         }
 
         if (originsMultiSelect.selectedValues.length > 0) {
             data = Object.values(data).filter(el => originsMultiSelect.selectedValues.includes(el.origin.id));
+            console.log(data);
         }
 
         if (signerMultiSelect.selectedValues.length > 0) {
@@ -294,20 +298,49 @@ async function findLetters() {
                 //console.log(`Letter id:${el.id}. Origin id:${el.signer.id} includes in ${signerMultiSelect.selectedValues}. Result:` + signerMultiSelect.selectedValues.includes(el.signer.id));
                 return  signerMultiSelect.selectedValues.includes(el.signer.id);
             });
+            console.log(data);
         }
 
         if (executorMultiSelect.selectedValues.length > 0) {
             data = Object.values(data).filter(el => executorMultiSelect.selectedValues.includes(el.executor.id));
+            console.log(data);
         }
 
+        document.querySelector("#table-section").classList.remove("hidden");
         table = new Table(document.getElementById("table"), data);
     }
 
     filterSection.classList.add("hidden");
+    document.querySelector("#header-filters .filters-text").innerText = serializeFilters();
     headerFilters.classList.remove("hidden");
 
     const a = document.createElement("a");
     a.href = "#table-section";
     a.click();
     a.remove();
+}
+
+function serializeFilters() {
+    const section = document.querySelector("#filter-section");
+
+    const selects = section.querySelectorAll(".custom-select");
+    const inputs = section.querySelectorAll(".custom-input");
+    const dates = section.querySelectorAll(".custom-date");
+
+    let serialized = "";
+
+    selects.forEach(el => {
+        serialized += el.querySelector("label").innerText;
+        const sel = el.querySelector("select");
+        serialized += ":\"" + sel.options[sel.selectedIndex].text + "\"";
+    })
+
+    inputs.forEach(el => {
+        if (el.querySelector("input").value) {
+            serialized += "; " + el.querySelector("label").innerText;
+            serialized += ":\"" + el.querySelector("input").value + "\"";
+        }
+    })
+
+    return serialized;
 }

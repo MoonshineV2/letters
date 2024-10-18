@@ -12,6 +12,10 @@
     cursor: pointer;
 }
 
+.header-filters:hover {
+    background-color: #f1f1f1;
+}
+
 .filters-text {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -34,6 +38,8 @@
 
 .table-upper {
     align-self: end;
+    display: flex;
+    gap: 10px;
 }
 
 .table-customization-btn {
@@ -45,6 +51,10 @@
     border: 0;
     font-size: 14px;
     font-weight: 500;
+}
+
+.table-customization-btn.purple {
+    background-color: #9c27b0;
 }
 
 .table-customization-btn.table-customization-btn-active + .table-customization-options{
@@ -202,7 +212,7 @@ tbody th img{
     min-width: 100%;
 
     margin-top: 5px;
-    padding: 10px 5px;
+    padding: 10px;
     border-radius: 5px;
 
     max-height: 300px;
@@ -239,6 +249,7 @@ tbody th img{
     background-color: white;
 
     user-select: none;
+    cursor: pointer;
 }
 
 .table-customization-option.over {
@@ -276,12 +287,18 @@ tbody th img{
     transform: rotate(35deg);
 }
 
-.table-customization-option-radio {
+.table-customization-option-checkbox {
     height: 16px;
     width: 16px;
     border: 1px solid #ced4da;
     border-radius: 4px;
-    cursor: pointer;
+}
+
+.table-customization-option-radio {
+    height: 16px;
+    width: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 50%;
 }
 
 .table-customization-option-text {
@@ -290,7 +307,6 @@ tbody th img{
     color: inherit;
     font-size: 16px;
     line-height: 20px;
-    cursor: pointer;
 }
 
 .table-customization-option.table-customization-option-selected .table-customization-option-radio {

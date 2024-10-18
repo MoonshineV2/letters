@@ -1,32 +1,132 @@
 const BACKEND_API_URL = 'http://localhost:8080/letters';
 
 const outputLetters = {};
+const inputLetters = {};
 
 window.addEventListener("load",() => {
     document.querySelector(".header-navigation").replaceWith(getHeaderNavigationHTMLInstance());
 });
 
-async function getOriginsAndAddressesData(){
+async function findOriginsAndAddresses(){
     const response = await fetch(BACKEND_API_URL + '/api/originsAndAddresses');
 
     if (!response.ok) {
         throw new Error("Источники и адреса не были загружены с сервера");
     }
 
-    return await response.json();
+    const data = await response.json()
+    return data.map(el => new OriginAndAddress(el));
 }
 
-async function getSignersData() {
+function setOriginsAndAddressesOptions(selectHTML, originsAndAddresses) {
+    selectHTML.innerHTML = "";
+
+    let first = document.createElement("option");
+    first.value = "";
+    first.disabled = true;
+    first.selected = true;
+    first.hidden = true;
+    first.innerText = "Выберите вариант";
+    selectHTML.appendChild(first);
+
+    originsAndAddresses.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.name
+        option.value = element.id
+        selectHTML.appendChild(option)
+    })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    selectHTML.appendChild(option)
+
+    selectHTML.onchange = () => {
+        if (selectHTML.value === 'other') {
+            selectHTML.options[0].selected = true;
+            OriginAndAddress.createFormInstance();
+        }
+    }
+}
+
+async function findParticipantSigners() {
     const response = await fetch(BACKEND_API_URL + '/api/participants/signers');
 
     if (!response.ok) {
         throw new Error("Подписанты не были загружены с сервера");
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    return data.map(el => new Participant(el));
 }
 
-async function getExecutorsData() {
+async function findWorkerSigners() {
+    const response = await fetch(BACKEND_API_URL + '/api/workers/signers');
+
+    if (!response.ok) {
+        throw new Error("Подписанты(сотрудники отдела) не были загружены с сервера");
+    }
+
+    const data = await response.json();
+
+    return data.map(el => new Worker(el));
+}
+
+function setParticipantSignersOptions(selectHTMl, signers) {
+
+    signers.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.initials
+        option.value = element.id
+        selectHTMl.appendChild(option)
+    })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    selectHTMl.appendChild(option)
+
+    selectHTMl.onchange = () => {
+        if (selectHTMl.value === 'other') {
+            const otherSelects = [];
+            otherSelects.push({
+                signFlag: false,
+                selectNode: document.getElementById("executor-select")
+            })
+            openModalCreateParticipant(modal, select, true, modalError ,"Создание подписанта", otherSelects);
+        }
+    }
+
+}
+
+function setWorkerSignersOptions(selectHTMl, signers) {
+
+    signers.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.initials
+        option.value = element.id
+        selectHTMl.appendChild(option)
+    })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    selectHTMl.appendChild(option)
+
+    selectHTMl.onchange = () => {
+        if (selectHTMl.value === 'other') {
+            const otherSelects = [];
+            otherSelects.push({
+                signFlag: false,
+                selectNode: document.getElementById("executor-select")
+            })
+            openModalCreateParticipant(modal, select, true, modalError ,"Создание подписанта", otherSelects);
+        }
+    }
+
+}
+async function findParticipants() {
     let response;
     try {
         response = await fetch(BACKEND_API_URL + '/api/participants');
@@ -39,27 +139,112 @@ async function getExecutorsData() {
         throw new Error("Исполнители не были загружены с сервера");
     }
 
-    return await response.json();
+    const data = await response.json();
+    return data.map(el => new Participant(el));
 }
 
-async function getWorkersData() {
+function setParticipantsOptions(selectHTML, executors) {
+
+    executors.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.initials
+        option.value = element.id
+        selectHTML.appendChild(option)
+    })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    selectHTML.appendChild(option)
+
+    selectHTML.onchange = () => {
+        if (selectHTML.value === 'other') {
+            const otherSelects = [];
+            otherSelects.push({
+                signFlag: true,
+                selectNode: document.getElementById("signer-select")
+            })
+            openModalCreateParticipant(modal, select, false, modalError,"Создание исполнителя", otherSelects);
+        }
+    }
+}
+
+function setWorkerExecutorsOptions(selectHTML, executors) {
+
+    executors.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.initials
+        option.value = element.id
+        selectHTML.appendChild(option)
+    })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    selectHTML.appendChild(option)
+
+    selectHTML.onchange = () => {
+        if (selectHTML.value === 'other') {
+            const otherSelects = [];
+            otherSelects.push({
+                signFlag: true,
+                selectNode: document.getElementById("signer-select")
+            })
+            openModalCreateParticipant(modal, select, false, modalError,"Создание исполнителя", otherSelects);
+        }
+    }
+}
+
+async function findWorkers() {
     const response = await fetch(BACKEND_API_URL + '/api/workers');
 
     if (!response.ok) {
         throw new Error("Сотрудники отдела не были загружены с сервера");
     }
 
-    return await response.json();
+    const data = await response.json()
+    return data.map(el => new Worker(el));
 }
 
-async function getDocumentTypesData() {
+function setWorkersOptions(selectHTML, workers) {
+
+    workers.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.initials
+        option.value = element.id
+        selectHTML.appendChild(option)
+    })
+
+    const option = document.createElement("option");
+    option.innerText = "другое"
+    option.value = "other"
+    selectHTML.appendChild(option)
+
+    selectHTML.onchange = () => {
+        if (selectHTML.value === 'other') {
+            openModalCreateWorker(modal, select, modalError, "Создание сотрудника отдела");
+        }
+    }
+}
+
+async function findDocumentTypes() {
     const response = await fetch(BACKEND_API_URL + '/api/documentTypes');
 
     if (!response.ok) {
         throw new Error("Типы письма не были загружены с сервера");
     }
 
-    return await response.json();
+    data = await response.json()
+    return data.map(el => new DocumentType(el));
+}
+
+function setDocumentTypesOptions(selectHTML, types) {
+    types.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.name
+        option.value = element.id
+        selectHTML.appendChild(option)
+    })
 }
 
 async function getTagsData() {
@@ -78,8 +263,18 @@ async function getTagsData() {
     return await response.json();
 }
 
-async function getActualNumberIVC() {
+async function getActualInputNumberIVC() {
     const response =  await fetch(BACKEND_API_URL + '/api/inputLetters/actualNumberIVC');
+
+    if (!response.ok) {
+        throw new Error("Номер ИВЦ ЖА для автоматической вставки не был загружен с сервера");
+    }
+
+    return (await response.json()).numberIVC;
+}
+
+async function getActualOutputNumberIVC() {
+    const response =  await fetch(BACKEND_API_URL + '/api/outputLetters/actualNumberIVC');
 
     if (!response.ok) {
         throw new Error("Номер ИВЦ ЖА для автоматической вставки не был загружен с сервера");
@@ -139,31 +334,9 @@ async function saveOrUpdateInputLetter(inputLetter) {
         binary = await getBinaryFromFile(inputLetter.file);
     }
 
-    const json = JSON.stringify({
-        id: inputLetter.id,
-        year: inputLetter.year,
-        numberIVC: inputLetter.numberIVC,
-        createDate: inputLetter.createDate,
-        registrationDate: inputLetter.registrationDate,
-        postuplenieDate: inputLetter.postuplenieDate,
-        documentDate: inputLetter.documentDate,
-        documentNumber: inputLetter.documentNumber,
-        documentType: inputLetter.documentType,
-        documentName: inputLetter.documentName,
-        origin: inputLetter.origin,
-        signer: inputLetter.signer,
-        executor: inputLetter.executor,
-        easdNumber: inputLetter.easdNumber,
-        answer: inputLetter.answer,
-        prilojenie: inputLetter.prilojenie,
-        topic: inputLetter.topic,
-        tags: inputLetter.tags.array,
-        note: inputLetter.note,
-        targetWorker: inputLetter.targetWorker,
-        reserve: inputLetter.reserve,
-        file: arrayBufferToBase64(binary),
-        outputLetter: inputLetter.outputLetter
-    });
+    const cloned = {...inputLetter};
+    cloned.tags = inputLetter.tags.array;
+    cloned.file = arrayBufferToBase64(binary);
 
     const getMethodRequest = () => {
         if (inputLetter.id) {
@@ -180,7 +353,48 @@ async function saveOrUpdateInputLetter(inputLetter) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: json,
+        body: JSON.stringify(cloned),
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    if (getMethodRequest() === "PUT") {
+        const returned = await response.json();
+        return new InputLetter(returned);
+    }
+}
+
+async function saveOrUpdateOutputLetter(outputLetter) {
+
+    let binary = "";
+    if (outputLetter.file) {
+        binary = await getBinaryFromFile(outputLetter.file);
+    }
+
+    const cloned = {...outputLetter};
+    cloned.tags = outputLetter.tags.array;
+    cloned.file = arrayBufferToBase64(binary);
+
+    const getMethodRequest = () => {
+        if (outputLetter.id) {
+            if (outputLetter.id !== 0 || outputLetter.id !== '0') {
+                return "PUT";
+            }
+        }
+
+        return "POST";
+    }
+
+    console.log(JSON.stringify(cloned));
+
+    const response = await fetch(BACKEND_API_URL + "/api/outputLetters", {
+        method: getMethodRequest() ,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cloned),
     });
 
     if (!response.ok) {
@@ -228,15 +442,32 @@ async function getInputLetterFileById(id, filename) {
 
     let blob =  await response.blob();
 
-    /*const filename = response.headers.get('Content-Disposition')
-
-    console.log(filename);*/
-
     if (blob.size === 0) {
         return null;
     }
 
    return new File([blob], filename);
+}
+
+async function getOutputLetterFileById(id, filename) {
+    const response = await fetch(BACKEND_API_URL + `/api/outputLetters/${id}/file`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/octet-stream"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    let blob =  await response.blob();
+
+    if (blob.size === 0) {
+        return null;
+    }
+
+    return new File([blob], filename);
 }
 
 async function findOutputLettersByYears(neededYears) {
@@ -380,7 +611,7 @@ async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMulti
     })
 
     if (neededYears.length > 0) {
-        const data = await findOutputLettersByYears(neededYears);
+        const data = await findInputLettersByYears(neededYears);
 
         data.forEach(el => {
             inputLetters[el.year].push(el);

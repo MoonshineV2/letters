@@ -1,3 +1,5 @@
+const form = {};
+
 let monthMultiSelect;
 let yearMultiSelect;
 let tagsMultiSelect;
@@ -13,12 +15,12 @@ let actualNumberIVC;
 let tags;
 
 let requests = Promise.all([
-    getOriginsAndAddressesData(),
-    getSignersData(),
-    getExecutorsData(),
-    getWorkersData(),
-    getDocumentTypesData(),
-    getActualNumberIVC(),
+    findOriginsAndAddresses(),
+    findParticipantSigners(),
+    findParticipants(),
+    findWorkers(),
+    findDocumentTypes(),
+    getActualInputNumberIVC(),
     getTagsData()
 ]).then((data) => {
     originsAndAddresses = data[0];
@@ -31,7 +33,7 @@ let requests = Promise.all([
 })
 
 document.addEventListener("originsAndAddressesChanged", async() => {
-    originsAndAddresses = await getOriginsAndAddressesData();
+    originsAndAddresses = await findOriginsAndAddresses();
     setOriginsAndAddressesOptions();
 });
 
@@ -67,11 +69,11 @@ window.addEventListener("load", async () => {
 
     tagsMultiSelect = await getTagsMultiselectInstance();
 
-    setOriginsAndAddressesOptions();
-    setSignersOptions();
-    setExecutorsOptions();
-    setWorkersOptions();
-    setDocumentTypesOptions();
+    setOriginsAndAddressesOptions(document.querySelector("#origin-select"), originsAndAddresses);
+    setParticipantSignersOptions(document.querySelector("#signer-select"), signers);
+    setParticipantsOptions(document.querySelector("#executor-select"), executors)
+    setWorkersOptions(document.querySelector("#target-select"), workers);
+    setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes);
     setActualNumberIVC();
     autoInsertRegistrationDate();
 
@@ -81,130 +83,27 @@ window.addEventListener("load", async () => {
             auto_grow(el);
         };
     })
+
+    form.numberIVC = document.querySelector("#ivc-num");
+    form.registrationDate = document.querySelector("#registration-date");
+    form.postuplenieDate = document.querySelector("#postuplenie-date");
+    form.documentDate = document.querySelector("#date-doc");
+    form.documentNumber = document.querySelector("#doc-num");
+    form.documentType = document.querySelector("#doc-type-select");
+    form.origin = document.querySelector("#origin-select");
+    form.signer = document.querySelector("#signer-select");
+    form.executor = document.querySelector("#executor-select");
+    form.easdNumber = document.querySelector("#easd-num");
+    form.answer = document.querySelector("#is-answer");
+    form.prilojenie = document.querySelector("#prilojenie");
+    form.topic = document.querySelector("#topic");
+    form.tags = tagsMultiSelect;
+    form.note = document.querySelector("#note");
+    form.targetWorker = document.querySelector("#target-select");
+    form.reserve = document.querySelector("#reserve");
+    form.fileUploader = fileUploader;
+    form.outputLetter = document.querySelector("#output-select");
 })
-
-function setOriginsAndAddressesOptions() {
-    const select = document.getElementById("origin-select");
-
-    select.innerHTML = "";
-
-
-    let first = document.createElement("option");
-    first.value = "";
-    first.disabled = true;
-    first.selected = true;
-    first.hidden = true;
-    first.innerText = "Выберите вариант";
-    select.appendChild(first);
-
-    originsAndAddresses.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.name
-        option.value = element.id
-        select.appendChild(option)
-    })
-
-    const option = document.createElement("option");
-    option.innerText = "другое"
-    option.value = "other"
-    select.appendChild(option)
-
-    select.onchange = () => {
-        if (select.value === 'other') {
-            select.options[0].selected = true;
-            OriginAndAddress.createFormInstance();
-        }
-    }
-
-}
-function setSignersOptions() {
-    const select = document.getElementById("signer-select");
-
-
-    signers.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.initials
-        option.value = element.id
-        select.appendChild(option)
-    })
-
-    const option = document.createElement("option");
-    option.innerText = "другое"
-    option.value = "other"
-    select.appendChild(option)
-
-    select.onchange = () => {
-        if (select.value === 'other') {
-            const otherSelects = [];
-            otherSelects.push({
-                signFlag: false,
-                selectNode: document.getElementById("executor-select")
-            })
-            openModalCreateParticipant(modal, select, true, modalError ,"Создание подписанта", otherSelects);
-        }
-    }
-
-}
-
-function setDocumentTypesOptions() {
-    const select = document.getElementById("doc-type-select");
-
-    documentTypes.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.name
-        option.value = element.id
-        select.appendChild(option)
-    })
-}
-
-function setExecutorsOptions() {
-    const select = document.getElementById("executor-select");
-
-    executors.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.initials
-        option.value = element.id
-        select.appendChild(option)
-    })
-
-    const option = document.createElement("option");
-    option.innerText = "другое"
-    option.value = "other"
-    select.appendChild(option)
-
-    select.onchange = () => {
-        if (select.value === 'other') {
-            const otherSelects = [];
-            otherSelects.push({
-                signFlag: true,
-                selectNode: document.getElementById("signer-select")
-            })
-            openModalCreateParticipant(modal, select, false, modalError,"Создание исполнителя", otherSelects);
-        }
-    }
-}
-
-function setWorkersOptions() {
-    const select = document.getElementById("target-select");
-
-    workers.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.initials
-        option.value = element.id
-        select.appendChild(option)
-    })
-
-    const option = document.createElement("option");
-    option.innerText = "другое"
-    option.value = "other"
-    select.appendChild(option)
-
-    select.onchange = () => {
-        if (select.value === 'other') {
-            openModalCreateWorker(modal, select, modalError, "Создание сотрудника отдела");
-        }
-    }
-}
 
 function getTagsMultiselectInstance() {
     const data = [];
@@ -233,57 +132,36 @@ function setActualNumberIVC() {
 }
 
 async function saveDocument() {
-
     attentionContainer.innerHTML = "";
-
-    const numIVC = document.getElementById("ivc-num").value;
-    const isAnswer = document.getElementById("is-answer").checked;
-    const registrationDate = document.getElementById("registration-date").value;
-    const postuplenieDate = document.getElementById("postuplenie-date").value;
-    const documentDate = document.getElementById("date-doc").value;
-    const easdNum = document.getElementById("easd-num").value;
-    const documentNum = document.getElementById("doc-num").value;
-    const documentType = document.getElementById("doc-type-select").value;
-    const origin = document.getElementById("origin-select").value;
-    const prilojenie = document.getElementById("prilojenie").checked;
-    const signer = document.getElementById("signer-select").value;
-    const target = document.getElementById("target-select").value;
-    const executor = document.getElementById("executor-select").value;
-    const topic = document.getElementById("topic").value;
-    const note = document.getElementById("note").value;
-    const reserve = document.getElementById("reserve").checked;
-    const file = fileUploader.file;
-    const documentName = file !== undefined ? file.name : "";
-    const outputSelect = document.getElementById("output-select");
 
     let hasAttentions = false;
 
-    if (!documentNum) {
+    if (!form.documentNumber.value) {
         attentionContainer.appendChild(generateAttentionHTML("Номер документа не задан"));
         hasAttentions = true;
     }
 
-    if (isAnswer && outputSelect.children.length === 1 || isAnswer && outputSelect.value === "Выберите вариант") {
+    if (form.answer.checked && form.outputLetter.children.length === 1 || form.answer.checked && form.outputLetter.value === "Выберите вариант") {
         attentionContainer.appendChild(generateAttentionHTML("Исходящее письмо не выбрано"));
         hasAttentions = true;
     }
 
-    if (!origin) {
+    if (!form.origin.value) {
         attentionContainer.appendChild(generateAttentionHTML("Источник письма не выбран"));
         hasAttentions = true;
     }
 
-    if (!signer) {
+    if (!form.signer.value) {
         attentionContainer.appendChild(generateAttentionHTML("Подписант не выбран"));
         hasAttentions = true;
     }
 
-    if (!executor) {
+    if (!form.executor.value) {
         attentionContainer.appendChild(generateAttentionHTML("Исполнитель не выбран"));
         hasAttentions = true;
     }
 
-    if (!target) {
+    if (!form.targetWorker.value) {
         attentionContainer.appendChild(generateAttentionHTML("Кому расписано не выбрано"));
         hasAttentions = true;
     }
@@ -294,33 +172,33 @@ async function saveDocument() {
 
     const inputLetter = new InputLetter({
         id: 0,
-        numberIVC: numIVC,
-        registrationDate: registrationDate,
-        postuplenieDate: postuplenieDate,
-        documentDate: documentDate,
-        documentNumber: documentNum,
-        documentType: {id:documentType},
-        documentName: documentName,
-        origin: {id:origin},
-        signer: {id:signer},
-        executor: {id:executor},
-        easdNumber: easdNum,
-        answer: isAnswer,
-        prilojenie: prilojenie,
-        topic: topic,
-        tags: tagsMultiSelect.selectedValues,
-        note: note,
-        targetWorker: {id:target},
-        reserve: reserve,
-        file: file,
-        outputLetter: {id:outputSelect.value}
+        numberIVC: form.numberIVC.value,
+        registrationDate: form.registrationDate.value,
+        postuplenieDate: form.postuplenieDate.value,
+        documentDate: form.documentDate.value,
+        documentNumber: form.documentNumber.value,
+        documentType: {id:form.documentType.value},
+        documentName: form.fileUploader.file ? form.fileUploader.file.name : "",
+        origin: {id:form.origin.value},
+        signer: {id:form.signer.value},
+        executor: {id:form.executor.value},
+        easdNumber: form.easdNumber.value,
+        answer: form.answer.checked,
+        prilojenie: form.prilojenie.checked,
+        topic: form.topic.value,
+        tags: form.tags.selectedValues,
+        note: form.note.value,
+        targetWorker: {id:form.targetWorker.value},
+        reserve: form.reserve.checked,
+        file: form.fileUploader.file,
+        outputLetter: {id:form.outputLetter.value}
     });
 
     try {
         await saveOrUpdateInputLetter(inputLetter);
         informerStatus200Instance(5, "Письмо было успешно сохранено");
         blockButton(document.querySelector("button[onclick=\"saveDocument()\"]"), 5);
-        actualNumberIVC = await getActualNumberIVC();
+        actualNumberIVC = await getActualInputNumberIVC();
         setActualNumberIVC();
     }
     catch (e) {

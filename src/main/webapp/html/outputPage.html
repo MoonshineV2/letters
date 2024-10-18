@@ -8,11 +8,11 @@
     <link rel="stylesheet" type="text/css" href="../css/global.css">
     <link rel="stylesheet" type="text/css" href="../css/multiselect.css">
     <script src="../js/global.js"></script>
-    <script src="../js/outputPage.js"></script>
+    <script src="../js/entities.js"></script>
     <script src="../js/fileUploader.js"></script>
     <script src="../js/multiselect.js"></script>
     <script src="../js/modal.js"></script>
-    <script src="../js/entities.js"></script>
+    <script src="../js/outputPage.js"></script>
 </head>
 <body>
     <header class="header">
@@ -69,7 +69,7 @@
                     </div>
                     <div class="custom-select answer-grid-select">
                         <label for="input-select">Номер входящего</label>
-                        <select name="doc-num" id="input-select" disabled>
+                        <select name="input-id" id="input-select" disabled>
                             <option value="0" disabled selected hidden>Нет писем</option>
                         </select>
                     </div>
@@ -79,7 +79,17 @@
                     <label for="registration-date">Дата регистрации</label>
                     <input id="registration-date" type="date" value="2024-07-09" />
                 </div>
+                <div class="custom-date">
+                    <label for="date-doc">Дата документа</label>
+                    <input id="date-doc" type="date"/>
+                </div>
                 <div class="dividing-line dividing-up"></div>
+                <div class="custom-select">
+                    <label for="doc-type-select">Тип документа</label>
+                    <select name="doc-type" id="doc-type-select">
+                        <option value="" disabled selected hidden>Выберите вариант</option>
+                    </select>
+                </div>
                 <div class="custom-select">
                     <label for="address-select">Куда направлено письмо</label>
                     <select name="address" id="address-select">

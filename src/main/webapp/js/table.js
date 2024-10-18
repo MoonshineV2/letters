@@ -347,12 +347,13 @@ class Table {
         function createDiv(height) {
             let div = document.createElement('div');
             div.style.top = 0;
-            div.style.right = 0;
+            div.style.right = "-2px";
             div.style.width = '5px';
             div.style.position = 'absolute';
             div.style.cursor = 'col-resize';
             div.style.userSelect = 'none';
-            div.style.height = height + 'px';
+            //div.style.height = height + 'px';
+            div.style.height = '100%';
             return div;
         }
 

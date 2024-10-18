@@ -3,6 +3,7 @@ package com.example.letters.service;
 import com.example.letters.model.InputLetter;
 import com.example.letters.model.OutputLetter;
 import com.example.letters.repository.OutputLetterRepository;
+import com.example.letters.util.DBFile;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
@@ -42,6 +43,11 @@ public class OutputLetterService {
         return outputLetterRepository.findByYears(years);
     }
 
+    public DBFile getFileById(int id) {
+        return outputLetterRepository.getFileById(id).orElseThrow(() ->
+                new RuntimeException("Файл для исходящего письма с id=" + id + " не найден"));
+    }
+
     public void create(OutputLetter outputLetter) {
 
         if (outputLetter.getAddress() == null) {
@@ -64,5 +70,15 @@ public class OutputLetterService {
 
         outputLetter.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
         outputLetterRepository.create(outputLetter);
+    }
+
+    public OutputLetter update(OutputLetter outputLetter) {
+        OutputLetter fromDB = outputLetterRepository.findById(outputLetter.getId())
+                .orElseThrow(() -> new RuntimeException("Исходящего письма с id=" + outputLetter.getId() + " не существует"));
+        if (outputLetter.getDocumentName() != null && outputLetter.getDocumentName().length() > 100) {
+            throw new RuntimeException("Название файла не может быть больше 100 символов");
+        }
+
+        return outputLetterRepository.update(outputLetter);
     }
 }

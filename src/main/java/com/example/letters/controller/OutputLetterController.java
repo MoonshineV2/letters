@@ -1,14 +1,22 @@
 package com.example.letters.controller;
 
 import com.example.letters.dto.ActualNumberIVC;
+import com.example.letters.dto.InputLetterDto;
 import com.example.letters.dto.OutputLetterDto;
 import com.example.letters.dto.Years;
+import com.example.letters.model.InputLetter;
 import com.example.letters.model.OutputLetter;
 import com.example.letters.service.OutputLetterService;
+import com.example.letters.util.DBFile;
+import com.example.letters.util.FileNameEncoder;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +53,24 @@ public class OutputLetterController {
                 .collect(Collectors.toList());
     }
 
+    @GET
+    @Path("{id}/file")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getFileByLetterId(@PathParam("id") int id) {
+        DBFile dbFile = outputLetterService.getFileById(id);
+        InputStream inputStream = new ByteArrayInputStream(dbFile.getFile());
+        String contentDisposition;
+        try {
+            contentDisposition = "attachment;filename*=utf-8''" + FileNameEncoder.encodeFileName(dbFile.fileName);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Response.ok(inputStream, MediaType.APPLICATION_OCTET_STREAM)
+                .header("Content-Disposition", contentDisposition ) //optional
+                .build();
+    }
+
     @POST
     @Path("")
     @Consumes("application/json")
@@ -59,5 +85,13 @@ public class OutputLetterController {
     @Produces("application/json")
     public ActualNumberIVC getActualNumberIVC() {
         return new ActualNumberIVC(outputLetterService.getActualNumberIVC());
+    }
+
+    @PUT
+    @Consumes("application/json")
+    @Produces("application/json")
+    public OutputLetterDto update(OutputLetterDto outputLetterDto) {
+        OutputLetter out = outputLetterService.update(outputLetterDto.toOutputLetter());
+        return OutputLetterDto.fromOutputLetter(out);
     }
 }

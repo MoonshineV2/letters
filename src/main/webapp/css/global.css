@@ -95,6 +95,10 @@ textarea {
     color: #ffffff;
 }
 
+.header nav a:active{
+    background-color: #275bc1db;
+}
+
 .letter-section,
 .filter-section {
     max-width: 600px;
@@ -574,5 +578,6 @@ select:disabled {
     mask-size: 80% 80%;
     background-color: white;
 }
+
 
 

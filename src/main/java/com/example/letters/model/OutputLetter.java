@@ -33,7 +33,6 @@ public class OutputLetter {
     @Temporal(TemporalType.DATE)
     private Date registrationDate;
 
-
     @Column(name = "document_date", columnDefinition = "date")
     @Temporal(TemporalType.DATE)
     private Date documentDate;
@@ -55,7 +54,7 @@ public class OutputLetter {
 
     @ManyToOne
     @JoinColumn(name="signer_id")
-    private Participant signer;
+    private Worker signer;
 
     @ManyToOne
     @JoinColumn(name="executor_id")
@@ -95,7 +94,7 @@ public class OutputLetter {
     private byte[] file;
 
     @Column(name = "document_num")
-    private String documentNum;
+    private String documentNumber;
 
     public OutputLetter(int id) {
         this.id = id;
