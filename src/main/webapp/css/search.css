@@ -150,6 +150,10 @@ tbody td {
     text-overflow: ellipsis;
     overflow: hidden;
     position: relative;
+    padding: 5px;
+}
+
+tbody td:hover {
     padding: 5px 25px 5px 5px;
 }
 

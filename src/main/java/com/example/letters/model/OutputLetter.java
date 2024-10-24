@@ -79,8 +79,8 @@ public class OutputLetter {
     @ManyToMany
     @JoinTable(
             schema = "letter",
-            name = "tags_input",
-            joinColumns = @JoinColumn(name = "input_letter_id"),
+            name = "tags_output",
+            joinColumns = @JoinColumn(name = "output_letter_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
 

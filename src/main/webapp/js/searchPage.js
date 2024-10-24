@@ -266,31 +266,24 @@ async function findLetters() {
 
         data.sort((e1, e2) => e1.id - e2.id);
 
-        console.log(data);
-
         if (ivcNum) {
             data = Object.values(data).filter(el => el.numberIVC === parseInt(ivcNum));
-            console.log(data);
         }
 
         if (easdNum) {
             data = Object.values(data).filter(el => el.easdNumber === parseInt(easdNum));
-            console.log(data);
         }
 
         if (registrationDate) {
             data = Object.values(data).filter(el => el.registrationDate >= new Date(registrationDate).getTime());
-            console.log(data);
         }
 
         if (registrationDate2) {
             data = Object.values(data).filter(el => el.registrationDate <= new Date(registrationDate2).getTime());
-            console.log(data);
         }
 
         if (originsMultiSelect.selectedValues.length > 0) {
             data = Object.values(data).filter(el => originsMultiSelect.selectedValues.includes(el.origin.id));
-            console.log(data);
         }
 
         if (signerMultiSelect.selectedValues.length > 0) {
@@ -298,7 +291,6 @@ async function findLetters() {
                 //console.log(`Letter id:${el.id}. Origin id:${el.signer.id} includes in ${signerMultiSelect.selectedValues}. Result:` + signerMultiSelect.selectedValues.includes(el.signer.id));
                 return  signerMultiSelect.selectedValues.includes(el.signer.id);
             });
-            console.log(data);
         }
 
         if (executorMultiSelect.selectedValues.length > 0) {

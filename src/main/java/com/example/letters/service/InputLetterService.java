@@ -1,7 +1,6 @@
 package com.example.letters.service;
 
 import com.example.letters.model.InputLetter;
-import com.example.letters.model.Participant;
 import com.example.letters.repository.InputLetterRepository;
 import com.example.letters.util.DBFile;
 import jakarta.enterprise.inject.Model;
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Model
@@ -23,6 +21,10 @@ public class InputLetterService {
     private InputLetterRepository inputLetterRepository;
 
     public List<InputLetter> findAll() {
+        inputLetterRepository.findAll().forEach(el -> {
+            if (el.getDocumentDate() != null)
+                System.out.println(el.getDocumentDate().getTime() + " is " + el.getDocumentDate());
+        });
         return inputLetterRepository.findAll();
     }
 
@@ -105,8 +107,10 @@ public class InputLetterService {
     }
 
     public InputLetter update(InputLetter inputLetter) {
-        InputLetter fromDB = inputLetterRepository.findById(inputLetter.getId())
-                .orElseThrow(() -> new RuntimeException("Входящего письма с id=" + inputLetter.getId() + " не существует"));
+        if (inputLetter.getCreateDate() == null) {
+            throw new RuntimeException("Дата регистрации не может быть пустой");
+        }
+
         if (inputLetter.getDocumentName() != null && inputLetter.getDocumentName().length() > 100) {
             throw new RuntimeException("Название файла не может быть больше 100 символов");
         }

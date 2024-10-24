@@ -387,7 +387,7 @@ async function saveOrUpdateOutputLetter(outputLetter) {
         return "POST";
     }
 
-    console.log(JSON.stringify(cloned));
+    //console.log(JSON.stringify(cloned));
 
     const response = await fetch(BACKEND_API_URL + "/api/outputLetters", {
         method: getMethodRequest() ,
@@ -674,4 +674,28 @@ function blockButton(button, timeInSeconds) {
 function auto_grow(element) {
     element.style.height = "5px";
     element.style.height = (element.scrollHeight) + "px";
+}
+
+function getDateFormat_dd_mm_yy(intValue) {
+    const today = new Date(intValue);
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    return  dd + '-' + mm + '-' + yyyy;
+}
+
+function getDateFormat_yy_mm_dd(intValue) {
+    const today = new Date(intValue);
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+
+    return  yyyy + '-' + mm + '-' + dd;
 }

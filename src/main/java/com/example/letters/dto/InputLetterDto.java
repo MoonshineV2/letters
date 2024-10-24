@@ -128,6 +128,7 @@ public class InputLetterDto {
         inputLetter.setFile(file);
         if (outputLetter != null && outputLetter.id != 0) inputLetter.setOutputLetter(outputLetter.toOutputLetter());
 
+        System.out.println(documentDate);
         return inputLetter;
     }
 }

@@ -57,6 +57,8 @@ class InputLetter {
         this.file = data.file;
     }
 
+    static changeEventName = "inputLetterChanged";
+
     static locale = {
         id:"Id",
         year:"Год",
@@ -86,19 +88,19 @@ class InputLetter {
     static tableCellsResolver = {
         createDate: function (td, letter) {
             if (letter.createDate)
-                td.innerText = new Date(letter.createDate).toISOString().split('T')[0];
+                td.innerText = getDateFormat_dd_mm_yy(letter.createDate);
         },
         registrationDate: function (td, letter) {
             if (letter.registrationDate)
-                td.innerText = new Date(letter.registrationDate).toISOString().split('T')[0];
+                td.innerText = getDateFormat_dd_mm_yy(letter.registrationDate);
         },
         postuplenieDate: function (td, letter) {
             if (letter.postuplenieDate)
-                td.innerText = new Date(letter.postuplenieDate).toISOString().split('T')[0];
+                td.innerText = getDateFormat_dd_mm_yy(letter.postuplenieDate);
         },
         documentDate: function (td, letter) {
             if (letter.documentDate)
-                td.innerText = new Date(letter.documentDate).toISOString().split('T')[0];
+                td.innerText = getDateFormat_dd_mm_yy(letter.documentDate);
         },
         documentName: function (td, letter) {
             if (letter.documentName)
@@ -304,23 +306,23 @@ class InputLetter {
                 <div class="custom-date">
                     <label for="il-create-date">Дата создания</label>
                     <div class="field-container">
-                        <input id="il-create-date" type="date" value="${this.createDate ? new Date(this.createDate).toISOString().split('T')[0] : null}"/>
+                        <input id="il-create-date" type="date" value="${this.createDate ? getDateFormat_yy_mm_dd(this.createDate) : ''}"/>
                     </div>
                 </div>
                 <div class="custom-date">
                     <label for="il-registration-date">Дата регистрации</label>
                     <div class="field-container">
-                        <input id="il-registration-date" type="date" value="${this.registrationDate ? new Date(this.registrationDate).toISOString().split('T')[0] : null}"/>
+                        <input id="il-registration-date" type="date" value="${this.registrationDate ? getDateFormat_yy_mm_dd(this.registrationDate) : ''}"/>
                         <p id="registration-date-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
                     </div>
                 </div>
                 <div class="custom-date">
                     <label for="input-letter-postuplenie-date">Дата поступления документа</label>
-                    <input id="input-letter-postuplenie-date" type="date" value="${this.postuplenieDate ? new Date(this.postuplenieDate).toISOString().split('T')[0] : null}"/>
+                    <input id="input-letter-postuplenie-date" type="date" value="${this.postuplenieDate ? getDateFormat_yy_mm_dd(this.postuplenieDate) : ''}"/>
                 </div>
                 <div class="custom-date">
                     <label for="il-date-doc">Дата письма</label>
-                    <input id="il-date-doc" type="date" value="${this.documentDate ? new Date(this.documentDate).toISOString().split('T')[0] : null}"/>
+                    <input id="il-date-doc" type="date" value="${this.documentDate ? getDateFormat_yy_mm_dd(this.documentDate) : ''}"/>
                 </div>
                 <div class="custom-select">
                     <label for="il-doc-type-select">Тип документа</label>
@@ -485,7 +487,7 @@ class InputLetter {
 
                 Object.assign(this, returnedLetter);
 
-                EventEmitter.dispatch("inputLetterChanged", this);
+                EventEmitter.dispatch(InputLetter.changeEventName, this);
             }
             catch (e) {
                 console.error(e.stack);
@@ -553,6 +555,8 @@ class OutputLetter {
         this.file = data.file;
     }
 
+    static changeEventName = "outputLetterChanged";
+
     static locale = {
         id:"Id",
         year:"Год",
@@ -581,15 +585,15 @@ class OutputLetter {
     static tableCellsResolver = {
         createDate: function (td, letter) {
             if (letter.createDate)
-                td.innerText = new Date(letter.createDate).toISOString().split('T')[0];
+                td.innerText = getDateFormat_dd_mm_yy(letter.createDate);
         },
         registrationDate: function (td, letter) {
             if (letter.registrationDate)
-                td.innerText = new Date(letter.registrationDate).toISOString().split('T')[0];
+                td.innerText = getDateFormat_dd_mm_yy(letter.registrationDate);
         },
         documentDate: function (td, letter) {
             if (letter.documentDate)
-                td.innerText = new Date(letter.documentDate).toISOString().split('T')[0];
+                td.innerText = getDateFormat_dd_mm_yy(letter.documentDate);
         },
         documentName: function (td, letter) {
             if (letter.documentName)
@@ -647,7 +651,7 @@ class OutputLetter {
         },
         file: function (td, letter) {
             const aEl = document.createElement("a");
-            aEl.href = BACKEND_API_URL + `/api/inputLetters/${letter.id}/file`;
+            aEl.href = BACKEND_API_URL + `/api/outputLetters/${letter.id}/file`;
             aEl.innerHTML = letter.documentName;
             td.appendChild(aEl);
         }
@@ -789,19 +793,19 @@ class OutputLetter {
                 <div class="custom-date">
                     <label for="il-create-date">${OutputLetter.locale.createDate}</label>
                     <div class="field-container">
-                        <input id="il-create-date" type="date" value="${this.createDate ? new Date(this.createDate).toISOString().split('T')[0] : null}"/>
+                        <input id="il-create-date" type="date" value="${this.createDate ? getDateFormat_yy_mm_dd(this.createDate) : null}"/>
                     </div>
                 </div>
                 <div class="custom-date">
                     <label for="il-registration-date">${OutputLetter.locale.registrationDate}</label>
                     <div class="field-container">
-                        <input id="il-registration-date" type="date" value="${this.registrationDate ? new Date(this.registrationDate).toISOString().split('T')[0] : null}"/>
+                        <input id="il-registration-date" type="date" value="${this.registrationDate ? getDateFormat_yy_mm_dd(this.registrationDate) : null}"/>
                         <p id="registration-date-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
                     </div>
                 </div>
                 <div class="custom-date">
                     <label for="il-date-doc">${OutputLetter.locale.documentDate}</label>
-                    <input id="il-date-doc" type="date" value="${this.documentDate ? new Date(this.documentDate).toISOString().split('T')[0] : null}"/>
+                    <input id="il-date-doc" type="date" value="${this.documentDate ? getDateFormat_yy_mm_dd(this.documentDate) : null}"/>
                 </div>
                 <div class="custom-select">
                     <label for="il-doc-type-select">${OutputLetter.locale.documentType}</label>
@@ -962,14 +966,14 @@ class OutputLetter {
             clonedLetter.file = fileUploader.file ? fileUploader.file : null;
 
             try {
-                const returnedLetter  = await saveOrUpdateInputLetter(clonedLetter);
+                const returnedLetter  = await saveOrUpdateOutputLetter(clonedLetter);
 
                 modal.close();
                 informerStatus200Instance(5, "Письмо было изменено");
 
                 Object.assign(this, returnedLetter);
 
-                EventEmitter.dispatch("inputLetterChanged", this);
+                EventEmitter.dispatch(OutputLetter.changeEventName, this);
             }
             catch (e) {
                 console.error(e.stack);

@@ -5,6 +5,8 @@ class Table {
     columns = [];
     data = [];
     dataRows = [];
+
+    changeEventName;
     constructor(element, data, options = {}) {
 
         if (!data) {
@@ -30,6 +32,13 @@ class Table {
         }
         else if (data[0].constructor.tableCellsResolver) {
             this.tableCellsResolver = data[0].constructor.tableCellsResolver;
+        }
+
+        if (options.changeEventName) {
+            this.changeEventName = options.changeEventName;
+        }
+        else if (data[0].constructor.changeEventName) {
+            this.changeEventName = data[0].constructor.changeEventName;
         }
 
         this.initialize();
@@ -196,19 +205,21 @@ class Table {
             }
         }
 
-        // Подписываемся на ивент, который триггерится при изменении входящего письма
-        const unSubscribe = EventEmitter.subscribe("inputLetterChanged", (inputLetter) => {
-            this.updateRow(inputLetter.id);
-        });
+        if (this.changeEventName) {
+            // Подписываемся на ивент, который триггерится при изменении входящего письма
+            const unSubscribe = EventEmitter.subscribe(this.changeEventName, (data) => {
+                this.updateRow(data.id);
+            });
 
-        let observer = new MutationObserver((mutations) => {
-            if (!document.body.contains(this.header)) {
-                unSubscribe();
-                observer.disconnect();
-            }
+            let observer = new MutationObserver((mutations) => {
+                if (!document.body.contains(this.header)) {
+                    unSubscribe();
+                    observer.disconnect();
+                }
 
-        });
-        observer.observe(this.element, {childList: true, subtree: true});
+            });
+            observer.observe(this.element, {childList: true, subtree: true});
+        }
     }
 
     sortData(field, order) {
