@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 public class ParticipantDto {
     public int id;
-    public String fullname;
+    public String fullName;
     public String initials;
     public String post;
     public boolean canSign;
@@ -29,7 +29,7 @@ public class ParticipantDto {
     public Participant toParticipant() {
         return new Participant(
                 id,
-                fullname,
+                fullName,
                 initials,
                 post,
                 canSign

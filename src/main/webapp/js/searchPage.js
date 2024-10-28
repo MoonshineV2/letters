@@ -9,7 +9,7 @@ let headerFilters;
 
 let originsAndAddresses;
 let participantSigners;
-let executors;
+let participants;
 let workers;
 let workersSigners;
 let documentTypes;
@@ -26,7 +26,7 @@ let requests = Promise.all([
 ]).then((data) => {
     originsAndAddresses = data[0];
     participantSigners = data[1];
-    executors = data[2];
+    participants = data[2];
     workers = data[3];
     workersSigners = data[4];
     documentTypes = data[5];
@@ -170,8 +170,8 @@ function getSignersMultiselectInstance() {
 }
 function getExecutorsMultiselectInstance() {
     const data = [];
-    executors = Object.values(executors).sort((a,b) => a.id - b.id);
-    executors.forEach(element => {
+    participants = Object.values(participants).sort((a,b) => a.id - b.id);
+    participants.forEach(element => {
         data.push({
             value: element.id,
             text: element.initials

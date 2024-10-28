@@ -4,7 +4,7 @@ let monthMultiSelect;
 let yearMultiSelect;
 let tagsMultiSelect;
 let fileUploader;
-let attentionContainer;
+let saveButton;
 
 let originsAndAddresses;
 let signers;
@@ -34,12 +34,22 @@ let requests = Promise.all([
 
 document.addEventListener("originsAndAddressesChanged", async() => {
     originsAndAddresses = await findOriginsAndAddresses();
-    setOriginsAndAddressesOptions();
+    setOriginsAndAddressesOptions(document.querySelector("#origin-select"), originsAndAddresses, true);
+});
+
+document.addEventListener("participantsChanged", async() => {
+    participants = await findParticipants();
+    setParticipantsOptions(document.querySelector("#executor-select"), participants, true);
+});
+
+document.addEventListener("participantSignersChanged", async() => {
+    participantSigners = await findParticipantSigners();
+    setParticipantSignersOptions(document.querySelector("#signer-select"), participantSigners, true);
 });
 
 window.addEventListener("load", async () => {
     fileUploader = new FileUploader(document.getElementById("file-uploader"));
-    attentionContainer = document.getElementById("attentions-container");
+    saveButton = document.querySelector("#save-letter");
 
     await requests;
 
@@ -69,11 +79,13 @@ window.addEventListener("load", async () => {
 
     tagsMultiSelect = await getTagsMultiselectInstance();
 
-    setOriginsAndAddressesOptions(document.querySelector("#origin-select"), originsAndAddresses);
-    setParticipantSignersOptions(document.querySelector("#signer-select"), signers);
-    setParticipantsOptions(document.querySelector("#executor-select"), executors)
-    setWorkersOptions(document.querySelector("#target-select"), workers);
-    setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes);
+    /*const test = await getTestselectInstance();*/
+
+    setOriginsAndAddressesOptions(document.querySelector("#origin-select"), originsAndAddresses, true);
+    setParticipantSignersOptions(document.querySelector("#signer-select"), signers, true);
+    setParticipantsOptions(document.querySelector("#executor-select"), executors, true)
+    setWorkersOptions(document.querySelector("#target-select"), workers, true);
+    setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes, true);
     setActualNumberIVC();
     autoInsertRegistrationDate();
 
@@ -103,6 +115,27 @@ window.addEventListener("load", async () => {
     form.reserve = document.querySelector("#reserve");
     form.fileUploader = fileUploader;
     form.outputLetter = document.querySelector("#output-select");
+
+    form.documentNumber.oninput = () => {
+        form.documentNumber.removeAttribute("empty");
+        saveButton.removeAttribute("empty");
+    }
+    form.origin.oninput = () => {
+        form.origin.removeAttribute("empty");
+        saveButton.removeAttribute("empty");
+    }
+    form.signer.oninput = () => {
+        form.signer.removeAttribute("empty");
+        saveButton.removeAttribute("empty");
+    }
+    form.executor.oninput = () => {
+        form.executor.removeAttribute("empty");
+        saveButton.removeAttribute("empty");
+    }
+    form.targetWorker.oninput = () => {
+        form.targetWorker.removeAttribute("empty");
+        saveButton.removeAttribute("empty");
+    }
 })
 
 function getTagsMultiselectInstance() {
@@ -123,6 +156,24 @@ function getTagsMultiselectInstance() {
     })
 }
 
+function getTestselectInstance() {
+    const data = [];
+    tags.forEach(element => {
+        data.push({
+            value: element.id,
+            text: element.text
+        })
+    })
+
+    return  new CustomSelect("#test", {
+        data: data,
+        placeholder: "Выберите 123",
+        search: true,
+        selectAll: false,
+        listAll: false
+    })
+}
+
 function setActualNumberIVC() {
     document.getElementById("ivc-num").value = actualNumberIVC;
     document.getElementById("ivc-num-auto-insert-info").hidden = false;
@@ -132,41 +183,45 @@ function setActualNumberIVC() {
 }
 
 async function saveDocument() {
-    attentionContainer.innerHTML = "";
 
     let hasAttentions = false;
 
     if (!form.documentNumber.value) {
-        attentionContainer.appendChild(generateAttentionHTML("Номер документа не задан"));
+        form.documentNumber.setAttribute("empty", "");
         hasAttentions = true;
     }
 
     if (form.answer.checked && form.outputLetter.children.length === 1 || form.answer.checked && form.outputLetter.value === "Выберите вариант") {
-        attentionContainer.appendChild(generateAttentionHTML("Исходящее письмо не выбрано"));
+        form.answer.setAttribute("empty", "");
         hasAttentions = true;
     }
 
     if (!form.origin.value) {
-        attentionContainer.appendChild(generateAttentionHTML("Источник письма не выбран"));
+        form.origin.setAttribute("empty", "");
         hasAttentions = true;
     }
 
     if (!form.signer.value) {
-        attentionContainer.appendChild(generateAttentionHTML("Подписант не выбран"));
+        form.signer.setAttribute("empty", "");
         hasAttentions = true;
     }
 
     if (!form.executor.value) {
-        attentionContainer.appendChild(generateAttentionHTML("Исполнитель не выбран"));
+        form.executor.setAttribute("empty", "");
         hasAttentions = true;
     }
 
     if (!form.targetWorker.value) {
-        attentionContainer.appendChild(generateAttentionHTML("Кому расписано не выбрано"));
+        form.targetWorker.setAttribute("empty", "");
         hasAttentions = true;
     }
 
     if (hasAttentions) {
+        saveButton.setAttribute("empty", "");
+        saveButton.classList.add("horizontal-shake");
+        setTimeout(() => {
+            saveButton.classList.remove("horizontal-shake");
+        }, 700);
         return;
     }
 

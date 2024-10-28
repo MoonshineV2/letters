@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="../css/multiselect.css">
     <script src="../js/global.js"></script>
     <script src="../js/entities.js"></script>
-    <script src="../js/multiselect.js"></script>
+    <script src="../js/customizableSelect.js"></script>
     <script src="../js/fileUploader.js"></script>
     <script src="../js/modal.js"></script>
     <script src="../js/inputPage.js"></script>
@@ -27,16 +27,23 @@
                     <label for="ivc-num">Номер входящего ИВЦ ЖА</label>
                     <div class="field-container">
                         <input id="ivc-num" type="text">
+                        <p id="ivc-num-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         <p id="ivc-num-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
                     </div>
                 </div>
                 <div class="custom-input">
                     <label for="doc-num">Номер документа</label>
-                    <input id="doc-num" type="text">
+                    <div class="field-container">
+                        <input id="doc-num" type="text">
+                        <p id="doc-num-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-input">
                     <label for="easd-num">Номер ЕАСД</label>
-                    <input id="easd-num" type="text">
+                    <div class="field-container">
+                        <input id="easd-num" type="text">
+                        <p id="easd-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="dividing-line dividing-up"></div>
                 <div class="custom-checkbox">
@@ -84,47 +91,73 @@
                     <label for="registration-date">Дата регистрации</label>
                     <div class="field-container">
                         <input id="registration-date" type="date"/>
+                        <p id="registration-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         <p id="registration-date-auto-insert-info" class="auto-insert-value" hidden>автоматическая вставка значения</p>
                     </div>
                 </div>
                 <div class="custom-date">
                     <label for="date-doc">Дата документа</label>
-                    <input id="date-doc" type="date"/>
+                    <div class="field-container">
+                        <input id="date-doc" type="date"/>
+                        <p id="date-doc-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-date">
                     <label for="postuplenie-date">Дата поступления документа</label>
-                    <input id="postuplenie-date" type="date"/>
+                    <div class="field-container">
+                        <input id="postuplenie-date" type="date"/>
+                        <p id="postuplenie-date-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="dividing-line dividing-up"></div>
+                <!--<div class="custom-select">
+                    <label for="test">тест</label>
+                    <select id="test" name="test"></select>
+                </div>-->
                 <div class="custom-select">
                     <label for="doc-type-select">Тип документа</label>
-                    <select name="doc-type" id="doc-type-select">
-                        <option value="" disabled selected hidden>Выберите вариант</option>
-                    </select>
+                    <div class="field-container">
+                        <select name="doc-type" id="doc-type-select">
+                            <option value="" disabled selected hidden>Выберите вариант</option>
+                        </select>
+                        <p id="doc-type-select-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-select">
                     <label for="origin-select">Источник письма</label>
-                    <select name="origins" id="origin-select">
-                        <option value="" disabled selected hidden>Выберите вариант</option>
-                    </select>
+                    <div class="field-container">
+                        <select name="origins" id="origin-select">
+                            <option value="" disabled selected hidden>Выберите вариант</option>
+                        </select>
+                        <p id="origin-select-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-select">
                     <label for="signer-select">Подписант</label>
-                    <select name="signers" id="signer-select">
-                        <option value="" disabled selected hidden>Выберите вариант</option>
-                    </select>
+                    <div class="field-container">
+                        <select name="signers" id="signer-select">
+                            <option value="" disabled selected hidden>Выберите вариант</option>
+                        </select>
+                        <p id="signer-select-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-select">
                     <label for="executor-select">Исполнитель</label>
-                    <select name="executors" id="executor-select">
-                        <option value="" disabled selected hidden>Выберите вариант</option>
-                    </select>
+                    <div class="field-container">
+                        <select name="executors" id="executor-select">
+                            <option value="" disabled selected hidden>Выберите вариант</option>
+                        </select>
+                        <p id="executor-select-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-select">
                     <label for="target-select">Кому расписано</label>
-                    <select name="targets" id="target-select">
-                        <option value="" disabled selected hidden>Выберите вариант</option>
-                    </select>
+                    <div class="field-container">
+                        <select name="targets" id="target-select">
+                            <option value="" disabled selected hidden>Выберите вариант</option>
+                        </select>
+                        <p id="target-select-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="multiselect">
                     <label for="tags">Теги</label>
@@ -150,10 +183,11 @@
                 <div id="file-uploader"></div>
             </div>
             <div class="dividing-line dividing-up"></div>
-            <button class="letter-save-btn" onclick="saveDocument()">
-                Сохранить письмо
-            </button>
-            <div id="attentions-container" class="attentions-container">
+            <div class="field-container">
+                <button id="save-letter" class="letter-save-btn" onclick="saveDocument()">
+                    Сохранить письмо
+                </button>
+                <p class="under-attention btn-under-attention-empty">не все поля заполнены</p>
             </div>
         </section>
     </main>

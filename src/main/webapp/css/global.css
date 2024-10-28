@@ -357,11 +357,25 @@ select:disabled {
     cursor: default;
 }
 
+.letter-save-btn.horizontal-shake {
+    animation: horizontal-shaking 0.35s 2;
+}
+
+@keyframes horizontal-shaking {
+    0% { transform: translateX(0) }
+    25% { transform: translateX(5px) }
+    50% { transform: translateX(-5px) }
+    75% { transform: translateX(5px) }
+    100% { transform: translateX(0) }
+}
+
+
 .field-container {
     position: relative;
 }
 
-.field-container:has(.under-attention:not([hidden])) input {
+.field-container input[empty],
+.field-container select[empty] {
     -webkit-box-shadow: 0px 0px 3px 2px #ff2e00c7 inset;
     -moz-box-shadow: 0px 0px 3px 2px #ff2e00c7 inset;
     box-shadow: 0px 0px 3px 2px #ff2e00c7 inset;
@@ -385,6 +399,23 @@ select:disabled {
     font-size: 14px;
     font-style: italic;
     color: #ff0000;
+}
+
+.under-attention.under-attention-empty,
+.under-attention.btn-under-attention-empty{
+    display: none;
+}
+
+.under-attention.btn-under-attention-empty {
+    font-weight: 500;
+    font-size: 16px;
+    font-style: normal;
+}
+
+.field-container input[empty] + .under-attention-empty,
+.field-container select[empty] + .under-attention-empty,
+.field-container button[empty] + .btn-under-attention-empty {
+    display: block;
 }
 
 .attentions-container {

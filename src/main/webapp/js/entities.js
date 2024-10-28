@@ -182,53 +182,57 @@ class InputLetter {
         }
 
         let documentTypeOptions = '';
+        documentTypeOptions += `<option value="" selected>Не выбрано</option>`;
         documentTypes.forEach((dt) => {
-            if (dt.id !== this.documentType.id) {
-                documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
+            if (this.documentType && dt.id === this.documentType.id) {
+                documentTypeOptions += `<option value="${dt.id}" selected>${dt.name}</option>`;
             }
             else {
-                documentTypeOptions += `<option value="${dt.id}" selected>${dt.name}</option>`;
+                documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
             }
         })
 
         let originAndAddressOptions = '';
         originAndAddressOptions += `<option value="" selected>Не выбрано</option>`;
         originsAndAddresses.forEach((oa) => {
-            if (oa.id !== this.origin.id) {
-                originAndAddressOptions += `<option value="${oa.id}">${oa.shortName}</option>`;
+            if (this.origin && oa.id === this.origin.id) {
+                originAndAddressOptions += `<option value="${oa.id}" selected>${oa.shortName}</option>`;
             }
             else {
-                originAndAddressOptions += `<option value="${oa.id}" selected>${oa.shortName}</option>`;
+                originAndAddressOptions += `<option value="${oa.id}">${oa.shortName}</option>`;
             }
         })
 
         let signerOptions = '';
+        signerOptions += `<option value="" selected>Не выбрано</option>`;
         participantSigners.forEach((sr) => {
-            if (sr.id !== this.signer.id) {
-                signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
+            if (this.signer && sr.id === this.signer.id) {
+                signerOptions += `<option value="${sr.id}" selected>${sr.initials}</option>`;
             }
             else {
-                signerOptions += `<option value="${sr.id}" selected>${sr.initials}</option>`;
+                signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
             }
         })
 
         let executorOptions = '';
-        executors.forEach((ex) => {
-            if (ex.id !== this.executor.id) {
-                executorOptions += `<option value="${ex.id}">${ex.initials}</option>`;
+        executorOptions += `<option value="" selected>Не выбрано</option>`;
+        participants.forEach((ex) => {
+            if (this.executor && ex.id === this.executor.id) {
+                executorOptions += `<option value="${ex.id}" selected>${ex.initials}</option>`;
             }
             else {
-                executorOptions += `<option value="${ex.id}" selected>${ex.initials}</option>`;
+                executorOptions += `<option value="${ex.id}">${ex.initials}</option>`;
             }
         })
 
         let targetOptions = '';
+        targetOptions += `<option value="" selected>Не выбрано</option>`;
         workers.forEach((target) => {
-            if (target.id !== this.targetWorker.id) {
-                targetOptions += `<option value="${target.id}">${target.initials}</option>`;
+            if (this.targetWorker && target.id !== this.targetWorker.id) {
+                targetOptions += `<option value="${target.id}" selected>${target.initials}</option>`;
             }
             else {
-                targetOptions += `<option value="${target.id}" selected>${target.initials}</option>`;
+                targetOptions += `<option value="${target.id}">${target.initials}</option>`;
             }
         });
 
@@ -668,6 +672,7 @@ class OutputLetter {
         }
 
         let documentTypeOptions = '';
+        documentTypeOptions += `<option value="" selected>Не выбрано</option>`;
         documentTypes.forEach((dt) => {
             if (this.documentType && dt.id === this.documentType.id) {
                 documentTypeOptions += `<option value="${dt.id}" selected>${dt.name}</option>`;
@@ -689,6 +694,7 @@ class OutputLetter {
         })
 
         let signerOptions = '';
+        signerOptions += `<option value="" selected>Не выбрано</option>`;
         workersSigners.forEach((sr) => {
             if (this.signer && sr.id === this.signer.id) {
                 signerOptions += `<option value="${sr.id}" selected>${sr.initials}</option>`;
@@ -699,7 +705,8 @@ class OutputLetter {
         })
 
         let executorOptions = '';
-        executors.forEach((ex) => {
+        executorOptions += `<option value="" selected>Не выбрано</option>`;
+        participants.forEach((ex) => {
             if (this.executor && ex.id === this.executor.id) {
                 executorOptions += `<option value="${ex.id}" selected>${ex.initials}</option>`;
             }
@@ -709,14 +716,14 @@ class OutputLetter {
         })
 
         let targetOptions = '';
-        /*workers.forEach((target) => {
-            if ( target.id !== this.targetWorker.id) {
-                targetOptions += `<option value="${target.id}">${target.initials}</option>`;
-            }
-            else {
+        participants.forEach((target) => {
+            if (this.targetParticipant && target.id !== this.targetParticipant.id) {
                 targetOptions += `<option value="${target.id}" selected>${target.initials}</option>`;
             }
-        });*/
+            else {
+                targetOptions += `<option value="${target.id}">${target.initials}</option>`;
+            }
+        });
 
         let tagsOptions = '';
         tags.forEach((tag) => {
@@ -1018,21 +1025,21 @@ class OriginAndAddress {
                         <label for="origin-address-name">${this.locale.name}</label>
                         <div class="field-container">
                             <input id="origin-address-name" type="text">
-                            <p id="origin-address-name-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                            <p id="origin-address-name-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
                         <label for="origin-address-shortname">${this.locale.shortName}</label>
                         <div class="field-container">
                             <input id="origin-address-shortname" type="text">
-                            <p id="origin-address-shortname-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                            <p id="origin-address-shortname-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
                         <label for="origin-address-kodadm">${this.locale.kodADM}</label>
                         <div class="field-container">
                             <input id="origin-address-kodadm" type="text">
-                            <p id="origin-address-kodadm-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                            <p id="origin-address-kodadm-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
             </div>
@@ -1054,13 +1061,13 @@ class OriginAndAddress {
         const shortNameInput = bodyWrapper.querySelector("#origin-address-shortname");
         const kodADMInput = bodyWrapper.querySelector("#origin-address-kodadm");
         nameInput.oninput = () => {
-            bodyWrapper.querySelector("#origin-address-name-empty").hidden = true;
+            nameInput.removeAttribute("empty");
         }
         shortNameInput.oninput = () => {
-            bodyWrapper.querySelector("#origin-address-shortname-empty").hidden = true;
+            shortNameInput.removeAttribute("empty");
         }
         kodADMInput.oninput = () => {
-            bodyWrapper.querySelector("#origin-address-kodadm-empty").hidden = true;
+            kodADMInput.removeAttribute("empty");
         }
         footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
 
@@ -1068,15 +1075,15 @@ class OriginAndAddress {
             let notOkay = false;
 
             if (!nameInput.value) {
-                bodyWrapper.querySelector("#origin-address-name-empty").hidden = false;
+                nameInput.setAttribute("empty", "");
                 notOkay = true;
             }
             if (!shortNameInput.value) {
-                bodyWrapper.querySelector("#origin-address-shortname-empty").hidden = false;
+                shortNameInput.setAttribute("empty", "");
                 notOkay = true;
             }
             if (!kodADMInput.value) {
-                bodyWrapper.querySelector("#origin-address-kodadm-empty").hidden = false;
+                kodADMInput.setAttribute("empty", "");
                 notOkay = true;
             }
 
@@ -1107,14 +1114,14 @@ class OriginAndAddress {
 
 class Participant {
     id;
-    fullname = "";
+    fullName = "";
     initials = "";
     post;
     canSign;
 
     constructor(participant) {
         this.id = participant.id;
-        this.fullname = participant.fullname;
+        this.fullName = participant.fullName;
         if (participant.initials)
             this.initials = participant.initials;
         this.post = participant.post;
@@ -1130,35 +1137,39 @@ class Participant {
 
     static locale = {
         id:"Id",
-        fullname:"Полное наименование",
-        initials:"Краткое наименование",
-        post:"Код администрации",
+        fullName:"ФИО",
+        initials:"Фамилия, инициалы",
+        post:"Должность",
         canSign:"Право подписи"
     }
 
-    static createFormInstance() {
+    static createFormInstance(isSigner) {
         let body = `
             <div class="fields">
                 <div class="custom-input">
-                        <label for="participant-fullname">${this.locale.fullname}</label>
+                        <label for="participant-fullname">${this.locale.fullName}</label>
                         <div class="field-container">
                             <input id="participant-fullname" type="text">
-                            <p id="participant-fullname-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                            <p id="participant-fullname-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
                         <label for="participant-initials">${this.locale.initials}</label>
                         <div class="field-container">
                             <input id="participant-initials" type="text">
-                            <p id="participant-initials-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                            <p id="participant-initials-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
                         <label for=participant-post">${this.locale.post}</label>
                         <div class="field-container">
                             <input id="participant-post" type="text">
-                            <p id="participant-post-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                            <p id="participant-post-empty" class="under-attention under-attention-empty" hidden>поле не может быть пустым</p>
                         </div>
+                </div>
+                <div class="custom-checkbox">
+                    <input id="participant-cansign" type="checkbox" ${isSigner !== undefined && isSigner === true ? 'checked disabled' : ''}>
+                    <label for="participant-cansign">${Participant.locale.canSign.toLowerCase()}</label>
                 </div>
             </div>
         `;
@@ -1173,35 +1184,35 @@ class Participant {
         const footerWrapper = document.createElement("div");
         footerWrapper.innerHTML = footer;
 
-        const modal = new Modal({headerName:"Создание источника/адреса", body:bodyWrapper, footer:footerWrapper});
+        const modal = new Modal({headerName:"Создание подписанта/адресата/исполнителя", body:bodyWrapper, footer:footerWrapper});
 
-        const nameInput = bodyWrapper.querySelector("#origin-address-name");
-        const shortNameInput = bodyWrapper.querySelector("#origin-address-shortname");
-        const kodADMInput = bodyWrapper.querySelector("#origin-address-kodadm");
+        const nameInput = bodyWrapper.querySelector("#participant-fullname");
+        const shortNameInput = bodyWrapper.querySelector("#participant-initials");
+        const post = bodyWrapper.querySelector("#participant-post");
+        const canSign = bodyWrapper.querySelector("#participant-cansign");
         nameInput.oninput = () => {
-            bodyWrapper.querySelector("#origin-address-name-empty").hidden = true;
+            nameInput.removeAttribute("empty");
         }
         shortNameInput.oninput = () => {
-            bodyWrapper.querySelector("#origin-address-shortname-empty").hidden = true;
+            shortNameInput.removeAttribute("empty");
         }
-        kodADMInput.oninput = () => {
-            bodyWrapper.querySelector("#origin-address-kodadm-empty").hidden = true;
+        post.oninput = () => {
+            post.removeAttribute("empty");
         }
         footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
-
 
             let notOkay = false;
 
             if (!nameInput.value) {
-                bodyWrapper.querySelector("#origin-address-name-empty").hidden = false;
+                nameInput.setAttribute("empty", "");
                 notOkay = true;
             }
             if (!shortNameInput.value) {
-                bodyWrapper.querySelector("#origin-address-shortname-empty").hidden = false;
+                shortNameInput.setAttribute("empty", "");
                 notOkay = true;
             }
-            if (!kodADMInput.value) {
-                bodyWrapper.querySelector("#origin-address-kodadm-empty").hidden = false;
+            if (!post.value) {
+                post.setAttribute("empty", "");
                 notOkay = true;
             }
 
@@ -1210,20 +1221,26 @@ class Participant {
             }
 
             try {
-                await saveOriginAndAddress({
-                    name: nameInput.value,
-                    shortName: shortNameInput.value,
-                    kodADM: kodADMInput.value
-                })
+                await saveParticipant(new Participant({
+                    fullName: nameInput.value,
+                    initials: shortNameInput.value,
+                    post: post.value,
+                    canSign: canSign.checked
+                }))
 
-                const event = new Event("originsAndAddressesChanged");
+                const event = new Event("participantsChanged");
                 document.dispatchEvent(event);
 
+                if (canSign.checked) {
+                    const eventSigners = new Event("participantSignersChanged");
+                    document.dispatchEvent(eventSigners);
+                }
+
                 modal.close();
-                informerStatus200Instance(5, "Источник/Адрес был сохранён");
+                informerStatus200Instance(5, "Подписант/адресат/исполнитель был сохранён");
             }
             catch (e) {
-                informerStatusNot200Instance(30, "Источник/Адрес не был сохранён", e.message);
+                informerStatusNot200Instance(30, "Подписант/адресат/исполнитель не был сохранён", e.message);
                 console.error(e.stack);
             }
         }
@@ -1254,6 +1271,121 @@ class Worker {
             return -1;
         }
         return this.initials.localeCompare(another.initials);
+    }
+
+    static locale = {
+        id:"Id",
+        fullName:"ФИО",
+        initials:"Фамилия, инициалы",
+        post:"Должность",
+        canSign:"Право подписи",
+        workgroupId:"Id рабочей группы",
+        workgroupName:"Название рабочей группы"
+    }
+
+    static createFormInstance(isSigner) {
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <label for="worker-fullname">${this.locale.fullName}</label>
+                        <div class="field-container">
+                            <input id="worker-fullname" type="text">
+                            <p id="worker-fullname-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <label for="worker-initials">${this.locale.initials}</label>
+                        <div class="field-container">
+                            <input id="worker-initials" type="text">
+                            <p id="worker-initials-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <label for=worker-post">${this.locale.post}</label>
+                        <div class="field-container">
+                            <input id="worker-post" type="text">
+                            <p id="worker-post-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-checkbox">
+                    <input id="worker-cansign" type="checkbox" ${isSigner !== undefined && isSigner === true ? 'checked disabled' : ''}>
+                    <label for="worker-cansign">${Worker.locale.canSign.toLowerCase()}</label>
+                </div>
+            </div>
+        `;
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        let footer = `
+            <button class="letter-save-btn">
+                Создать
+            </button>
+        `;
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Создание Сотрудника отдела", body:bodyWrapper, footer:footerWrapper});
+
+        const nameInput = bodyWrapper.querySelector("#worker-fullname");
+        const shortNameInput = bodyWrapper.querySelector("#worker-initials");
+        const post = bodyWrapper.querySelector("#worker-post");
+        const canSign = bodyWrapper.querySelector("#worker-cansign");
+        nameInput.oninput = () => {
+            bodyWrapper.querySelector("#worker-fullname-empty").hidden = true;
+        }
+        shortNameInput.oninput = () => {
+            bodyWrapper.querySelector("#worker-initials-empty").hidden = true;
+        }
+        post.oninput = () => {
+            bodyWrapper.querySelector("#worker-post-empty").hidden = true;
+        }
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+
+            let notOkay = false;
+
+            if (!nameInput.value) {
+                bodyWrapper.querySelector("#worker-fullname-empty").hidden = false;
+                notOkay = true;
+            }
+            if (!shortNameInput.value) {
+                bodyWrapper.querySelector("#worker-initials-empty").hidden = false;
+                notOkay = true;
+            }
+            if (!post.value) {
+                bodyWrapper.querySelector("#worker-post-empty").hidden = false;
+                notOkay = true;
+            }
+
+            if (notOkay) {
+                return;
+            }
+
+            try {
+                await saveParticipant(new Participant({
+                    fullName: nameInput.value,
+                    initials: shortNameInput.value,
+                    post: post.value,
+                    canSign: canSign.checked
+                }))
+
+                const event = new Event("participantsChanged");
+                document.dispatchEvent(event);
+
+                if (canSign.checked) {
+                    const eventSigners = new Event("participantSignersChanged");
+                    document.dispatchEvent(eventSigners);
+                }
+
+
+
+                modal.close();
+                informerStatus200Instance(5, "Подписант/адресат/исполнитель был сохранён");
+            }
+            catch (e) {
+                informerStatusNot200Instance(30, "Подписант/адресат/исполнитель не был сохранён", e.message);
+                console.error(e.stack);
+            }
+        }
     }
 }
 

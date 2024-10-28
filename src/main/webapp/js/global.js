@@ -18,16 +18,18 @@ async function findOriginsAndAddresses(){
     return data.map(el => new OriginAndAddress(el));
 }
 
-function setOriginsAndAddressesOptions(selectHTML, originsAndAddresses) {
+function setOriginsAndAddressesOptions(selectHTML, originsAndAddresses, addDefaultOption) {
     selectHTML.innerHTML = "";
 
-    let first = document.createElement("option");
-    first.value = "";
-    first.disabled = true;
-    first.selected = true;
-    first.hidden = true;
-    first.innerText = "Выберите вариант";
-    selectHTML.appendChild(first);
+    if (addDefaultOption) {
+        let first = document.createElement("option");
+        first.value = "";
+        first.disabled = true;
+        first.selected = true;
+        first.hidden = true;
+        first.innerText = "Выберите вариант";
+        selectHTML.appendChild(first);
+    }
 
     originsAndAddresses.forEach(element => {
         const option = document.createElement("option");
@@ -73,28 +75,35 @@ async function findWorkerSigners() {
     return data.map(el => new Worker(el));
 }
 
-function setParticipantSignersOptions(selectHTMl, signers) {
+function setParticipantSignersOptions(selectHTML, signers, addDefaultOption) {
+    selectHTML.innerHTML = "";
+
+    if (addDefaultOption) {
+        const firstOption = document.createElement("option");
+        firstOption.value = "";
+        firstOption.innerText = "Выберите вариант";
+        firstOption.disabled = true;
+        firstOption.selected = true;
+        firstOption.hidden = true;
+        selectHTML.appendChild(firstOption);
+    }
 
     signers.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.initials
         option.value = element.id
-        selectHTMl.appendChild(option)
+        selectHTML.appendChild(option)
     })
 
     const option = document.createElement("option");
     option.innerText = "другое"
     option.value = "other"
-    selectHTMl.appendChild(option)
+    selectHTML.appendChild(option)
 
-    selectHTMl.onchange = () => {
-        if (selectHTMl.value === 'other') {
-            const otherSelects = [];
-            otherSelects.push({
-                signFlag: false,
-                selectNode: document.getElementById("executor-select")
-            })
-            openModalCreateParticipant(modal, select, true, modalError ,"Создание подписанта", otherSelects);
+    selectHTML.onchange = () => {
+        if (selectHTML.value === 'other') {
+            selectHTML.options[0].selected = true;
+            Participant.createFormInstance(true);
         }
     }
 
@@ -143,7 +152,18 @@ async function findParticipants() {
     return data.map(el => new Participant(el));
 }
 
-function setParticipantsOptions(selectHTML, executors) {
+function setParticipantsOptions(selectHTML, executors, addDefaultOption) {
+    selectHTML.innerHTML = "";
+
+    if (addDefaultOption) {
+        const firstOption = document.createElement("option");
+        firstOption.value = "";
+        firstOption.innerText = "Выберите вариант";
+        firstOption.disabled = true;
+        firstOption.selected = true;
+        firstOption.hidden = true;
+        selectHTML.appendChild(firstOption);
+    }
 
     executors.forEach(element => {
         const option = document.createElement("option");
@@ -159,12 +179,8 @@ function setParticipantsOptions(selectHTML, executors) {
 
     selectHTML.onchange = () => {
         if (selectHTML.value === 'other') {
-            const otherSelects = [];
-            otherSelects.push({
-                signFlag: true,
-                selectNode: document.getElementById("signer-select")
-            })
-            openModalCreateParticipant(modal, select, false, modalError,"Создание исполнителя", otherSelects);
+            selectHTML.options[0].selected = true;
+            Participant.createFormInstance(false);
         }
     }
 }
@@ -206,7 +222,18 @@ async function findWorkers() {
     return data.map(el => new Worker(el));
 }
 
-function setWorkersOptions(selectHTML, workers) {
+function setWorkersOptions(selectHTML, workers, addDefaultOption) {
+    selectHTML.innerHTML = "";
+
+    if (addDefaultOption) {
+        const firstOption = document.createElement("option");
+        firstOption.value = "";
+        firstOption.innerText = "Выберите вариант";
+        firstOption.disabled = true;
+        firstOption.selected = true;
+        firstOption.hidden = true;
+        selectHTML.appendChild(firstOption);
+    }
 
     workers.forEach(element => {
         const option = document.createElement("option");
@@ -222,7 +249,7 @@ function setWorkersOptions(selectHTML, workers) {
 
     selectHTML.onchange = () => {
         if (selectHTML.value === 'other') {
-            openModalCreateWorker(modal, select, modalError, "Создание сотрудника отдела");
+            Worker.createFormInstance(false);
         }
     }
 }
@@ -238,7 +265,19 @@ async function findDocumentTypes() {
     return data.map(el => new DocumentType(el));
 }
 
-function setDocumentTypesOptions(selectHTML, types) {
+function setDocumentTypesOptions(selectHTML, types, addDefaultOption) {
+    selectHTML.innerHTML = "";
+
+    if (addDefaultOption) {
+        const firstOption = document.createElement("option");
+        firstOption.value = "";
+        firstOption.innerText = "Выберите вариант";
+        firstOption.disabled = true;
+        firstOption.selected = true;
+        firstOption.hidden = true;
+        selectHTML.appendChild(firstOption);
+    }
+
     types.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.name
@@ -425,6 +464,23 @@ async function saveOriginAndAddress(originAndAddress) {
     }
 
     return new OriginAndAddress(await response.json());
+
+}
+
+async function saveParticipant(participant) {
+    const response = await fetch("/letters/api/participants", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(participant),
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    return new Participant(await response.json());
 
 }
 

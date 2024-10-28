@@ -54,12 +54,12 @@ window.addEventListener("load", async () => {
 
     monthMultiSelect = new MultiSelect(document.getElementById("months"), {
         onChange: function(value, text, element) {
-            onOutputYearOrMonthChange(document.querySelector("#input-select"), yearMultiSelect, monthMultiSelect);
+            onInputYearOrMonthChange(document.querySelector("#input-select"), yearMultiSelect, monthMultiSelect);
         }
     })
     yearMultiSelect = new MultiSelect(document.getElementById("years"), {
         onChange: function(value, text, element) {
-            onOutputYearOrMonthChange(document.querySelector("#input-select"), yearMultiSelect, monthMultiSelect);
+            onInputYearOrMonthChange(document.querySelector("#input-select"), yearMultiSelect, monthMultiSelect);
         }
     })
 
@@ -67,11 +67,11 @@ window.addEventListener("load", async () => {
 
     tagsMultiSelect = await getTags();
 
-    setOriginsAndAddressesOptions(document.querySelector("#address-select"), originsAndAddresses);
+    setOriginsAndAddressesOptions(document.querySelector("#address-select"), originsAndAddresses, true);
     setWorkerSignersOptions(document.querySelector("#signer-select"), workerSigners);
     setWorkerExecutorsOptions(document.querySelector("#executor-select"), workers);
-    setParticipantsOptions(document.querySelector("#participant-select"), participants);
-    setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes);
+    setParticipantsOptions(document.querySelector("#participant-select"), participants, true);
+    setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes, true);
     setActualNumberIVC();
 
     document.querySelectorAll("textarea").forEach((el) => {
