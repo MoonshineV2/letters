@@ -352,8 +352,9 @@ select:disabled {
     scale: 0.95;
 }
 
-.letter-save-btn.btn-blocked {
-    background-color: #3d454d;
+.letter-save-btn.btn-blocked,
+.letter-save-btn.btn-validation-failed {
+    background-color: #969696;
     cursor: default;
 }
 
@@ -376,17 +377,19 @@ select:disabled {
 
 .field-container input[empty],
 .field-container select[empty] {
-    -webkit-box-shadow: 0px 0px 3px 2px #ff2e00c7 inset;
-    -moz-box-shadow: 0px 0px 3px 2px #ff2e00c7 inset;
-    box-shadow: 0px 0px 3px 2px #ff2e00c7 inset;
-    border: 1px solid #ff2e00c7;
+    border: 1px solid #EB0034;
+}
+
+.field-container:has(input[empty]) label,
+.field-container:has(select[empty]) label{
+    color: #EB0034;
 }
 
 .auto-insert-value {
     position: absolute;
     margin: 0;
     padding: 0;
-    top: -20px;
+    top: 0;
     right: 5px;
     font-weight: 300;
     font-size: 14px;
@@ -398,7 +401,7 @@ select:disabled {
     font-weight: 400;
     font-size: 14px;
     font-style: italic;
-    color: #ff0000;
+    color: #EB0034;
 }
 
 .under-attention.under-attention-empty,
@@ -407,7 +410,6 @@ select:disabled {
 }
 
 .under-attention.btn-under-attention-empty {
-    font-weight: 500;
     font-size: 16px;
     font-style: normal;
 }

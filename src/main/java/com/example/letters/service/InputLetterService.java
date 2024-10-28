@@ -1,5 +1,6 @@
 package com.example.letters.service;
 
+import com.example.letters.dto.LetterFilters;
 import com.example.letters.model.InputLetter;
 import com.example.letters.repository.InputLetterRepository;
 import com.example.letters.util.DBFile;
@@ -48,6 +49,10 @@ public class InputLetterService {
         return inputLetterRepository.findByYears(years);
     }
 
+    public List<InputLetter> findByFilters(LetterFilters filters) {
+        return inputLetterRepository.findByFilters(filters.getNumberIVC());
+    }
+
     public DBFile getFileById(int id) {
         return inputLetterRepository.getFileById(id).orElseThrow(() ->
                 new RuntimeException("Файл для входящего письма с id=" + id + " не найден"));
@@ -87,7 +92,18 @@ public class InputLetterService {
             throw new RuntimeException("Название файла не может быть больше 100 символов");
         }
 
-        List<InputLetter> list = inputLetterRepository.findAll().stream()
+        if (inputLetter.getTopic() != null && inputLetter.getTopic().length() > 100) {
+            throw new RuntimeException("Название темы не может быть больше 100 символов");
+        }
+
+        if (inputLetter.getNote() != null && inputLetter.getNote().length() > 500) {
+            throw new RuntimeException("Примечание не может быть больше 500 символов");
+        }
+
+        inputLetter.setYear(LocalDateTime.now().getYear());
+        inputLetter.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
+
+        List<InputLetter> list = inputLetterRepository.findByYears(List.of(inputLetter.getYear())).stream()
                 .filter(el -> el.getYear() == LocalDateTime.now().getYear())
                 .collect(Collectors.toList());
 
@@ -96,12 +112,8 @@ public class InputLetterService {
                 .anyMatch(el -> Objects.equals(el, inputLetter.getNumberIVC()));
 
         if (contains) {
-            throw new RuntimeException("Номер ИВЦ ЖА \"" + inputLetter.getNumberIVC() + "\" уже существует в базе данных");
+            throw new RuntimeException("Номер ИВЦ ЖА \"" + inputLetter.getNumberIVC() + "\" в " + inputLetter.getYear() + " году уже существует в базе данных");
         }
-
-        inputLetter.setYear(LocalDateTime.now().getYear());
-
-        inputLetter.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
 
         return inputLetterRepository.create(inputLetter);
     }
@@ -114,6 +126,31 @@ public class InputLetterService {
         if (inputLetter.getDocumentName() != null && inputLetter.getDocumentName().length() > 100) {
             throw new RuntimeException("Название файла не может быть больше 100 символов");
         }
+
+        if (inputLetter.getDocumentName() != null && inputLetter.getDocumentName().length() > 100) {
+            throw new RuntimeException("Название файла не может быть больше 100 символов");
+        }
+
+        if (inputLetter.getTopic() != null && inputLetter.getTopic().length() > 100) {
+            throw new RuntimeException("Название темы не может быть больше 100 символов");
+        }
+
+        if (inputLetter.getNote() != null && inputLetter.getNote().length() > 500) {
+            throw new RuntimeException("Примечание не может быть больше 500 символов");
+        }
+
+        List<InputLetter> list = inputLetterRepository.findByYears(List.of(inputLetter.getYear())).stream()
+                .filter(el -> el.getYear() == LocalDateTime.now().getYear())
+                .collect(Collectors.toList());
+
+        boolean contains = list.stream()
+                .map(InputLetter::getNumberIVC)
+                .anyMatch(el -> Objects.equals(el, inputLetter.getNumberIVC()));
+
+        if (contains) {
+            throw new RuntimeException("Номер ИВЦ ЖА \"" + inputLetter.getNumberIVC() + "\" в " + inputLetter.getYear() + " году уже существует в базе данных");
+        }
+
         return inputLetterRepository.update(inputLetter);
     }
 }

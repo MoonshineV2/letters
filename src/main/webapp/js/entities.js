@@ -1022,22 +1022,22 @@ class OriginAndAddress {
         let body = `
             <div class="fields">
                 <div class="custom-input">
-                        <label for="origin-address-name">${this.locale.name}</label>
                         <div class="field-container">
+                            <label for="origin-address-name">${this.locale.name}</label>
                             <input id="origin-address-name" type="text">
                             <p id="origin-address-name-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
-                        <label for="origin-address-shortname">${this.locale.shortName}</label>
                         <div class="field-container">
+                            <label for="origin-address-shortname">${this.locale.shortName}</label>
                             <input id="origin-address-shortname" type="text">
                             <p id="origin-address-shortname-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
-                        <label for="origin-address-kodadm">${this.locale.kodADM}</label>
                         <div class="field-container">
+                            <label for="origin-address-kodadm">${this.locale.kodADM}</label>
                             <input id="origin-address-kodadm" type="text">
                             <p id="origin-address-kodadm-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
@@ -1147,22 +1147,22 @@ class Participant {
         let body = `
             <div class="fields">
                 <div class="custom-input">
-                        <label for="participant-fullname">${this.locale.fullName}</label>
                         <div class="field-container">
+                            <label for="participant-fullname">${this.locale.fullName}</label>
                             <input id="participant-fullname" type="text">
                             <p id="participant-fullname-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
-                <div class="custom-input">
-                        <label for="participant-initials">${this.locale.initials}</label>
+                <div class="custom-input"> 
                         <div class="field-container">
+                            <label for="participant-initials">${this.locale.initials}</label>
                             <input id="participant-initials" type="text">
                             <p id="participant-initials-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
-                        <label for=participant-post">${this.locale.post}</label>
                         <div class="field-container">
+                            <label for=participant-post">${this.locale.post}</label>
                             <input id="participant-post" type="text">
                             <p id="participant-post-empty" class="under-attention under-attention-empty" hidden>поле не может быть пустым</p>
                         </div>

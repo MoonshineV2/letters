@@ -2,6 +2,7 @@ package com.example.letters.controller;
 
 import com.example.letters.dto.ActualNumberIVC;
 import com.example.letters.dto.InputLetterDto;
+import com.example.letters.dto.LetterFilters;
 import com.example.letters.dto.Years;
 import com.example.letters.model.InputLetter;
 import com.example.letters.service.InputLetterService;
@@ -67,6 +68,17 @@ public class InputLetterController {
         return Response.ok(inputStream, MediaType.APPLICATION_OCTET_STREAM)
                 .header("Content-Disposition", contentDisposition ) //optional
                 .build();
+    }
+
+    @POST
+    @Path("findByFilters")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public List<InputLetterDto> getByFilters(LetterFilters filters) {
+        List<InputLetter> letters = inputLetterService.findByFilters(filters);
+        return letters.stream()
+                .map(InputLetterDto::fromInputLetter)
+                .collect(Collectors.toList());
     }
 
     @POST

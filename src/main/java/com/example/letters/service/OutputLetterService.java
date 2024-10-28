@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Model
 public class OutputLetterService {
@@ -67,16 +69,38 @@ public class OutputLetterService {
         }
 
         outputLetter.setYear(LocalDateTime.now().getYear());
-
         outputLetter.setCreateDate(Timestamp.valueOf(LocalDateTime.now()));
+
+        List<OutputLetter> list = outputLetterRepository.findByYears(List.of(outputLetter.getYear())).stream()
+                .filter(el -> el.getYear() == LocalDateTime.now().getYear())
+                .collect(Collectors.toList());
+
+        boolean contains = list.stream()
+                .map(OutputLetter::getNumberIVC)
+                .anyMatch(el -> Objects.equals(el, outputLetter.getNumberIVC()));
+
+        if (contains) {
+            throw new RuntimeException("Номер ИВЦ ЖА \"" + outputLetter.getNumberIVC() + "\" в " + outputLetter.getYear() + " году уже существует в базе данных");
+        }
+
         outputLetterRepository.create(outputLetter);
     }
 
     public OutputLetter update(OutputLetter outputLetter) {
-        OutputLetter fromDB = outputLetterRepository.findById(outputLetter.getId())
-                .orElseThrow(() -> new RuntimeException("Исходящего письма с id=" + outputLetter.getId() + " не существует"));
         if (outputLetter.getDocumentName() != null && outputLetter.getDocumentName().length() > 100) {
             throw new RuntimeException("Название файла не может быть больше 100 символов");
+        }
+
+        List<OutputLetter> list = outputLetterRepository.findByYears(List.of(outputLetter.getYear())).stream()
+                .filter(el -> el.getYear() == LocalDateTime.now().getYear())
+                .collect(Collectors.toList());
+
+        boolean contains = list.stream()
+                .map(OutputLetter::getNumberIVC)
+                .anyMatch(el -> Objects.equals(el, outputLetter.getNumberIVC()));
+
+        if (contains) {
+            throw new RuntimeException("Номер ИВЦ ЖА \"" + outputLetter.getNumberIVC() + "\" в " + outputLetter.getYear() + " году уже существует в базе данных");
         }
 
         return outputLetterRepository.update(outputLetter);

@@ -119,22 +119,27 @@ window.addEventListener("load", async () => {
     form.documentNumber.oninput = () => {
         form.documentNumber.removeAttribute("empty");
         saveButton.removeAttribute("empty");
+        saveButton.classList.remove("btn-validation-failed");
     }
     form.origin.oninput = () => {
         form.origin.removeAttribute("empty");
         saveButton.removeAttribute("empty");
+        saveButton.classList.remove("btn-validation-failed");
     }
     form.signer.oninput = () => {
         form.signer.removeAttribute("empty");
         saveButton.removeAttribute("empty");
+        saveButton.classList.remove("btn-validation-failed");
     }
     form.executor.oninput = () => {
         form.executor.removeAttribute("empty");
         saveButton.removeAttribute("empty");
+        saveButton.classList.remove("btn-validation-failed");
     }
     form.targetWorker.oninput = () => {
         form.targetWorker.removeAttribute("empty");
         saveButton.removeAttribute("empty");
+        saveButton.classList.remove("btn-validation-failed");
     }
 })
 
@@ -218,6 +223,7 @@ async function saveDocument() {
 
     if (hasAttentions) {
         saveButton.setAttribute("empty", "");
+        saveButton.classList.add("btn-validation-failed");
         saveButton.classList.add("horizontal-shake");
         setTimeout(() => {
             saveButton.classList.remove("horizontal-shake");

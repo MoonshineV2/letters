@@ -37,6 +37,28 @@ public class InputLetterRepository {
                 .getResultList();
     }
 
+    public List<InputLetter> findByFilters(int numberIVC) {
+        StringBuilder query = new StringBuilder("SELECT il from InputLetter il");
+        boolean whereAppended = false;
+
+        if (numberIVC > 0) {
+            if (!whereAppended) {
+                query.append(" where");
+                whereAppended = true;
+            }
+
+            query.append(" il.numberIVC = :numberIVC");
+        }
+
+        var emQuery = entityManager.createQuery(query.toString());
+
+        if (numberIVC > 0) {
+            emQuery.setParameter("numberIVC", numberIVC);
+        }
+
+        return (List<InputLetter>) emQuery.getResultList();
+    }
+
     public Optional<DBFile> getFileById(int id) {
         Tuple tuple = entityManager
                 .createQuery("select il.documentName as fileName, il.file as file from InputLetter il where il.id = :id", Tuple.class)
