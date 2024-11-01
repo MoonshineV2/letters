@@ -1,6 +1,6 @@
 let table;
 let tagsMultiSelect;
-let originsMultiSelect;
+let originsAndAddressesMultiSelect;
 let signerMultiSelect;
 let executorMultiSelect;
 
@@ -45,8 +45,8 @@ window.onload = async function () {
 
     document.getElementById("search-ref").classList.add("li-selected");
 
-    originsMultiSelect = getOriginsMultiselectInstance();
-    signerMultiSelect = getSignersMultiselectInstance();
+    originsAndAddressesMultiSelect = getOriginsMultiselectInstance();
+    signerMultiSelect = getParticipantSignersMultiselectInstance("#signer-select");
     tagsMultiSelect = getTagsMultiselectInstance();
     executorMultiSelect = getExecutorsMultiselectInstance();
 
@@ -117,6 +117,18 @@ window.onload = async function () {
     options.forEach(el => el.onclick = () => {
         e.classList.toggle("table-customization-option-selected");
     })*/
+
+    const letterType = document.querySelector("#letterType-select");
+    letterType.onchange = () => {
+        if (letterType.value === "input") {
+            document.querySelector("label[for='originAndAddress-select']").innerText = "Источники";
+            signerMultiSelect = getParticipantSignersMultiselectInstance(signerMultiSelect.element);
+        }
+        else {
+            document.querySelector("label[for='originAndAddress-select']").innerText = "Адреса";
+            signerMultiSelect = getWorkerSignersMultiselectInstance(signerMultiSelect.element);
+        }
+    }
 }
 
 function swapElements(node1, node2) {
@@ -142,7 +154,7 @@ function getOriginsMultiselectInstance() {
         })
     })
 
-    return  new MultiSelect("#origin-select", {
+    return  new MultiSelect("#originAndAddress-select", {
         data: data,
         placeholder: "Без фильтра",
         selectAll: true,
@@ -150,7 +162,7 @@ function getOriginsMultiselectInstance() {
     })
 }
 
-function getSignersMultiselectInstance() {
+function getParticipantSignersMultiselectInstance(selector) {
     const data = [];
     participantSigners = Object.values(participantSigners).sort((a,b) => a.id - b.id);
     participantSigners.forEach(element => {
@@ -160,7 +172,26 @@ function getSignersMultiselectInstance() {
         })
     })
 
-    return  new MultiSelect("#signer-select", {
+    return  new MultiSelect(selector, {
+        data: data,
+        placeholder: "Без фильтра",
+        search: true,
+        selectAll: true,
+        listAll: false
+    })
+}
+
+function getWorkerSignersMultiselectInstance(selector) {
+    const data = [];
+    workersSigners = Object.values(workersSigners).sort((a,b) => a.id - b.id);
+    workersSigners.forEach(element => {
+        data.push({
+            value: element.id,
+            text: element.initials
+        })
+    })
+
+    return  new MultiSelect(selector, {
         data: data,
         placeholder: "Без фильтра",
         search: true,
@@ -218,88 +249,32 @@ async function findLetters() {
     const registrationDate = document.getElementById("registration-date").value;
     const registrationDate2 = document.getElementById("registration-date-2").value;
 
+    const filters = {
+        numberIVC: ivcNum ? ivcNum : 0,
+        documentNumber: docNum ? docNum : null,
+        easdNumber: easdNum ? easdNum : 0,
+        registrationDateBegin: registrationDate,
+        registrationDateEnd: registrationDate2,
+        originAndAddressIds: originsAndAddressesMultiSelect.selectedValues,
+        signerIds: signerMultiSelect.selectedValues,
+        executorIds: executorMultiSelect.selectedValues,
+        tagIds: tagsMultiSelect.selectedValues
+    }
+
     if (letterType === "input") {
-        let data = await findInputLetters();
 
-        data.sort((e1, e2) => e1.id - e2.id);
+        let data = await findInputLettersByFilters(filters);
 
-        if (ivcNum) {
-            data = Object.values(data).filter(el => el.numberIVC === parseInt(ivcNum));
-        }
-
-        if (docNum) {
-            data = Object.values(data).filter(el => el.documentNumber === docNum);
-        }
-
-        if (easdNum) {
-            data = Object.values(data).filter(el => el.easdNumber === parseInt(easdNum));
-        }
-
-        if (registrationDate) {
-            data = Object.values(data).filter(el => el.registrationDate >= new Date(registrationDate).getTime());
-        }
-
-        if (registrationDate2) {
-            data = Object.values(data).filter(el => el.registrationDate <= new Date(registrationDate2).getTime());
-        }
-
-        if (originsMultiSelect.selectedValues.length > 0) {
-            data = Object.values(data).filter(el => originsMultiSelect.selectedValues.includes(el.origin.id));
-        }
-
-        if (signerMultiSelect.selectedValues.length > 0) {
-            data = Object.values(data).filter(el => {
-                //console.log(`Letter id:${el.id}. Origin id:${el.signer.id} includes in ${signerMultiSelect.selectedValues}. Result:` + signerMultiSelect.selectedValues.includes(el.signer.id));
-                return  signerMultiSelect.selectedValues.includes(el.signer.id);
-            });
-        }
-
-        if (executorMultiSelect.selectedValues.length > 0) {
-            data = Object.values(data).filter(el => executorMultiSelect.selectedValues.includes(el.executor.id));
-        }
-
+        document.getElementById("table").innerHTML = "";
         document.querySelector("#table-section").classList.remove("hidden");
-        table = new Table(document.getElementById("table"), data);
+        table = new Table(document.getElementById("table"), data, {columns: Object.keys(InputLetter.locale), locale:InputLetter.locale});
     }
     else if (letterType === "output") {
-        let data = await findOutputLetters();
+        let data = await findOutputLettersByFilters(filters);
 
-        data.sort((e1, e2) => e1.id - e2.id);
-
-        if (ivcNum) {
-            data = Object.values(data).filter(el => el.numberIVC === parseInt(ivcNum));
-        }
-
-        if (easdNum) {
-            data = Object.values(data).filter(el => el.easdNumber === parseInt(easdNum));
-        }
-
-        if (registrationDate) {
-            data = Object.values(data).filter(el => el.registrationDate >= new Date(registrationDate).getTime());
-        }
-
-        if (registrationDate2) {
-            data = Object.values(data).filter(el => el.registrationDate <= new Date(registrationDate2).getTime());
-        }
-
-        if (originsMultiSelect.selectedValues.length > 0) {
-            data = Object.values(data).filter(el => originsMultiSelect.selectedValues.includes(el.origin.id));
-        }
-
-        if (signerMultiSelect.selectedValues.length > 0) {
-            data = Object.values(data).filter(el => {
-                //console.log(`Letter id:${el.id}. Origin id:${el.signer.id} includes in ${signerMultiSelect.selectedValues}. Result:` + signerMultiSelect.selectedValues.includes(el.signer.id));
-                return  signerMultiSelect.selectedValues.includes(el.signer.id);
-            });
-        }
-
-        if (executorMultiSelect.selectedValues.length > 0) {
-            data = Object.values(data).filter(el => executorMultiSelect.selectedValues.includes(el.executor.id));
-            console.log(data);
-        }
-
+        document.getElementById("table").innerHTML = "";
         document.querySelector("#table-section").classList.remove("hidden");
-        table = new Table(document.getElementById("table"), data);
+        table = new Table(document.getElementById("table"), data, {columns: Object.keys(OutputLetter.locale), locale:OutputLetter.locale});
     }
 
     filterSection.classList.add("hidden");

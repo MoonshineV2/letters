@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -50,7 +51,17 @@ public class InputLetterService {
     }
 
     public List<InputLetter> findByFilters(LetterFilters filters) {
-        return inputLetterRepository.findByFilters(filters.getNumberIVC());
+        return inputLetterRepository.findByFilters(
+                filters.getNumberIVC(),
+                filters.getDocumentNumber(),
+                filters.getEasdNumber(),
+                filters.getOriginAndAddressIds(),
+                filters.getSignerIds(),
+                filters.getExecutorIds(),
+                filters.getRegistrationDateBegin(),
+                filters.getRegistrationDateEnd(),
+                filters.getTagIds()
+        );
     }
 
     public DBFile getFileById(int id) {

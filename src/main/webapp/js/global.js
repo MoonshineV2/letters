@@ -1,7 +1,8 @@
 const BACKEND_API_URL = 'http://localhost:8080/letters';
 
-const outputLetters = {};
-const inputLetters = {};
+const outputLetters = [];
+const inputLetters = [];
+let workgroups;
 
 window.addEventListener("load",() => {
     document.querySelector(".header-navigation").replaceWith(getHeaderNavigationHTMLInstance());
@@ -225,8 +226,9 @@ async function findWorkers() {
 function setWorkersOptions(selectHTML, workers, addDefaultOption) {
     selectHTML.innerHTML = "";
 
+    let firstOption;
     if (addDefaultOption) {
-        const firstOption = document.createElement("option");
+        firstOption = document.createElement("option");
         firstOption.value = "";
         firstOption.innerText = "Выберите вариант";
         firstOption.disabled = true;
@@ -249,6 +251,9 @@ function setWorkersOptions(selectHTML, workers, addDefaultOption) {
 
     selectHTML.onchange = () => {
         if (selectHTML.value === 'other') {
+            if (firstOption) {
+                selectHTML.getElementsByTagName("option")[0].selected = true;
+            }
             Worker.createFormInstance(false);
         }
     }
@@ -342,8 +347,14 @@ function getHeaderNavigationHTMLInstance() {
     return nav;
 }
 
-async function findInputLetters() {
-    let response = await fetch('/letters/api/inputLetters');
+async function findInputLettersByFilters(filters) {
+    let response = await fetch('/letters/api/inputLetters/findByFilters', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(filters)
+    });
 
     if (!response.ok) {
         throw new Error(await response.text());
@@ -354,8 +365,14 @@ async function findInputLetters() {
     return data.map(el => new InputLetter(el));
 }
 
-async function findOutputLetters() {
-    let response = await fetch('/letters/api/outputLetters');
+async function findOutputLettersByFilters(filters) {
+    let response = await fetch('/letters/api/outputLetters/findByFilters', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(filters)
+    });
 
     if (!response.ok) {
         throw new Error(await response.text());
@@ -692,6 +709,21 @@ async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMulti
         option.value = element.id;
         inputSelect.appendChild(option);
     })
+}
+
+async function getWorkgroups() {
+    if (workgroups === undefined) {
+
+        const response = await fetch("/letters/api/workgroups");
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        workgroups = response.json();
+    }
+
+    return workgroups;
 }
 
 function arrayBufferToBase64( buffer ) {

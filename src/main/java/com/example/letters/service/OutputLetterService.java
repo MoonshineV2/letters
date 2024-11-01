@@ -1,5 +1,6 @@
 package com.example.letters.service;
 
+import com.example.letters.dto.LetterFilters;
 import com.example.letters.model.InputLetter;
 import com.example.letters.model.OutputLetter;
 import com.example.letters.repository.OutputLetterRepository;
@@ -43,6 +44,20 @@ public class OutputLetterService {
 
     public List<OutputLetter> findByYears(List<Integer> years) {
         return outputLetterRepository.findByYears(years);
+    }
+
+    public List<OutputLetter> findByFilters(LetterFilters filters) {
+        return outputLetterRepository.findByFilters(
+                filters.getNumberIVC(),
+                filters.getDocumentNumber(),
+                filters.getEasdNumber(),
+                filters.getOriginAndAddressIds(),
+                filters.getSignerIds(),
+                filters.getExecutorIds(),
+                filters.getRegistrationDateBegin(),
+                filters.getRegistrationDateEnd(),
+                filters.getTagIds()
+        );
     }
 
     public DBFile getFileById(int id) {

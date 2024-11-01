@@ -13,7 +13,7 @@
 }
 
 .header-filters:hover {
-    background-color: #f1f1f1;
+    background-color: #f7f7f7;
 }
 
 .filters-text {
@@ -28,7 +28,9 @@
 }
 
 .table-section {
-    padding: 15px;
+    padding: 10px;
+    margin: 15px 5px 0 5px;
+    border-radius: 5px;
     background-color: white;
     max-height: 100vh;
 
@@ -127,11 +129,11 @@ thead th:after {
     margin-top: 1px;
 }
 
-thead th.sort-asc:before {
+thead th.sort-asc:after {
     visibility: hidden;
 }
 
-thead th.sort-desc:after {
+thead th.sort-desc:before {
     visibility: hidden;
 }
 

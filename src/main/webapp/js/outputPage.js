@@ -4,8 +4,7 @@ let monthMultiSelect;
 let yearMultiSelect;
 let tagsMultiSelect;
 let fileUploader;
-
-let attentionContainer;
+let saveButton;
 
 let originsAndAddresses;
 let participants;
@@ -37,7 +36,7 @@ window.addEventListener("load", async () => {
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
 
     fileUploader = new FileUploader(document.getElementById("file-uploader"));
-    attentionContainer = document.getElementById("attentions-container");
+    saveButton = document.querySelector("#save-letter");
 
     await requests;
 
@@ -130,6 +129,48 @@ async function getTags() {
 
 async function saveDocument() {
 
+    let hasAttentions = false;
+
+    if (!form.documentNumber.value) {
+        form.documentNumber.setAttribute("empty", "");
+        hasAttentions = true;
+    }
+
+    if (form.answer.checked && form.inputLetter.children.length === 1 || form.answer.checked && form.inputLetter.value === "Выберите вариант") {
+        form.answer.setAttribute("empty", "");
+        hasAttentions = true;
+    }
+
+    if (!form.address.value) {
+        form.address.setAttribute("empty", "");
+        hasAttentions = true;
+    }
+
+    if (!form.signer.value) {
+        form.signer.setAttribute("empty", "");
+        hasAttentions = true;
+    }
+
+    if (!form.executor.value) {
+        form.executor.setAttribute("empty", "");
+        hasAttentions = true;
+    }
+
+    if (!form.targetParticipant.value) {
+        form.targetParticipant.setAttribute("empty", "");
+        hasAttentions = true;
+    }
+
+    if (hasAttentions) {
+        saveButton.setAttribute("empty", "");
+        saveButton.classList.add("btn-validation-failed");
+        saveButton.classList.add("horizontal-shake");
+        setTimeout(() => {
+            saveButton.classList.remove("horizontal-shake");
+        }, 700);
+        return;
+    }
+
     const outputLetter = new OutputLetter({
         id: 0,
         numberIVC: form.numberIVC.value,
@@ -152,32 +193,6 @@ async function saveDocument() {
         file: form.fileUploader.file,
         inputLetter: {id:form.inputLetter.value}
     });
-
-    /*const response = await fetch("/letters/api/outputLetters", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            numberIVC: numIVC,
-            registrationDate: registrationDate,
-            //documentDate: documentDate,
-            documentName: documentName,
-            addressId: parseInt(adress),
-            signerId: signer,
-            targetParticipantId: participant,
-            executorId: executor,
-            easdNumber: easdNum,
-            answer: isAnswer,
-            prilojenie: prilojenie,
-            topic: topic,
-            tagIds: tagsMultiSelect.selectedValues,
-            note: note,
-            reserve: reserve,
-            file: arrayBufferToBase64(binary),
-            inputLetterId: inputSelect.value
-        }),
-    });*/
 
     try {
         await saveOrUpdateOutputLetter(outputLetter);

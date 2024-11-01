@@ -9,36 +9,30 @@ class Table {
     changeEventName;
     constructor(element, data, options = {}) {
 
-        if (!data) {
-            return;
-        }
-        if (data.length === 0) {
-            return;
-        }
 
         this.options = options;
         this.element = element;
-        this.data = data;
+        if (data && data.length > 0) {
+            this.data = data;
+            this.locale = data[0].constructor.locale;
+            this.tableCellsResolver = data[0].constructor.tableCellsResolver;
+            this.changeEventName = data[0].constructor.changeEventName;
+        }
 
         if (options.locale) {
             this.locale = options.locale;
-        }
-        else if (data[0].constructor.locale) {
-            this.locale = data[0].constructor.locale;
         }
 
         if (options.tableCellsResolver) {
             this.tableCellsResolver = options.tableCellsResolver;
         }
-        else if (data[0].constructor.tableCellsResolver) {
-            this.tableCellsResolver = data[0].constructor.tableCellsResolver;
-        }
 
         if (options.changeEventName) {
             this.changeEventName = options.changeEventName;
         }
-        else if (data[0].constructor.changeEventName) {
-            this.changeEventName = data[0].constructor.changeEventName;
+
+        if (options.columns) {
+            options.columns.forEach(column => this.columns.push(column));
         }
 
         this.initialize();
@@ -66,7 +60,6 @@ class Table {
                 }
             })
         })
-
 
         this.initHeader()
         this.initBody();
@@ -206,7 +199,7 @@ class Table {
         }
 
         if (this.changeEventName) {
-            // Подписываемся на ивент, который триггерится при изменении входящего письма
+            // Подписываемся на ивент, который будет вызываться в классе, если он прописан
             const unSubscribe = EventEmitter.subscribe(this.changeEventName, (data) => {
                 this.updateRow(data.id);
             });

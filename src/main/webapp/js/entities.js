@@ -1283,29 +1283,39 @@ class Worker {
         workgroupName:"Название рабочей группы"
     }
 
-    static createFormInstance(isSigner) {
+    static async createFormInstance(isSigner) {
+
         let body = `
             <div class="fields">
                 <div class="custom-input">
-                        <label for="worker-fullname">${this.locale.fullName}</label>
                         <div class="field-container">
+                            <label for="worker-fullname">${this.locale.fullName}</label>
                             <input id="worker-fullname" type="text">
                             <p id="worker-fullname-empty" class="under-attention" hidden>поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
-                        <label for="worker-initials">${this.locale.initials}</label>
                         <div class="field-container">
+                            <label for="worker-initials">${this.locale.initials}</label>
                             <input id="worker-initials" type="text">
                             <p id="worker-initials-empty" class="under-attention" hidden>поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
-                        <label for=worker-post">${this.locale.post}</label>
                         <div class="field-container">
+                            <label for="worker-post">${this.locale.post}</label>
                             <input id="worker-post" type="text">
                             <p id="worker-post-empty" class="under-attention" hidden>поле не может быть пустым</p>
                         </div>
+                </div>
+                <div class="custom-select">
+                    <div class="field-container">
+                        <label for="workgroup-select">Рабочая группа</label>
+                        <select name="workgroups" id="workgroup-select">
+                            <option value="" disabled selected hidden>Выберите вариант</option>
+                        </select>
+                        <p id="doc-type-select-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-checkbox">
                     <input id="worker-cansign" type="checkbox" ${isSigner !== undefined && isSigner === true ? 'checked disabled' : ''}>
@@ -1316,6 +1326,15 @@ class Worker {
         const bodyWrapper = document.createElement("div");
         bodyWrapper.innerHTML = body;
 
+        const workgroupSelect = bodyWrapper.querySelector("#workgroup-select");
+        const data = await getWorkgroups();
+        data.forEach(wg => {
+            const opt = document.createElement("option");
+            opt.value = wg.id;
+            opt.innerText = wg.name;
+            workgroupSelect.appendChild(opt);
+        })
+
         let footer = `
             <button class="letter-save-btn">
                 Создать
@@ -1324,7 +1343,7 @@ class Worker {
         const footerWrapper = document.createElement("div");
         footerWrapper.innerHTML = footer;
 
-        const modal = new Modal({headerName:"Создание Сотрудника отдела", body:bodyWrapper, footer:footerWrapper});
+        const modal = new Modal({headerName: "Создание Сотрудника отдела", body: bodyWrapper, footer: footerWrapper});
 
         const nameInput = bodyWrapper.querySelector("#worker-fullname");
         const shortNameInput = bodyWrapper.querySelector("#worker-initials");
@@ -1377,11 +1396,9 @@ class Worker {
                 }
 
 
-
                 modal.close();
                 informerStatus200Instance(5, "Подписант/адресат/исполнитель был сохранён");
-            }
-            catch (e) {
+            } catch (e) {
                 informerStatusNot200Instance(30, "Подписант/адресат/исполнитель не был сохранён", e.message);
                 console.error(e.stack);
             }

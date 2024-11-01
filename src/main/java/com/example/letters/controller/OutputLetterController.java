@@ -1,9 +1,6 @@
 package com.example.letters.controller;
 
-import com.example.letters.dto.ActualNumberIVC;
-import com.example.letters.dto.InputLetterDto;
-import com.example.letters.dto.OutputLetterDto;
-import com.example.letters.dto.Years;
+import com.example.letters.dto.*;
 import com.example.letters.model.InputLetter;
 import com.example.letters.model.OutputLetter;
 import com.example.letters.service.OutputLetterService;
@@ -78,6 +75,17 @@ public class OutputLetterController {
         outputLetterService.create(outputLetterDto.toOutputLetter());
 
         return Response.ok().build();
+    }
+
+    @POST
+    @Path("findByFilters")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public List<OutputLetterDto> getByFilters(LetterFilters filters) {
+        List<OutputLetter> letters = outputLetterService.findByFilters(filters);
+        return letters.stream()
+                .map(OutputLetterDto::fromOutputLetter)
+                .collect(Collectors.toList());
     }
 
     @GET

@@ -7,8 +7,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Stateless
 public class InputLetterRepository {
@@ -37,23 +37,136 @@ public class InputLetterRepository {
                 .getResultList();
     }
 
-    public List<InputLetter> findByFilters(int numberIVC) {
+    public List<InputLetter> findByFilters(
+            int numberIVC,
+            String documentNumber,
+            int easdNumber,
+            List<Integer> originIds,
+            List<Integer> signerIds,
+            List<Integer> executorIds,
+            Date registrationDateBegin,
+            Date registrationDateEnd,
+            List<Integer> tagIds) {
+
         StringBuilder query = new StringBuilder("SELECT il from InputLetter il");
         boolean whereAppended = false;
+
+        Map<String, Object> parameters = new HashMap<>();
+
+        if (tagIds != null && !tagIds.isEmpty()) {
+            query.append(" inner join il.tags t where t.id in :tagIds");
+            whereAppended = true;
+            parameters.put("tagIds", tagIds);
+        }
 
         if (numberIVC > 0) {
             if (!whereAppended) {
                 query.append(" where");
                 whereAppended = true;
             }
+            else {
+                query.append(" and");
+            }
 
             query.append(" il.numberIVC = :numberIVC");
+            parameters.put("numberIVC", numberIVC);
+        }
+
+        if (documentNumber != null) {
+            if (!whereAppended) {
+                query.append(" where");
+                whereAppended = true;
+            }
+            else {
+                query.append(" and");
+            }
+
+            query.append(" il.documentNumber = :documentNumber");
+            parameters.put("documentNumber", documentNumber);
+        }
+
+        if (easdNumber > 0) {
+            if (!whereAppended) {
+                query.append(" where");
+                whereAppended = true;
+            }
+            else {
+                query.append(" and");
+            }
+
+            query.append(" il.easdNumber = :easdNumber");
+            parameters.put("easdNumber", easdNumber);
+        }
+
+        if (originIds != null && !originIds.isEmpty()) {
+            if (!whereAppended) {
+                query.append(" where");
+                whereAppended = true;
+            }
+            else {
+                query.append(" and");
+            }
+
+            query.append(" il.origin.id in :originIds");
+            parameters.put("originIds", originIds);
+        }
+
+        if (signerIds != null && !signerIds.isEmpty()) {
+            if (!whereAppended) {
+                query.append(" where");
+                whereAppended = true;
+            }
+            else {
+                query.append(" and");
+            }
+
+            query.append(" il.signer.id in :signerIds");
+            parameters.put("signerIds", signerIds);
+        }
+
+        if (executorIds != null && !executorIds.isEmpty()) {
+            if (!whereAppended) {
+                query.append(" where");
+                whereAppended = true;
+            }
+            else {
+                query.append(" and");
+            }
+
+            query.append(" il.executor.id in :executorIds");
+            parameters.put("executorIds", executorIds);
+        }
+
+        if (registrationDateBegin != null) {
+            if (!whereAppended) {
+                query.append(" where");
+                whereAppended = true;
+            }
+            else {
+                query.append(" and");
+            }
+
+            query.append(" il.registrationDate >= :registrationDateBegin");
+            parameters.put("registrationDateBegin", registrationDateBegin);
+        }
+
+        if (registrationDateEnd != null) {
+            if (!whereAppended) {
+                query.append(" where");
+                whereAppended = true;
+            }
+            else {
+                query.append(" and");
+            }
+
+            query.append(" il.registrationDate <= :registrationDateEnd");
+            parameters.put("registrationDateEnd", registrationDateEnd);
         }
 
         var emQuery = entityManager.createQuery(query.toString());
 
-        if (numberIVC > 0) {
-            emQuery.setParameter("numberIVC", numberIVC);
+        for (var pair: parameters.entrySet()) {
+            emQuery.setParameter(pair.getKey(), pair.getValue());
         }
 
         return (List<InputLetter>) emQuery.getResultList();
