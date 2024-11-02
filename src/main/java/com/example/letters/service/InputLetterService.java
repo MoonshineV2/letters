@@ -70,6 +70,35 @@ public class InputLetterService {
     }
 
     public InputLetter create(InputLetter inputLetter) {
+
+        if (inputLetter.getNumberIVC() == 0) {
+            throw new RuntimeException("Номер ИВЦ ЖА не задан");
+        }
+
+        if (inputLetter.getRegistrationDate() == null) {
+            throw new RuntimeException("Дата регистрации не задана");
+        }
+
+        if (inputLetter.getPostuplenieDate() == null) {
+            throw new RuntimeException("Дата поступления не задана");
+        }
+
+        if (inputLetter.getDocumentDate() == null) {
+            throw new RuntimeException("Дата письма не задана");
+        }
+
+        if (inputLetter.getDocumentNumber().isEmpty()) {
+            throw new RuntimeException("Номер письма не задан");
+        }
+
+        if (inputLetter.getDocumentName().isEmpty()) {
+            throw new RuntimeException("Наименование документа не задано");
+        }
+
+        if (inputLetter.getDocumentType() == null) {
+            throw new RuntimeException("Тип документа не задан");
+        }
+
         if (inputLetter.getOrigin() == null) {
             throw new RuntimeException("Источник письма не задан");
         }
@@ -86,9 +115,6 @@ public class InputLetterService {
             throw new RuntimeException("\"Кому расписано\" не задано");
         }
 
-        if (inputLetter.getDocumentNumber().isEmpty()) {
-            throw new RuntimeException("Номер документа не задан");
-        }
 
         if (inputLetter.isAnswer()) {
             if (inputLetter.getOutputLetter() == null) {

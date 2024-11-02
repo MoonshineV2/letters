@@ -67,8 +67,8 @@ window.addEventListener("load", async () => {
     tagsMultiSelect = await getTags();
 
     setOriginsAndAddressesOptions(document.querySelector("#address-select"), originsAndAddresses, true);
-    setWorkerSignersOptions(document.querySelector("#signer-select"), workerSigners);
-    setWorkerExecutorsOptions(document.querySelector("#executor-select"), workers);
+    setWorkerSignersOptions(document.querySelector("#signer-select"), workerSigners, true);
+    setParticipantsOptions(document.querySelector("#executor-select"), participants, true);
     setParticipantsOptions(document.querySelector("#participant-select"), participants, true);
     setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes, true);
     setActualNumberIVC();

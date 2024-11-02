@@ -110,28 +110,34 @@ function setParticipantSignersOptions(selectHTML, signers, addDefaultOption) {
 
 }
 
-function setWorkerSignersOptions(selectHTMl, signers) {
+function setWorkerSignersOptions(selectHTML, signers, addDefaultOption) {
+    selectHTML.innerHTML = "";
+
+    if (addDefaultOption) {
+        const firstOption = document.createElement("option");
+        firstOption.value = "";
+        firstOption.innerText = "Выберите вариант";
+        firstOption.disabled = true;
+        firstOption.selected = true;
+        firstOption.hidden = true;
+        selectHTML.appendChild(firstOption);
+    }
 
     signers.forEach(element => {
         const option = document.createElement("option");
         option.innerText = element.initials
         option.value = element.id
-        selectHTMl.appendChild(option)
+        selectHTML.appendChild(option)
     })
 
     const option = document.createElement("option");
     option.innerText = "другое"
     option.value = "other"
-    selectHTMl.appendChild(option)
+    selectHTML.appendChild(option)
 
-    selectHTMl.onchange = () => {
-        if (selectHTMl.value === 'other') {
-            const otherSelects = [];
-            otherSelects.push({
-                signFlag: false,
-                selectNode: document.getElementById("executor-select")
-            })
-            openModalCreateParticipant(modal, select, true, modalError ,"Создание подписанта", otherSelects);
+    selectHTML.onchange = () => {
+        if (selectHTML.value === 'other') {
+            Worker.createFormInstance(true);
         }
     }
 
@@ -207,7 +213,7 @@ function setWorkerExecutorsOptions(selectHTML, executors) {
                 signFlag: true,
                 selectNode: document.getElementById("signer-select")
             })
-            openModalCreateParticipant(modal, select, false, modalError,"Создание исполнителя", otherSelects);
+
         }
     }
 }
@@ -499,6 +505,22 @@ async function saveParticipant(participant) {
 
     return new Participant(await response.json());
 
+}
+
+async function saveWorker(worker) {
+    const response = await fetch("/letters/api/workers", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(worker),
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    return new Worker(await response.json());
 }
 
 async function getInputLetterFileById(id, filename) {

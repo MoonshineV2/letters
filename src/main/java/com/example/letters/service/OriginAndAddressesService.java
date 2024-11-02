@@ -19,12 +19,13 @@ public class OriginAndAddressesService {
     }
 
     public OriginAndAddress create(OriginAndAddress originAndAddress) {
-        if (originAndAddress.getName() == null || originAndAddress.getName().isEmpty()) {
-            throw new RuntimeException("Полное наименование не задано");
-        }
 
         if (originAndAddress.getShortName() == null || originAndAddress.getShortName().isEmpty()) {
             throw new RuntimeException("Краткое наименование не задано");
+        }
+
+        if (originAndAddress.getKodADM() == 0) {
+            throw new RuntimeException("Код администрации не задан");
         }
 
         return originAndAddressRepository.create(originAndAddress);

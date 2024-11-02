@@ -1060,9 +1060,7 @@ class OriginAndAddress {
         const nameInput = bodyWrapper.querySelector("#origin-address-name");
         const shortNameInput = bodyWrapper.querySelector("#origin-address-shortname");
         const kodADMInput = bodyWrapper.querySelector("#origin-address-kodadm");
-        nameInput.oninput = () => {
-            nameInput.removeAttribute("empty");
-        }
+
         shortNameInput.oninput = () => {
             shortNameInput.removeAttribute("empty");
         }
@@ -1074,10 +1072,6 @@ class OriginAndAddress {
 
             let notOkay = false;
 
-            if (!nameInput.value) {
-                nameInput.setAttribute("empty", "");
-                notOkay = true;
-            }
             if (!shortNameInput.value) {
                 shortNameInput.setAttribute("empty", "");
                 notOkay = true;
@@ -1190,9 +1184,7 @@ class Participant {
         const shortNameInput = bodyWrapper.querySelector("#participant-initials");
         const post = bodyWrapper.querySelector("#participant-post");
         const canSign = bodyWrapper.querySelector("#participant-cansign");
-        nameInput.oninput = () => {
-            nameInput.removeAttribute("empty");
-        }
+
         shortNameInput.oninput = () => {
             shortNameInput.removeAttribute("empty");
         }
@@ -1203,10 +1195,6 @@ class Participant {
 
             let notOkay = false;
 
-            if (!nameInput.value) {
-                nameInput.setAttribute("empty", "");
-                notOkay = true;
-            }
             if (!shortNameInput.value) {
                 shortNameInput.setAttribute("empty", "");
                 notOkay = true;
@@ -1249,7 +1237,7 @@ class Participant {
 
 class Worker {
     id;
-    fullname;
+    fullName;
     initials = "";
     post;
     canSign;
@@ -1258,7 +1246,7 @@ class Worker {
 
     constructor(worker) {
         this.id = worker.id;
-        this.fullname = worker.fullname;
+        this.fullName = worker.fullName;
         if (worker.initials)
             this.initials = worker.initials;
         this.post = worker.post;
@@ -1291,21 +1279,21 @@ class Worker {
                         <div class="field-container">
                             <label for="worker-fullname">${this.locale.fullName}</label>
                             <input id="worker-fullname" type="text">
-                            <p id="worker-fullname-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                            <p id="worker-fullname-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
                         <div class="field-container">
                             <label for="worker-initials">${this.locale.initials}</label>
                             <input id="worker-initials" type="text">
-                            <p id="worker-initials-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                            <p id="worker-initials-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-input">
                         <div class="field-container">
                             <label for="worker-post">${this.locale.post}</label>
                             <input id="worker-post" type="text">
-                            <p id="worker-post-empty" class="under-attention" hidden>поле не может быть пустым</p>
+                            <p id="worker-post-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-select">
@@ -1327,13 +1315,14 @@ class Worker {
         bodyWrapper.innerHTML = body;
 
         const workgroupSelect = bodyWrapper.querySelector("#workgroup-select");
-        const data = await getWorkgroups();
-        data.forEach(wg => {
-            const opt = document.createElement("option");
-            opt.value = wg.id;
-            opt.innerText = wg.name;
-            workgroupSelect.appendChild(opt);
-        })
+        getWorkgroups().then(result => {
+            result.forEach(wg => {
+                const opt = document.createElement("option");
+                opt.value = wg.id;
+                opt.innerText = wg.name;
+                workgroupSelect.appendChild(opt);
+            })
+        });
 
         let footer = `
             <button class="letter-save-btn">
@@ -1349,29 +1338,32 @@ class Worker {
         const shortNameInput = bodyWrapper.querySelector("#worker-initials");
         const post = bodyWrapper.querySelector("#worker-post");
         const canSign = bodyWrapper.querySelector("#worker-cansign");
-        nameInput.oninput = () => {
-            bodyWrapper.querySelector("#worker-fullname-empty").hidden = true;
-        }
+
         shortNameInput.oninput = () => {
-            bodyWrapper.querySelector("#worker-initials-empty").hidden = true;
+            shortNameInput.removeAttribute("empty");
         }
         post.oninput = () => {
-            bodyWrapper.querySelector("#worker-post-empty").hidden = true;
+            post.removeAttribute("empty");
         }
+        workgroupSelect.onchange = () => {
+            workgroupSelect.removeAttribute("empty");
+        }
+
         footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
 
             let notOkay = false;
 
-            if (!nameInput.value) {
-                bodyWrapper.querySelector("#worker-fullname-empty").hidden = false;
-                notOkay = true;
-            }
             if (!shortNameInput.value) {
-                bodyWrapper.querySelector("#worker-initials-empty").hidden = false;
+                shortNameInput.setAttribute("empty", "");
                 notOkay = true;
             }
             if (!post.value) {
-                bodyWrapper.querySelector("#worker-post-empty").hidden = false;
+                post.setAttribute("empty", "");
+                notOkay = true;
+            }
+
+            if (workgroupSelect.value === "") {
+                workgroupSelect.setAttribute("empty", "");
                 notOkay = true;
             }
 
@@ -1380,14 +1372,15 @@ class Worker {
             }
 
             try {
-                await saveParticipant(new Participant({
+                await saveWorker(new Worker({
                     fullName: nameInput.value,
                     initials: shortNameInput.value,
                     post: post.value,
-                    canSign: canSign.checked
+                    canSign: canSign.checked,
+                    workgroupId: workgroupSelect.value
                 }))
 
-                const event = new Event("participantsChanged");
+                const event = new Event("WorkersChanged");
                 document.dispatchEvent(event);
 
                 if (canSign.checked) {
@@ -1397,9 +1390,9 @@ class Worker {
 
 
                 modal.close();
-                informerStatus200Instance(5, "Подписант/адресат/исполнитель был сохранён");
+                informerStatus200Instance(5, "Сотрудник отдела был сохранён");
             } catch (e) {
-                informerStatusNot200Instance(30, "Подписант/адресат/исполнитель не был сохранён", e.message);
+                informerStatusNot200Instance(30, "Сотрудник отдела не был сохранён", e.message);
                 console.error(e.stack);
             }
         }

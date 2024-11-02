@@ -24,11 +24,12 @@ public class ParticipantService {
 
     public Participant create(Participant participant) {
 
-        if (participant.getFullName() == null || participant.getFullName().isEmpty()) {
-            throw new RuntimeException("Полное имя не задано");
-        }
         if (participant.getInitials() == null || participant.getInitials().isEmpty()) {
-            throw new RuntimeException("Инициалы не заданы");
+            throw new RuntimeException("Фамилия, инициалы не заданы");
+        }
+
+        if (participant.getPost() == null || participant.getPost().isEmpty()) {
+            throw new RuntimeException("Должность не задана");
         }
 
         return participantRepository.create(participant);

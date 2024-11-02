@@ -32,6 +32,19 @@ public class WorkerService {
     }
 
     public Worker create(Worker worker) {
+
+        if (worker.getInitials() == null || worker.getInitials().isEmpty()) {
+            throw new RuntimeException("Фамилия, инициалы не заданы");
+        }
+
+        if (worker.getPost() == null || worker.getPost().isEmpty()) {
+            throw new RuntimeException("Должность не задана");
+        }
+
+        if (worker.getWorkgroup() == null) {
+            throw new RuntimeException("Рабочая группа не задана");
+        }
+
         return workerRepository.create(worker);
     }
 
