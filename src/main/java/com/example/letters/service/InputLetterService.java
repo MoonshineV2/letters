@@ -87,12 +87,8 @@ public class InputLetterService {
             throw new RuntimeException("Дата письма не задана");
         }
 
-        if (inputLetter.getDocumentNumber().isEmpty()) {
+        if (inputLetter.getDocumentNumber() == null || inputLetter.getDocumentNumber().isEmpty()) {
             throw new RuntimeException("Номер письма не задан");
-        }
-
-        if (inputLetter.getDocumentName().isEmpty()) {
-            throw new RuntimeException("Наименование документа не задано");
         }
 
         if (inputLetter.getDocumentType() == null) {
@@ -115,6 +111,25 @@ public class InputLetterService {
             throw new RuntimeException("\"Кому расписано\" не задано");
         }
 
+        if (inputLetter.getEasdNumber() == 0) {
+            throw new RuntimeException("Номер ЕАСД не задан");
+        }
+
+        if (inputLetter.getTags().isEmpty()) {
+            throw new RuntimeException("Ни один тег не выбран");
+        }
+
+        if (inputLetter.getTopic() == null || inputLetter.getTopic().isEmpty()) {
+            throw new RuntimeException("Тема не расписана");
+        }
+
+        if (inputLetter.getNote() == null || inputLetter.getNote().isEmpty()) {
+            throw new RuntimeException("Примечание не расписано");
+        }
+
+        if (inputLetter.getFile() == null || inputLetter.getFile().length == 0) {
+            throw new RuntimeException("Файл для письма не выбран");
+        }
 
         if (inputLetter.isAnswer()) {
             if (inputLetter.getOutputLetter() == null) {

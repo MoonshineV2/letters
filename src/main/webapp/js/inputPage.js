@@ -48,7 +48,11 @@ document.addEventListener("participantSignersChanged", async() => {
 });
 
 window.addEventListener("load", async () => {
-    fileUploader = new FileUploader(document.getElementById("file-uploader"));
+    fileUploader = new FileUploader(document.getElementById("file-uploader"), {onChange: () => {
+            form.fileUploader.element.removeAttribute("empty", "");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }});
     saveButton = document.querySelector("#save-letter");
 
     await requests;
@@ -115,32 +119,6 @@ window.addEventListener("load", async () => {
     form.reserve = document.querySelector("#reserve");
     form.fileUploader = fileUploader;
     form.outputLetter = document.querySelector("#output-select");
-
-    form.documentNumber.oninput = () => {
-        form.documentNumber.removeAttribute("empty");
-        saveButton.removeAttribute("empty");
-        saveButton.classList.remove("btn-validation-failed");
-    }
-    form.origin.oninput = () => {
-        form.origin.removeAttribute("empty");
-        saveButton.removeAttribute("empty");
-        saveButton.classList.remove("btn-validation-failed");
-    }
-    form.signer.oninput = () => {
-        form.signer.removeAttribute("empty");
-        saveButton.removeAttribute("empty");
-        saveButton.classList.remove("btn-validation-failed");
-    }
-    form.executor.oninput = () => {
-        form.executor.removeAttribute("empty");
-        saveButton.removeAttribute("empty");
-        saveButton.classList.remove("btn-validation-failed");
-    }
-    form.targetWorker.oninput = () => {
-        form.targetWorker.removeAttribute("empty");
-        saveButton.removeAttribute("empty");
-        saveButton.classList.remove("btn-validation-failed");
-    }
 })
 
 function getTagsMultiselectInstance() {
@@ -157,7 +135,12 @@ function getTagsMultiselectInstance() {
         placeholder: "Выберите теги",
         search: true,
         selectAll: false,
-        listAll: false
+        listAll: false,
+        onChange: () => {
+            form.tags.element.removeAttribute("empty", "");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
     })
 }
 
@@ -191,8 +174,75 @@ async function saveDocument() {
 
     let hasAttentions = false;
 
+    if (!form.numberIVC.value) {
+        form.numberIVC.setAttribute("empty", "");
+
+        form.numberIVC.oninput = () => {
+            form.numberIVC.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
     if (!form.documentNumber.value) {
         form.documentNumber.setAttribute("empty", "");
+
+        form.documentNumber.oninput = () => {
+            form.documentNumber.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.easdNumber.value) {
+        form.easdNumber.setAttribute("empty", "");
+
+        form.easdNumber.oninput = () => {
+            form.easdNumber.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.registrationDate.value) {
+        form.registrationDate.setAttribute("empty", "");
+
+        form.registrationDate.oninput = () => {
+            form.registrationDate.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.documentDate.value) {
+        form.documentDate.setAttribute("empty", "");
+
+        form.documentDate.oninput = () => {
+            form.documentDate.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.postuplenieDate.value) {
+        form.postuplenieDate.setAttribute("empty", "");
+
+        form.postuplenieDate.oninput = () => {
+            form.postuplenieDate.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
@@ -201,23 +251,97 @@ async function saveDocument() {
         hasAttentions = true;
     }
 
+    if (!form.documentType.value) {
+        form.documentType.setAttribute("empty", "");
+
+        form.documentType.oninput = () => {
+            form.documentType.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
     if (!form.origin.value) {
         form.origin.setAttribute("empty", "");
+
+        form.origin.oninput = () => {
+            form.origin.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
     if (!form.signer.value) {
         form.signer.setAttribute("empty", "");
+
+        form.signer.oninput = () => {
+            form.signer.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
     if (!form.executor.value) {
         form.executor.setAttribute("empty", "");
+
+        form.executor.oninput = () => {
+            form.executor.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
     if (!form.targetWorker.value) {
         form.targetWorker.setAttribute("empty", "");
+
+        form.targetWorker.oninput = () => {
+            form.targetWorker.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (form.tags.selectedValues.length === 0) {
+        form.tags.element.setAttribute("empty", "");
+        hasAttentions = true;
+    }
+
+    if (!form.topic.value) {
+        form.topic.setAttribute("empty", "");
+
+        form.topic.oninput = () => {
+            form.topic.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.note.value) {
+        form.note.setAttribute("empty", "");
+
+        form.note.oninput = () => {
+            form.note.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.fileUploader.file) {
+        form.fileUploader.element.setAttribute("empty", "");
         hasAttentions = true;
     }
 

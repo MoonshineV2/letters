@@ -190,6 +190,7 @@ select:disabled {
     min-height: 38px;
     cursor: auto;
     overflow: hidden;
+    vertical-align: top;
 }
 
 .custom-checkbox label {
@@ -376,12 +377,17 @@ select:disabled {
 }
 
 .field-container input[empty],
-.field-container select[empty] {
+.field-container select[empty],
+.field-container textarea[empty],
+.field-container div[empty] .multi-select-header,
+.field-container div[empty] .drag-and-drop-file {
     border: 1px solid #EB0034;
 }
 
 .field-container:has(input[empty]) label,
-.field-container:has(select[empty]) label{
+.field-container:has(select[empty]) label,
+.field-container:has(textarea[empty]) label,
+.field-container:has(div[empty]) label {
     color: #EB0034;
 }
 
@@ -416,6 +422,8 @@ select:disabled {
 
 .field-container input[empty] + .under-attention-empty,
 .field-container select[empty] + .under-attention-empty,
+.field-container textarea[empty] + .under-attention-empty,
+.field-container div[empty] + .under-attention-empty,
 .field-container button[empty] + .btn-under-attention-empty {
     display: block;
 }
@@ -558,7 +566,6 @@ select:disabled {
     position: fixed;
     bottom: 0;
     left: 0;
-    right: 0;
     display: flex;
     flex-direction: column;
     padding: 10px;

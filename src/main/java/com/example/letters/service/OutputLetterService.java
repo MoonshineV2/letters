@@ -67,6 +67,30 @@ public class OutputLetterService {
 
     public void create(OutputLetter outputLetter) {
 
+        if (outputLetter.getNumberIVC() == 0) {
+            throw new RuntimeException("Номер ИВЦ ЖА не задан");
+        }
+
+        if (outputLetter.getEasdNumber() == 0) {
+            throw new RuntimeException("Номер ЕАСД не задан");
+        }
+
+        if (outputLetter.getRegistrationDate() == null) {
+            throw new RuntimeException("Дата регистрации не задана");
+        }
+
+        if (outputLetter.getDocumentDate() == null) {
+            throw new RuntimeException("Дата письма не задана");
+        }
+
+        if (outputLetter.getDocumentNumber() == null || outputLetter.getDocumentNumber().isEmpty()) {
+            throw new RuntimeException("Номер письма не задан");
+        }
+
+        if (outputLetter.getDocumentType() == null) {
+            throw new RuntimeException("Тип документа не задан");
+        }
+
         if (outputLetter.getAddress() == null) {
             throw new RuntimeException("Адрес письма не задан");
         }
@@ -81,6 +105,22 @@ public class OutputLetterService {
 
         if (outputLetter.getTargetParticipant() == null) {
             throw new RuntimeException("\"Кому направлено письмо\" не задано");
+        }
+
+        if (outputLetter.getTags().isEmpty()) {
+            throw new RuntimeException("Ни один тег не выбран");
+        }
+
+        if (outputLetter.getTopic() == null || outputLetter.getTopic().isEmpty()) {
+            throw new RuntimeException("Тема не расписана");
+        }
+
+        if (outputLetter.getNote() == null || outputLetter.getNote().isEmpty()) {
+            throw new RuntimeException("Примечание не расписано");
+        }
+
+        if (outputLetter.getFile() == null || outputLetter.getFile().length == 0) {
+            throw new RuntimeException("Файл для письма не выбран");
         }
 
         outputLetter.setYear(LocalDateTime.now().getYear());

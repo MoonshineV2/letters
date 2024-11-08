@@ -161,7 +161,7 @@ async function saveDocument() {
         hasAttentions = true;
     }
 
-    if (hasAttentions) {
+    /*if (hasAttentions) {
         saveButton.setAttribute("empty", "");
         saveButton.classList.add("btn-validation-failed");
         saveButton.classList.add("horizontal-shake");
@@ -169,14 +169,14 @@ async function saveDocument() {
             saveButton.classList.remove("horizontal-shake");
         }, 700);
         return;
-    }
+    }*/
 
     const outputLetter = new OutputLetter({
         id: 0,
         numberIVC: form.numberIVC.value,
         registrationDate: form.registrationDate.value,
         documentDate: form.documentDate.value,
-        //documentNumber: form.documentNumber.value,
+        documentNumber: form.documentNumber.value,
         documentType: {id:form.documentType.value},
         documentName: form.fileUploader.file ? form.fileUploader.file.name : "",
         address: {id:form.address.value},

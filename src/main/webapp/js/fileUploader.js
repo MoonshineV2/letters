@@ -1,5 +1,7 @@
 class FileUploader {
 
+    onChange = function() {};
+
     constructor(element, options = {}) {
         this.options = options;
 
@@ -8,6 +10,9 @@ class FileUploader {
         }
 
         this.options.element = element;
+
+        if (options.onChange)
+            this.onChange = options.onChange;
 
         this.initialize();
         this.eventHandlers();
@@ -85,6 +90,9 @@ class FileUploader {
 
         this.fileInput.onchange = () => {
             this.processFileChange();
+            console.log(123);
+            console.log(this.onChange());
+            this.onChange();
         }
 
         this.element.querySelector('.drag-and-drop-select-file').onclick = () => {
