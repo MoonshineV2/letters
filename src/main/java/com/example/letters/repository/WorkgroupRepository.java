@@ -14,7 +14,7 @@ public class WorkgroupRepository {
     private EntityManager entityManager;
 
     public List<Workgroup> findAll() {
-        return entityManager.createQuery("SELECT w FROM Workgroup w", Workgroup.class).getResultList();
+        return entityManager.createQuery("SELECT w FROM Workgroup w ORDER BY w.id ASC", Workgroup.class).getResultList();
     }
 
     public void create(Workgroup workgroup) {

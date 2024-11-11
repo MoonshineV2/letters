@@ -59,12 +59,35 @@
     background-color: #9c27b0;
 }
 
+.table-customization-btn.excel-btn {
+    background-color: #1F6F43;
+    position: relative;
+    padding-right: 35px;
+}
+
+.excel-btn::after {
+    display: block;
+    position: absolute;
+    content: '';
+    right: 10px;
+    top: 6px;
+
+    -webkit-mask: url("../images/excel_white.svg") no-repeat 100% 100%;
+    mask: url("../images/excel_white.svg") no-repeat 100% 100%;
+    -webkit-mask-size: 20px 20px;
+    mask-size: 20px 20px;
+    background-color: white;
+    mask-position: center;
+    width: 20px;
+    height: 20px;
+}
+
 .table-customization-btn.table-customization-btn-active + .table-customization-options{
     display: block;
 }
 
 .table-customization-btn:hover {
-    background-color: #1d5865;
+    background-color: #1a5d38;
 }
 
 .table-container {

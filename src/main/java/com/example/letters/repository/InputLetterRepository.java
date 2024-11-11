@@ -17,7 +17,7 @@ public class InputLetterRepository {
     private EntityManager entityManager;
 
     public List<InputLetter> findAll() {
-        return entityManager.createQuery("SELECT il FROM InputLetter il", InputLetter.class).getResultList();
+        return entityManager.createQuery("SELECT il FROM InputLetter il ORDER BY il.id ASC", InputLetter.class).getResultList();
     }
 
     public Optional<InputLetter> findById(int id) {
@@ -32,7 +32,7 @@ public class InputLetterRepository {
     }
 
     public List<InputLetter> findByYears(List<Integer> years) {
-        return (List<InputLetter>) entityManager.createQuery("SELECT il from InputLetter il where il.year in :years")
+        return (List<InputLetter>) entityManager.createQuery("SELECT il from InputLetter il where il.year in :years ORDER BY il.id ASC")
                 .setParameter("years", years)
                 .getResultList();
     }
@@ -163,6 +163,8 @@ public class InputLetterRepository {
             parameters.put("registrationDateEnd", registrationDateEnd);
         }
 
+        query.append(" ORDER BY il.id ASC");
+
         var emQuery = entityManager.createQuery(query.toString());
 
         for (var pair: parameters.entrySet()) {
@@ -174,7 +176,7 @@ public class InputLetterRepository {
 
     public Optional<DBFile> getFileById(int id) {
         Tuple tuple = entityManager
-                .createQuery("select il.documentName as fileName, il.file as file from InputLetter il where il.id = :id", Tuple.class)
+                .createQuery("select il.documentName as fileName, il.file as file from InputLetter il where il.id = :id ORDER BY il.id ASC", Tuple.class)
                 .setParameter("id", id)
                 .getSingleResult();
 

@@ -142,13 +142,67 @@ public class OutputLetterService {
     }
 
     public OutputLetter update(OutputLetter outputLetter) {
-        if (outputLetter.getDocumentName() != null && outputLetter.getDocumentName().length() > 100) {
-            throw new RuntimeException("Название файла не может быть больше 100 символов");
+        if (outputLetter.getNumberIVC() == 0) {
+            throw new RuntimeException("Номер ИВЦ ЖА не задан");
         }
 
-        List<OutputLetter> list = outputLetterRepository.findByYears(List.of(outputLetter.getYear())).stream()
-                .filter(el -> el.getYear() == LocalDateTime.now().getYear())
-                .collect(Collectors.toList());
+        if (outputLetter.getEasdNumber() == 0) {
+            throw new RuntimeException("Номер ЕАСД не задан");
+        }
+
+        if (outputLetter.getRegistrationDate() == null) {
+            throw new RuntimeException("Дата регистрации не задана");
+        }
+
+        if (outputLetter.getDocumentDate() == null) {
+            throw new RuntimeException("Дата письма не задана");
+        }
+
+        if (outputLetter.getDocumentNumber() == null || outputLetter.getDocumentNumber().isEmpty()) {
+            throw new RuntimeException("Номер письма не задан");
+        }
+
+        if (outputLetter.getDocumentType() == null) {
+            throw new RuntimeException("Тип документа не задан");
+        }
+
+        if (outputLetter.getAddress() == null) {
+            throw new RuntimeException("Адрес письма не задан");
+        }
+
+        if (outputLetter.getSigner() == null) {
+            throw new RuntimeException("Подписант письма не задан");
+        }
+
+        if (outputLetter.getExecutor() == null) {
+            throw new RuntimeException("Исполнитель письма не задан");
+        }
+
+        if (outputLetter.getTargetParticipant() == null) {
+            throw new RuntimeException("\"Кому направлено письмо\" не задано");
+        }
+
+        if (outputLetter.getTags().isEmpty()) {
+            throw new RuntimeException("Ни один тег не выбран");
+        }
+
+        if (outputLetter.getTopic() == null || outputLetter.getTopic().isEmpty()) {
+            throw new RuntimeException("Тема не расписана");
+        }
+
+        if (outputLetter.getNote() == null || outputLetter.getNote().isEmpty()) {
+            throw new RuntimeException("Примечание не расписано");
+        }
+
+        if (outputLetter.getFile() == null || outputLetter.getFile().length == 0) {
+            throw new RuntimeException("Файл для письма не выбран");
+        }
+
+        List<OutputLetter> list = outputLetterRepository.findByYears(List.of(outputLetter.getYear()))
+                .stream()
+                .filter(el -> el.getId() != outputLetter.getId())
+                .collect(Collectors.toList()
+                );
 
         boolean contains = list.stream()
                 .map(OutputLetter::getNumberIVC)

@@ -88,14 +88,18 @@
                 </div>
                 <div class="dividing-line dividing-up"></div>
                 <div class="custom-date">
-                    <label for="registration-date">Дата регистрации</label>
-                    <input id="registration-date" type="date" value="2024-07-09" />
-                    <p id="registration-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    <div class="field-container">
+                        <label for="registration-date">Дата регистрации</label>
+                        <input id="registration-date" type="date" value="2024-07-09" />
+                        <p id="registration-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-date">
-                    <label for="date-doc">Дата документа</label>
-                    <input id="date-doc" type="date"/>
-                    <p id="date-doc-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    <div class="field-container">
+                        <label for="date-doc">Дата документа</label>
+                        <input id="date-doc" type="date"/>
+                        <p id="date-doc-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="dividing-line dividing-up"></div>
                 <div class="custom-select">
@@ -104,6 +108,7 @@
                         <select name="doc-type" id="doc-type-select">
                             <option value="" disabled selected hidden>Выберите вариант</option>
                         </select>
+                        <p id="doc-type-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                     </div>
                 </div>
                 <div class="custom-select">
@@ -143,17 +148,26 @@
                     </div>
                 </div>
                 <div class="multiselect">
-                    <label for="tags">Теги</label>
-                    <select id="tags" name="tags"></select>
+                    <div class="field-container">
+                        <label for="tags">Теги</label>
+                        <select id="tags" name="tags"></select>
+                        <p id="tags-empty" class="under-attention under-attention-empty">Выберите хотя бы один тег</p>
+                    </div>
                 </div>
                 <div class="dividing-line dividing-up"></div>
                 <div class="custom-textarea text-area-small">
-                    <label for="topic">Тема</label>
-                    <textarea id="topic"></textarea>
+                    <div class="field-container">
+                        <label for="topic">Тема</label>
+                        <textarea id="topic"></textarea>
+                        <p id="topic-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-textarea">
-                    <label for="note">Примечание</label>
-                    <textarea id="note"></textarea>
+                    <div class="field-container">
+                        <label for="note">Примечание</label>
+                        <textarea id="note"></textarea>
+                        <p id="note-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
                 </div>
                 <div class="custom-checkbox">
                     <input id="prilojenie" type="checkbox">
@@ -164,12 +178,18 @@
                     <label for="reserve">Резерв</label>
                 </div>
                 <div class="dividing-line dividing-up"></div>
-                <div id="file-uploader"></div>
+                <div class="field-container">
+                    <div id="file-uploader"></div>
+                    <p id="file-empty" class="under-attention under-attention-empty">необходимо выбрать файл</p>
+                </div>
             </div>
             <div class="dividing-line dividing-up"></div>
-            <button id="save-letter" class="letter-save-btn" onclick="saveDocument()">
-                Сохранить письмо
-            </button>
+            <div class="field-container">
+                <button id="save-letter" class="letter-save-btn" onclick="saveDocument()">
+                    Сохранить письмо
+                </button>
+                <p class="under-attention btn-under-attention-empty">*требуется заполнить поля</p>
+            </div>
         </section>
     </main>
 </body>

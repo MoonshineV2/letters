@@ -14,11 +14,11 @@ public class ParticipantRepository {
     private EntityManager entityManager;
 
     public List<Participant> findAll() {
-        return entityManager.createQuery("SELECT oa FROM Participant oa", Participant.class).getResultList();
+        return entityManager.createQuery("SELECT p FROM Participant p ORDER BY p.id ASC", Participant.class).getResultList();
     }
 
     public List<Participant> findSigners() {
-        return entityManager.createQuery("SELECT oa FROM Participant oa WHERE oa.canSign = true", Participant.class).getResultList();
+        return entityManager.createQuery("SELECT p FROM Participant p WHERE p.canSign = true ORDER BY p.id ASC", Participant.class).getResultList();
     }
 
     public Participant create(Participant participant) {

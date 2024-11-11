@@ -14,6 +14,6 @@ public class TagRepository {
     private EntityManager entityManager;
 
     public List<Tag> findAll() {
-        return entityManager.createQuery("SELECT t FROM Tag t", Tag.class).getResultList();
+        return entityManager.createQuery("SELECT t FROM Tag t ORDER BY t.id ASC", Tag.class).getResultList();
     }
 }

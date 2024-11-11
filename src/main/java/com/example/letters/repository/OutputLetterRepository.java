@@ -16,14 +16,14 @@ public class OutputLetterRepository {
     private EntityManager entityManager;
 
     public List<OutputLetter> findAll() {
-        return entityManager.createQuery("SELECT ol FROM OutputLetter ol", OutputLetter.class).getResultList();
+        return entityManager.createQuery("SELECT ol FROM OutputLetter ol ORDER BY ol.id ASC", OutputLetter.class).getResultList();
     }
 
     public Optional<OutputLetter> findById(int id) {
         return Optional.ofNullable(entityManager.find(OutputLetter.class, id));
     }
     public List<OutputLetter> findByYears(List<Integer> years) {
-        return (List<OutputLetter>) entityManager.createQuery("SELECT ol from OutputLetter ol where ol.year in :years")
+        return (List<OutputLetter>) entityManager.createQuery("SELECT ol from OutputLetter ol where ol.year in :years ORDER BY ol.id ASC")
                 .setParameter("years", years)
                 .getResultList();
     }
@@ -154,6 +154,8 @@ public class OutputLetterRepository {
             parameters.put("registrationDateEnd", registrationDateEnd);
         }
 
+        query.append(" ORDER BY ol.id ASC");
+
         var emQuery = entityManager.createQuery(query.toString());
 
         for (var pair: parameters.entrySet()) {
@@ -165,7 +167,7 @@ public class OutputLetterRepository {
 
     public Optional<DBFile> getFileById(int id) {
         Tuple tuple = entityManager
-                .createQuery("select ol.documentName as fileName, ol.file as file from OutputLetter ol where ol.id = :id", Tuple.class)
+                .createQuery("select ol.documentName as fileName, ol.file as file from OutputLetter ol where ol.id = :id ORDER BY ol.id ASC", Tuple.class)
                 .setParameter("id", id)
                 .getSingleResult();
 

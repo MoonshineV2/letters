@@ -7,6 +7,7 @@ import com.example.letters.util.DBFile;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.NoContentException;
 import jakarta.ws.rs.core.Response;
 
 import java.sql.Timestamp;
@@ -171,12 +172,74 @@ public class InputLetterService {
     }
 
     public InputLetter update(InputLetter inputLetter) {
-        if (inputLetter.getCreateDate() == null) {
-            throw new RuntimeException("Дата регистрации не может быть пустой");
+
+        if (inputLetter.getNumberIVC() == 0) {
+            throw new RuntimeException("Номер ИВЦ ЖА не задан");
         }
 
-        if (inputLetter.getDocumentName() != null && inputLetter.getDocumentName().length() > 100) {
-            throw new RuntimeException("Название файла не может быть больше 100 символов");
+        if (inputLetter.getRegistrationDate() == null) {
+            throw new RuntimeException("Дата регистрации не задана");
+        }
+
+        if (inputLetter.getPostuplenieDate() == null) {
+            throw new RuntimeException("Дата поступления не задана");
+        }
+
+        if (inputLetter.getDocumentDate() == null) {
+            throw new RuntimeException("Дата письма не задана");
+        }
+
+        if (inputLetter.getDocumentNumber() == null || inputLetter.getDocumentNumber().isEmpty()) {
+            throw new RuntimeException("Номер письма не задан");
+        }
+
+        if (inputLetter.getDocumentType() == null) {
+            throw new RuntimeException("Тип документа не задан");
+        }
+
+        if (inputLetter.getOrigin() == null) {
+            throw new RuntimeException("Источник письма не задан");
+        }
+
+        if (inputLetter.getSigner() == null) {
+            throw new RuntimeException("Подписант письма не задан");
+        }
+
+        if (inputLetter.getExecutor() == null) {
+            throw new RuntimeException("Исполнитель письма не задан");
+        }
+
+        if (inputLetter.getTargetWorker() == null) {
+            throw new RuntimeException("\"Кому расписано\" не задано");
+        }
+
+        if (inputLetter.getEasdNumber() == 0) {
+            throw new RuntimeException("Номер ЕАСД не задан");
+        }
+
+        if (inputLetter.getTags().isEmpty()) {
+            throw new RuntimeException("Ни один тег не выбран");
+        }
+
+        if (inputLetter.getTopic() == null || inputLetter.getTopic().isEmpty()) {
+            throw new RuntimeException("Тема не расписана");
+        }
+
+        if (inputLetter.getNote() == null || inputLetter.getNote().isEmpty()) {
+            throw new RuntimeException("Примечание не расписано");
+        }
+
+        if (inputLetter.getFile() == null || inputLetter.getFile().length == 0) {
+            throw new RuntimeException("Файл для письма не выбран");
+        }
+
+        if (inputLetter.isAnswer()) {
+            if (inputLetter.getOutputLetter() == null) {
+                throw new RuntimeException("Ответное письмо не выбрано");
+            }
+        }
+        else {
+            inputLetter.setOutputLetter(null);
         }
 
         if (inputLetter.getDocumentName() != null && inputLetter.getDocumentName().length() > 100) {
@@ -191,9 +254,11 @@ public class InputLetterService {
             throw new RuntimeException("Примечание не может быть больше 500 символов");
         }
 
-        List<InputLetter> list = inputLetterRepository.findByYears(List.of(inputLetter.getYear())).stream()
-                .filter(el -> el.getYear() == LocalDateTime.now().getYear())
-                .collect(Collectors.toList());
+        List<InputLetter> list = inputLetterRepository.findByYears(List.of(inputLetter.getYear()))
+                .stream()
+                .filter(el -> el.getId() != inputLetter.getId())
+                .collect(Collectors.toList()
+                );
 
         boolean contains = list.stream()
                 .map(InputLetter::getNumberIVC)
@@ -204,5 +269,88 @@ public class InputLetterService {
         }
 
         return inputLetterRepository.update(inputLetter);
+    }
+
+    private void validateLetter(InputLetter inputLetter) throws RuntimeException {
+        if (inputLetter.getNumberIVC() == 0) {
+            throw new RuntimeException("Номер ИВЦ ЖА не задан");
+        }
+
+        if (inputLetter.getRegistrationDate() == null) {
+            throw new RuntimeException("Дата регистрации не задана");
+        }
+
+        if (inputLetter.getPostuplenieDate() == null) {
+            throw new RuntimeException("Дата поступления не задана");
+        }
+
+        if (inputLetter.getDocumentDate() == null) {
+            throw new RuntimeException("Дата письма не задана");
+        }
+
+        if (inputLetter.getDocumentNumber() == null || inputLetter.getDocumentNumber().isEmpty()) {
+            throw new RuntimeException("Номер письма не задан");
+        }
+
+        if (inputLetter.getDocumentType() == null) {
+            throw new RuntimeException("Тип документа не задан");
+        }
+
+        if (inputLetter.getOrigin() == null) {
+            throw new RuntimeException("Источник письма не задан");
+        }
+
+        if (inputLetter.getSigner() == null) {
+            throw new RuntimeException("Подписант письма не задан");
+        }
+
+        if (inputLetter.getExecutor() == null) {
+            throw new RuntimeException("Исполнитель письма не задан");
+        }
+
+        if (inputLetter.getTargetWorker() == null) {
+            throw new RuntimeException("\"Кому расписано\" не задано");
+        }
+
+        if (inputLetter.getEasdNumber() == 0) {
+            throw new RuntimeException("Номер ЕАСД не задан");
+        }
+
+        if (inputLetter.getTags().isEmpty()) {
+            throw new RuntimeException("Ни один тег не выбран");
+        }
+
+        if (inputLetter.getTopic() == null || inputLetter.getTopic().isEmpty()) {
+            throw new RuntimeException("Тема не расписана");
+        }
+
+        if (inputLetter.getNote() == null || inputLetter.getNote().isEmpty()) {
+            throw new RuntimeException("Примечание не расписано");
+        }
+
+        if (inputLetter.getFile() == null || inputLetter.getFile().length == 0) {
+            throw new RuntimeException("Файл для письма не выбран");
+        }
+
+        if (inputLetter.isAnswer()) {
+            if (inputLetter.getOutputLetter() == null) {
+                throw new RuntimeException("Ответное письмо не выбрано");
+            }
+        }
+        else {
+            inputLetter.setOutputLetter(null);
+        }
+
+        if (inputLetter.getDocumentName() != null && inputLetter.getDocumentName().length() > 100) {
+            throw new RuntimeException("Название файла не может быть больше 100 символов");
+        }
+
+        if (inputLetter.getTopic() != null && inputLetter.getTopic().length() > 100) {
+            throw new RuntimeException("Название темы не может быть больше 100 символов");
+        }
+
+        if (inputLetter.getNote() != null && inputLetter.getNote().length() > 500) {
+            throw new RuntimeException("Примечание не может быть больше 500 символов");
+        }
     }
 }

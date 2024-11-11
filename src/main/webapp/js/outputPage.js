@@ -35,7 +35,11 @@ let requests = Promise.all([
 window.addEventListener("load", async () => {
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
 
-    fileUploader = new FileUploader(document.getElementById("file-uploader"));
+    fileUploader = new FileUploader(document.getElementById("file-uploader"), {onChange: () => {
+            form.fileUploader.element.removeAttribute("empty", "");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }});
     saveButton = document.querySelector("#save-letter");
 
     await requests;
@@ -123,7 +127,12 @@ async function getTags() {
         placeholder: "Выберите теги",
         search: true,
         selectAll: false,
-        listAll: false
+        listAll: false,
+        onChange: () => {
+            form.tags.element.removeAttribute("empty", "");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
     })
 }
 
@@ -131,8 +140,39 @@ async function saveDocument() {
 
     let hasAttentions = false;
 
+    if (!form.numberIVC.value) {
+        form.numberIVC.setAttribute("empty", "");
+
+        form.numberIVC.oninput = () => {
+            form.numberIVC.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
     if (!form.documentNumber.value) {
         form.documentNumber.setAttribute("empty", "");
+
+        form.documentNumber.oninput = () => {
+            form.documentNumber.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.easdNumber.value) {
+        form.easdNumber.setAttribute("empty", "");
+
+        form.easdNumber.oninput = () => {
+            form.easdNumber.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
@@ -141,27 +181,125 @@ async function saveDocument() {
         hasAttentions = true;
     }
 
+    if (!form.registrationDate.value) {
+        form.registrationDate.setAttribute("empty", "");
+
+        form.registrationDate.oninput = () => {
+            form.registrationDate.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.documentDate.value) {
+        form.documentDate.setAttribute("empty", "");
+
+        form.documentDate.oninput = () => {
+            form.documentDate.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.documentType.value) {
+        form.documentType.setAttribute("empty", "");
+
+        form.documentType.oninput = () => {
+            form.documentType.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
     if (!form.address.value) {
         form.address.setAttribute("empty", "");
+
+        form.address.oninput = () => {
+            form.address.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
     if (!form.signer.value) {
         form.signer.setAttribute("empty", "");
+
+        form.signer.oninput = () => {
+            form.signer.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
     if (!form.executor.value) {
         form.executor.setAttribute("empty", "");
+
+        form.executor.oninput = () => {
+            form.executor.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
     if (!form.targetParticipant.value) {
         form.targetParticipant.setAttribute("empty", "");
+
+        form.targetParticipant.oninput = () => {
+            form.targetParticipant.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
-    /*if (hasAttentions) {
+    if (form.tags.selectedValues.length === 0) {
+        form.tags.element.setAttribute("empty", "");
+        hasAttentions = true;
+    }
+
+    if (!form.topic.value) {
+        form.topic.setAttribute("empty", "");
+
+        form.topic.oninput = () => {
+            form.topic.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.note.value) {
+        form.note.setAttribute("empty", "");
+
+        form.note.oninput = () => {
+            form.note.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.fileUploader.file) {
+        form.fileUploader.element.setAttribute("empty", "");
+        hasAttentions = true;
+    }
+
+    if (hasAttentions) {
         saveButton.setAttribute("empty", "");
         saveButton.classList.add("btn-validation-failed");
         saveButton.classList.add("horizontal-shake");
@@ -169,7 +307,7 @@ async function saveDocument() {
             saveButton.classList.remove("horizontal-shake");
         }, 700);
         return;
-    }*/
+    }
 
     const outputLetter = new OutputLetter({
         id: 0,

@@ -15,7 +15,7 @@ public class OriginAndAddressRepository {
     private EntityManager entityManager;
 
     public List<OriginAndAddress> findAll() {
-        return entityManager.createQuery("SELECT oa FROM OriginAndAddress oa", OriginAndAddress.class).getResultList();
+        return entityManager.createQuery("SELECT oa FROM OriginAndAddress oa ORDER BY oa.id ASC", OriginAndAddress.class).getResultList();
     }
 
     public OriginAndAddress create(OriginAndAddress originAndAddress) {

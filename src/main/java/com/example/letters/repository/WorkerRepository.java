@@ -17,14 +17,14 @@ public class WorkerRepository {
     @PersistenceContext
     private EntityManager entityManager;
     public List<Worker> findAll() {
-        return entityManager.createQuery("SELECT w FROM Worker w", Worker.class).getResultList();
+        return entityManager.createQuery("SELECT w FROM Worker w ORDER BY w.id ASC", Worker.class).getResultList();
     }
     public Optional<Worker> findById(Long id) {
         return Optional.ofNullable(entityManager.find(Worker.class, id));
     }
 
     public List<Worker> findSigners() {
-        return entityManager.createQuery("SELECT w FROM Worker w WHERE w.canSign = true", Worker.class).getResultList();
+        return entityManager.createQuery("SELECT w FROM Worker w WHERE w.canSign = true ORDER BY w.id ASC", Worker.class).getResultList();
     }
 
     public Worker create(Worker worker) {
