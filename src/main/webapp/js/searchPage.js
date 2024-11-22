@@ -311,3 +311,41 @@ function serializeFilters() {
 
     return serialized;
 }
+
+function exportToExcel() {
+
+    const excelFilename = document.querySelector("#excel-filename");
+    if (!excelFilename.value) {
+        excelFilename.setAttribute("empty", "");
+
+        excelFilename.oninput = () => {
+            excelFilename.removeAttribute("empty");
+        }
+
+        return;
+    }
+
+    const columns = Array.from(table.header.firstChild.children).map(th =>
+        th.firstChild.innerText
+    );
+    const rows = [];
+    Array.from(table.body.children).forEach(tr => {
+        const row = [];
+        Array.from(tr.children).forEach(td => {
+            if (td.querySelector("a")) {
+                row.push(td.querySelector("a").href);
+            }
+            else {
+                row.push(td.innerText);
+            }
+        });
+
+        rows.push(row);
+    })
+
+    tableToExcel({
+        filename:excelFilename.value,
+        headerRow:columns,
+        dataRows:rows
+    })
+}

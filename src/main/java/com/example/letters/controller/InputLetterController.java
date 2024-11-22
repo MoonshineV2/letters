@@ -33,6 +33,7 @@ public class InputLetterController {
                 .map(InputLetterDto::fromInputLetter)
                 .collect(Collectors.toList());
     }
+
     @GET
     @Path("{id}")
     @Produces("application/json")

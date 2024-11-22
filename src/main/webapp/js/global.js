@@ -1,4 +1,4 @@
-const BACKEND_API_URL = 'http://localhost:8080/letters';
+const BACKEND_API_URL = 'http://194.152.34.233:8080/letters';
 
 const outputLetters = [];
 const inputLetters = [];
@@ -34,7 +34,7 @@ function setOriginsAndAddressesOptions(selectHTML, originsAndAddresses, addDefau
 
     originsAndAddresses.forEach(element => {
         const option = document.createElement("option");
-        option.innerText = element.name
+        option.innerText = element.shortName
         option.value = element.id
         selectHTML.appendChild(option)
     })
@@ -566,7 +566,7 @@ async function getOutputLetterFileById(id, filename) {
 }
 
 async function findOutputLettersByYears(neededYears) {
-    const response = await fetch("/letters/api/outputLetters/findByYears", {
+    const response = await fetch(BACKEND_API_URL + `/api/outputLetters/findByYears`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -585,7 +585,7 @@ async function findOutputLettersByYears(neededYears) {
 }
 
 async function findInputLettersByYears(neededYears) {
-    const response = await fetch("/letters/api/inputLetters/findByYears", {
+    const response = await fetch(BACKEND_API_URL + `/api/inputLetters/findByYears`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -601,6 +601,27 @@ async function findInputLettersByYears(neededYears) {
 
     const data = await response.json();
     return data.map(el => new InputLetter(el))
+}
+
+async function tableToExcel(tableData) {
+    const response = await fetch(BACKEND_API_URL + `/api/excel/tableToExcel`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tableData),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    const data = await response.blob();
+
+    const a = document.createElement('a');
+    a.download = tableData.filename + '.xlsx';
+    a.href = window.URL.createObjectURL(data);
+    a.click();
 }
 
 async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMultiSelect) {
@@ -736,7 +757,7 @@ async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMulti
 async function getWorkgroups() {
     if (workgroups === undefined) {
 
-        const response = await fetch("/letters/api/workgroups");
+        const response = await fetch(BACKEND_API_URL + `/api/workgroups`);
 
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);

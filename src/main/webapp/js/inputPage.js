@@ -47,6 +47,11 @@ document.addEventListener("participantSignersChanged", async() => {
     setParticipantSignersOptions(document.querySelector("#signer-select"), participantSigners, true);
 });
 
+document.addEventListener("WorkersChanged", async() => {
+    workers = await findWorkers();
+    setWorkersOptions(document.querySelector("#target-select"), workers, true);
+});
+
 window.addEventListener("load", async () => {
     fileUploader = new FileUploader(document.getElementById("file-uploader"), {onChange: () => {
             form.fileUploader.element.removeAttribute("empty", "");

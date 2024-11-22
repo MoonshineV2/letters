@@ -1384,7 +1384,7 @@ class Worker {
                 document.dispatchEvent(event);
 
                 if (canSign.checked) {
-                    const eventSigners = new Event("participantSignersChanged");
+                    const eventSigners = new Event("WorkerSignersChanged");
                     document.dispatchEvent(eventSigners);
                 }
 

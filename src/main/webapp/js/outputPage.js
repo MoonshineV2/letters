@@ -32,6 +32,25 @@ let requests = Promise.all([
     tags = data[6];
 })
 
+document.addEventListener("originsAndAddressesChanged", async() => {
+    originsAndAddresses = await findOriginsAndAddresses();
+    setOriginsAndAddressesOptions(document.querySelector("#origin-select"), originsAndAddresses, true);
+});
+
+document.addEventListener("participantsChanged", async() => {
+    participants = await findParticipants();
+    setParticipantsOptions(document.querySelector("#executor-select"), participants, true);
+});
+
+document.addEventListener("WorkersChanged", async() => {
+    workers = await findWorkers();
+});
+
+document.addEventListener("WorkerSignersChanged", async() => {
+    workerSigners = await findWorkerSigners()
+    setWorkerSignersOptions(document.querySelector("#signer-select"), workerSigners, true);
+});
+
 window.addEventListener("load", async () => {
     document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
 

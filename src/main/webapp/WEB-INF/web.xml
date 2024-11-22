@@ -23,7 +23,6 @@
         </user-data-constraint>
     </security-constraint>
 
-
     <security-role><role-name>letters</role-name></security-role>
 
     <context-param>

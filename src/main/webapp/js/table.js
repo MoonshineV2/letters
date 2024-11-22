@@ -409,6 +409,14 @@ class Table {
     get locale() {
         return this.options.locale;
     }
+
+    get data() {
+        return this.data;
+    }
+
+    get columns() {
+        return this.columns;
+    }
 }
 
 const compareStrings = (str1, str2) => {
