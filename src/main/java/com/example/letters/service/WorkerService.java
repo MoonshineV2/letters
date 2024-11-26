@@ -41,10 +41,6 @@ public class WorkerService {
             throw new RuntimeException("Должность не задана");
         }
 
-        if (worker.getWorkgroup() == null) {
-            throw new RuntimeException("Рабочая группа не задана");
-        }
-
         return workerRepository.create(worker);
     }
 

@@ -1,11 +1,19 @@
-const BACKEND_API_URL = 'http://194.152.34.233:8080/letters';
+const BACKEND_API_URL = 'http://localhost:8080/letters';
+
+let isAdmin = false;
 
 const outputLetters = [];
 const inputLetters = [];
 let workgroups;
 
-window.addEventListener("load",() => {
-    document.querySelector(".header-navigation").replaceWith(getHeaderNavigationHTMLInstance());
+const beforeLoadRequests = Promise.all([getIsAdminRole()]).then(responses => {
+    isAdmin = responses[0];
+})
+
+window.addEventListener("load",async () => {
+    await beforeLoadRequests;
+
+    document.querySelector(".header-navigation").replaceWith(getHeaderNavigationHTMLInstance(isAdmin));
 });
 
 async function findOriginsAndAddresses(){
@@ -50,6 +58,18 @@ function setOriginsAndAddressesOptions(selectHTML, originsAndAddresses, addDefau
             OriginAndAddress.createFormInstance();
         }
     }
+}
+
+async function getIsAdminRole() {
+    const response = await fetch(BACKEND_API_URL + '/api/security/isAdmin');
+
+    if (!response.ok) {
+        throw new Error("Не удалось получить роль с сервера");
+    }
+
+    const data = await response.json();
+
+    return data.isAdmin;
 }
 
 async function findParticipantSigners() {
@@ -333,7 +353,7 @@ async function getActualOutputNumberIVC() {
     return (await response.json()).numberIVC;
 }
 
-function getHeaderNavigationHTMLInstance() {
+function getHeaderNavigationHTMLInstance(isAdmin) {
     let ul = `
         <ul>
             <li id="input-ref">
@@ -345,9 +365,12 @@ function getHeaderNavigationHTMLInstance() {
             <li id="search-ref">
                 <a href="${BACKEND_API_URL}/api/pages/search">Поиск</a>
             </li>
-            <li id="bd-ref">
-                <a href="${BACKEND_API_URL}/api/pages/administrating">Администрирование</a>
-            </li>
+            ${isAdmin ? 
+                `<li id="bd-ref">
+                    <a href="${BACKEND_API_URL}/api/pages/administrating">Администрирование</a>
+                </li>`
+                : ``
+            }
         </ul>
     `;
 

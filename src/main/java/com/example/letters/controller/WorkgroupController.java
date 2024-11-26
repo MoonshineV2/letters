@@ -1,11 +1,10 @@
 package com.example.letters.controller;
 
 import com.example.letters.dto.WorkgroupDto;
-import com.example.letters.repository.WorkgroupRepository;
+import com.example.letters.model.Workgroup;
+import com.example.letters.service.WorkgroupService;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,15 +13,22 @@ import java.util.stream.Collectors;
 public class WorkgroupController {
 
     @Inject
-    private WorkgroupRepository workgroupRepository;
+    private WorkgroupService workgroupService;
 
     @GET
     @Produces("application/json")
     public List<WorkgroupDto> getAll() {
-        List<WorkgroupDto> workgroups = workgroupRepository.findAll().stream()
+        List<WorkgroupDto> workgroups = workgroupService.findAll().stream()
                 .map(WorkgroupDto::fromWorkgroup)
                 .collect(Collectors.toList());
 
         return workgroups;
+    }
+
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    public WorkgroupDto create(Workgroup workgroup) {
+        return WorkgroupDto.fromWorkgroup(workgroupService.create(workgroup));
     }
 }

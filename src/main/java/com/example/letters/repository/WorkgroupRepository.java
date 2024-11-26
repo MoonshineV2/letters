@@ -17,7 +17,8 @@ public class WorkgroupRepository {
         return entityManager.createQuery("SELECT w FROM Workgroup w ORDER BY w.id ASC", Workgroup.class).getResultList();
     }
 
-    public void create(Workgroup workgroup) {
+    public Workgroup create(Workgroup workgroup) {
         entityManager.persist(workgroup);
+        return workgroup;
     }
 }

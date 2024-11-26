@@ -1,6 +1,5 @@
 package com.example.letters.repository;
 
-import com.example.letters.model.Participant;
 import com.example.letters.model.Tag;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -15,5 +14,10 @@ public class TagRepository {
 
     public List<Tag> findAll() {
         return entityManager.createQuery("SELECT t FROM Tag t ORDER BY t.id ASC", Tag.class).getResultList();
+    }
+
+    public Tag create (Tag tag) {
+        entityManager.persist(tag);
+        return tag;
     }
 }

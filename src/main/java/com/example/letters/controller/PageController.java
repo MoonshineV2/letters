@@ -1,5 +1,6 @@
 package com.example.letters.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.ServletContext;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -7,6 +8,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +20,9 @@ public class PageController {
 
     @Context
     private ServletContext servletContext;
+
+    @Context
+    private SecurityContext securityContext;
 
     @GET
     @Path("input")
@@ -56,6 +61,7 @@ public class PageController {
 
     @GET
     @Path("administrating")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response showAdministratingPage() {
         String filePath = servletContext.getRealPath("/html/administratingPage.html");
         File file = new File(filePath);
