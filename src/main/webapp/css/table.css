@@ -1,0 +1,343 @@
+.table-section {
+    padding: 10px;
+    margin: 15px 5px 0 5px;
+    border-radius: 5px;
+    background-color: white;
+    max-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.table-upper {
+    align-self: end;
+    display: flex;
+    gap: 10px;
+}
+
+.table-customization-btn {
+    background-color: #257383;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    border: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.table-customization-btn.purple {
+    background-color: #9c27b0;
+}
+
+.table-customization-btn.excel-btn {
+    background-color: #1F6F43;
+    position: relative;
+    padding-right: 35px;
+}
+
+.excel-btn::after {
+    display: block;
+    position: absolute;
+    content: '';
+    right: 10px;
+    top: 6px;
+
+    -webkit-mask: url("../images/excel_white.svg") no-repeat 100% 100%;
+    mask: url("../images/excel_white.svg") no-repeat 100% 100%;
+    -webkit-mask-size: 20px 20px;
+    mask-size: 20px 20px;
+    background-color: white;
+    mask-position: center;
+    width: 20px;
+    height: 20px;
+}
+
+.table-customization-btn.table-customization-btn-active + .table-customization-options{
+    display: block;
+}
+
+.table-customization-btn:hover {
+    background-color: #1a5d38;
+}
+
+.table-container {
+    margin-top: 10px;
+    overflow: scroll;
+}
+
+table {
+    border-collapse: separate;
+    background-color: #ebebeb;
+}
+
+table th{
+    border-bottom: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+}
+
+table td {
+    border-bottom: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+}
+
+table th:first-child,
+table td:first-child {
+    border-left: 1px solid lightgrey;
+}
+
+thead {
+    top: 0;
+    position: sticky;
+    z-index: 1;
+    background-color: #F5F7FD;
+}
+
+thead th {
+    padding: 5px 15px 5px 5px;
+    white-space: nowrap;
+    user-select: none;
+}
+
+thead th p {
+    cursor: pointer;
+}
+
+thead th:before,
+thead th:after {
+    border: 4px solid transparent;
+    content: "";
+    display: block;
+    height: 0;
+    right: 5px;
+    top: 50%;
+    position: absolute;
+    width: 0;
+}
+thead th:before {
+    border-bottom-color: #666;
+    margin-top: -9px;
+}
+thead th:after {
+    border-top-color: #666;
+    margin-top: 1px;
+}
+
+thead th.sort-asc:after {
+    visibility: hidden;
+}
+
+thead th.sort-desc:before {
+    visibility: hidden;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #EAEEFB;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #F5F7FD;
+}
+
+tbody td {
+    max-width: 140px;
+    overflow-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    position: relative;
+    padding: 5px;
+}
+
+tbody td:hover {
+    padding: 5px 25px 5px 5px;
+}
+
+tbody td a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+tbody td a:hover {
+    text-decoration: underline;
+}
+
+tbody td img{
+    content: '';
+    width: 20px;
+    height: 20px;
+    display: block;
+    right: 4px;
+    position: absolute;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0;
+    top: 22%;
+    transition:opacity 0.2s;
+    transition-timing-function: ease-out;
+    user-select: none;
+}
+
+tbody td:hover img{
+    opacity: 0.5;
+    transition:opacity 1s;
+}
+
+tbody td img:hover{
+    opacity: 1;
+    transition:opacity 1s;
+}
+
+tbody th img{
+    display: none;
+}
+
+.table-customization-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    -webkit-box-shadow: 0px 3px 6px 2px rgba(187, 187, 187, 0.68);
+    -moz-box-shadow: 0px 3px 6px 2px rgba(187, 187, 187, 0.68);
+    box-shadow: 0px 3px 6px 2px rgba(187, 187, 187, 0.68);
+    z-index: 2;
+    min-width: 100%;
+
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 5px;
+
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    flex-flow: wrap;
+}
+
+.table-customization-options::-webkit-scrollbar {
+    width: 5px;
+}
+
+.table-customization-options::-webkit-scrollbar-thumb {
+    background: #cdcfd1;
+}
+
+.table-customization-options::-webkit-scrollbar-track {
+    background: #f0f1f3;
+}
+
+.table-customization-options.excel-options .custom-input {
+    display: flex;
+    align-items: end;
+}
+
+.table-customization-options.excel-options .custom-input input {
+    font-size: 14px;
+    padding: 4px 8px;
+    min-width: 130px;
+}
+
+.excel-save-btn {
+    font-size: 14px;
+    color: white;
+    background-color: #1A5D38;
+    border: 0;
+    border-radius: 5px;
+    align-self: stretch;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.excel-save-btn:active {
+    scale: 0.95;
+}
+
+.table-customization-option {
+    padding: 10px 4px;
+
+    display: flex;
+    gap: 5px;
+
+    box-sizing: border-box;
+    align-items: center;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px;
+    color: #212529;
+    background-color: white;
+
+    user-select: none;
+    cursor: pointer;
+}
+
+.table-customization-option.over {
+    border: 2px dotted #666;
+}
+
+.table-customization-option:hover {
+    background-color: #f3f4f7;
+}
+
+.table-customization-option-drag {
+    content: "";
+    -webkit-mask: url("../images/rows.svg") no-repeat 100% 100%;
+    mask: url("../images/rows.svg") no-repeat 100% 100%;
+    -webkit-mask-size: 20px 20px;
+    mask-size: 20px 20px;
+    background-color: #818181;
+    mask-position: center;
+    width: 20px;
+    height: 20px;
+
+    margin-right: 6px;
+
+    cursor: grab;
+}
+
+.table-customization-option.table-customization-option-selected .table-customization-option-radio:after {
+    content: "";
+    display: block;
+    width: 5px;
+    height: 8px;
+    margin: 0.12em 0 0 0.30em;
+    border: solid #fff;
+    border-width: 0 0.15em 0.15em 0;
+    transform: rotate(35deg);
+}
+
+.table-customization-option-checkbox {
+    height: 16px;
+    width: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.table-customization-option-radio {
+    height: 16px;
+    width: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 50%;
+}
+
+.table-customization-option-text {
+    flex: 1;
+    white-space: nowrap;
+    color: inherit;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.table-customization-option.table-customization-option-selected .table-customization-option-radio {
+    border-color: #40c979;
+    background-color: #40c979;
+}
+
+.table-customization-option.events-disabled * {
+    pointer-events: none;
+}
+
+.table-customization-options.excel-options input[empty] {
+    border: 1px solid #EB0034;
+}

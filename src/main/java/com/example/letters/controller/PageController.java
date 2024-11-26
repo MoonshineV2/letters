@@ -54,4 +54,17 @@ public class PageController {
         return Response.ok(in, MediaType.TEXT_HTML).build();
     }
 
+    @GET
+    @Path("administrating")
+    public Response showAdministratingPage() {
+        String filePath = servletContext.getRealPath("/html/administratingPage.html");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in, MediaType.TEXT_HTML).build();
+    }
 }

@@ -343,7 +343,10 @@ function getHeaderNavigationHTMLInstance() {
                 <a href="${BACKEND_API_URL}/api/pages/output">Исходящие</a>
             </li>
             <li id="search-ref">
-                <a href='${BACKEND_API_URL}/api/pages/search'">Поиск</a>
+                <a href="${BACKEND_API_URL}/api/pages/search">Поиск</a>
+            </li>
+            <li id="bd-ref">
+                <a href="${BACKEND_API_URL}/api/pages/administrating">Администрирование</a>
             </li>
         </ul>
     `;
@@ -354,7 +357,7 @@ function getHeaderNavigationHTMLInstance() {
 }
 
 async function findInputLettersByFilters(filters) {
-    let response = await fetch('/letters/api/inputLetters/findByFilters', {
+    let response = await fetch(BACKEND_API_URL + "/api/inputLetters/findByFilters", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -372,7 +375,7 @@ async function findInputLettersByFilters(filters) {
 }
 
 async function findOutputLettersByFilters(filters) {
-    let response = await fetch('/letters/api/outputLetters/findByFilters', {
+    let response = await fetch(BACKEND_API_URL + "/api/outputLetters/findByFilters", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -470,7 +473,7 @@ async function saveOrUpdateOutputLetter(outputLetter) {
 }
 
 async function saveOriginAndAddress(originAndAddress) {
-    const response = await fetch("/letters/api/originsAndAddresses", {
+    const response = await fetch(BACKEND_API_URL + "/api/originsAndAddresses", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -491,7 +494,7 @@ async function saveOriginAndAddress(originAndAddress) {
 }
 
 async function saveParticipant(participant) {
-    const response = await fetch("/letters/api/participants", {
+    const response = await fetch(BACKEND_API_URL + "/api/participants", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -508,7 +511,7 @@ async function saveParticipant(participant) {
 }
 
 async function saveWorker(worker) {
-    const response = await fetch("/letters/api/workers", {
+    const response = await fetch(BACKEND_API_URL + "/api/workers", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

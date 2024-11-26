@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Администрирование</title>
+    <link rel="stylesheet" href="../fonts/fonts.css">
+    <link rel="stylesheet" type="text/css" href="../css/global.css">
+    <link rel="stylesheet" type="text/css" href="../css/table.css">
+    <link rel="stylesheet" type="text/css" href="../css/administration.css">
+    <script src="../js/global.js"></script>
+    <script src="../js/entities.js"></script>
+    <script src="../js/table.js"></script>
+    <script src="../js/modal.js"></script>
+</head>
+<body>
+  <header class="header">
+    <nav class="header-navigation">
+    </nav>
+  </header>
+  <main class="main">
+    <section class="to-administrate-section">
+      <div class="administrate-option">
+        Типы документов
+      </div>
+      <div class="administrate-option">
+        Теги
+      </div>
+      <div class="administrate-option">
+        Рабочие группы
+      </div>
+    </section>
+    <section id="table-section" class="table-section hidden">
+      <div class="table-upper">
+        <div style="position: relative">
+          <button class="table-customization-btn excel-btn">
+            Экспорт
+          </button>
+          <div class="table-customization-options excel-options">
+            <div class="custom-input">
+              <input id="excel-filename" type="text" placeholder="Название файла">
+              <p>.xlsx</p>
+              <button id="excel-save-btn" class="excel-save-btn" onclick="exportToExcel()">Сохранить</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="table-container">
+        <table id="table" class="resizable">
+
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
