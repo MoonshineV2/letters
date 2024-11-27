@@ -14,6 +14,10 @@ window.addEventListener("load",async () => {
     await beforeLoadRequests;
 
     document.querySelector(".header-navigation").replaceWith(getHeaderNavigationHTMLInstance(isAdmin));
+
+    document.querySelectorAll(".table-customization-btn").forEach(el =>
+        el.onclick = (e) => e.currentTarget.classList.toggle("table-customization-btn-active")
+    )
 });
 
 async function findOriginsAndAddresses(){
@@ -317,7 +321,7 @@ function setDocumentTypesOptions(selectHTML, types, addDefaultOption) {
     })
 }
 
-async function getTagsData() {
+async function findTags() {
     let response;
     try {
         response = await fetch(BACKEND_API_URL + '/api/tags');
@@ -780,19 +784,14 @@ async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMulti
     })
 }
 
-async function getWorkgroups() {
-    if (workgroups === undefined) {
+async function findWorkgroups() {
+    const response = await fetch(BACKEND_API_URL + `/api/workgroups`);
 
-        const response = await fetch(BACKEND_API_URL + `/api/workgroups`);
-
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-
-        workgroups = response.json();
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
     }
 
-    return workgroups;
+    return response.json();
 }
 
 function arrayBufferToBase64( buffer ) {
@@ -855,4 +854,42 @@ function getDateFormat_yy_mm_dd(intValue) {
     if (mm < 10) mm = '0' + mm;
 
     return  yyyy + '-' + mm + '-' + dd;
+}
+
+function exportToExcel() {
+
+    const excelFilename = document.querySelector("#excel-filename");
+    if (!excelFilename.value) {
+        excelFilename.setAttribute("empty", "");
+
+        excelFilename.oninput = () => {
+            excelFilename.removeAttribute("empty");
+        }
+
+        return;
+    }
+
+    const columns = Array.from(table.header.firstChild.children).map(th =>
+        th.firstChild.innerText
+    );
+    const rows = [];
+    Array.from(table.body.children).forEach(tr => {
+        const row = [];
+        Array.from(tr.children).forEach(td => {
+            if (td.querySelector("a")) {
+                row.push(td.querySelector("a").href);
+            }
+            else {
+                row.push(td.innerText);
+            }
+        });
+
+        rows.push(row);
+    })
+
+    tableToExcel({
+        filename:excelFilename.value,
+        headerRow:columns,
+        dataRows:rows
+    })
 }

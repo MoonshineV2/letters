@@ -8,6 +8,7 @@ import com.example.letters.model.InputLetter;
 import com.example.letters.service.InputLetterService;
 import com.example.letters.util.DBFile;
 import com.example.letters.util.FileNameEncoder;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -27,6 +28,7 @@ public class InputLetterController {
 
     @GET
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<InputLetterDto> getAll() {
         List<InputLetter> inputLetters = inputLetterService.findAll();
         return inputLetters.stream()
@@ -37,6 +39,7 @@ public class InputLetterController {
     @GET
     @Path("{id}")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public InputLetterDto find(@PathParam("id") int id) {
         InputLetter inputLetter = inputLetterService.findById(id);
         return InputLetterDto.fromInputLetter(inputLetter);
@@ -46,6 +49,7 @@ public class InputLetterController {
     @Path("findByYears")
     @Consumes("application/json")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<InputLetterDto> getByYears(Years years) {
         List<InputLetter> letters = inputLetterService.findByYears(years.getYears());
         return letters.stream()
@@ -56,6 +60,7 @@ public class InputLetterController {
     @GET
     @Path("{id}/file")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response getFileByLetterId(@PathParam("id") int id) {
         DBFile dbFile = inputLetterService.getFileById(id);
         InputStream inputStream = new ByteArrayInputStream(dbFile.getFile());
@@ -75,6 +80,7 @@ public class InputLetterController {
     @Path("findByFilters")
     @Consumes("application/json")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<InputLetterDto> getByFilters(LetterFilters filters) {
         List<InputLetter> letters = inputLetterService.findByFilters(filters);
         return letters.stream()
@@ -85,6 +91,7 @@ public class InputLetterController {
     @POST
     @Path("")
     @Consumes("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response create(InputLetterDto inputLetterDto) {
         inputLetterService.create(inputLetterDto.toInputLetter());
         return Response.ok().build();
@@ -93,6 +100,7 @@ public class InputLetterController {
     @GET
     @Path("actualNumberIVC")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public ActualNumberIVC getActualNumberIVC() {
         return new ActualNumberIVC(inputLetterService.getActualNumberIVC());
     }
@@ -100,6 +108,7 @@ public class InputLetterController {
     @PUT
     @Consumes("application/json")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public InputLetterDto update(InputLetterDto inputLetterDto) {
         InputLetter out = inputLetterService.update(inputLetterDto.toInputLetter());
         return InputLetterDto.fromInputLetter(out);

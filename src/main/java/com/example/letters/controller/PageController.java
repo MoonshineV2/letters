@@ -8,7 +8,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,18 +20,17 @@ public class PageController {
     @Context
     private ServletContext servletContext;
 
-    @Context
-    private SecurityContext securityContext;
-
     @GET
     @Path("input")
     @Produces({MediaType.TEXT_HTML})
+    @RolesAllowed({"letters_default", "letters_admin"})
     public InputStream showInputPage() {
         return servletContext.getResourceAsStream("/html/inputPage.html");
     }
 
     @GET
     @Path("output")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response showOutputPage() {
         String filePath = servletContext.getRealPath("/html/outputPage.html");
         File file = new File(filePath);
@@ -47,6 +45,7 @@ public class PageController {
 
     @GET
     @Path("search")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response showSearchPage() {
         String filePath = servletContext.getRealPath("/html/searchPage.html");
         File file = new File(filePath);
@@ -61,7 +60,7 @@ public class PageController {
 
     @GET
     @Path("administrating")
-    @RolesAllowed({"letters_default", "letters_admin"})
+    @RolesAllowed({"letters_admin"})
     public Response showAdministratingPage() {
         String filePath = servletContext.getRealPath("/html/administratingPage.html");
         File file = new File(filePath);

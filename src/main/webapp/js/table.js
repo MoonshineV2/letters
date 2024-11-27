@@ -14,9 +14,12 @@ class Table {
         this.element = element;
         if (data && data.length > 0) {
             this.data = data;
-            this.locale = data[0].constructor.locale;
-            this.tableCellsResolver = data[0].constructor.tableCellsResolver;
-            this.changeEventName = data[0].constructor.changeEventName;
+            if (data[0].constructor.locale)
+                this.locale = data[0].constructor.locale;
+            if (data[0].constructor.tableCellsResolver)
+                this.tableCellsResolver = data[0].constructor.tableCellsResolver;
+            if (data[0].constructor.changeEventName)
+                this.changeEventName = data[0].constructor.changeEventName;
         }
 
         if (options.locale) {

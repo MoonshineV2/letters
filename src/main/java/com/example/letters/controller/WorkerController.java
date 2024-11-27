@@ -4,6 +4,7 @@ import com.example.letters.dto.WorkerDto;
 import com.example.letters.model.Participant;
 import com.example.letters.model.Worker;
 import com.example.letters.service.WorkerService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
@@ -19,6 +20,7 @@ public class WorkerController {
     @GET
     @Path("{id}")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public WorkerDto findWorker(@PathParam("id") Long id) {
         Worker worker = workerService.findById(id);
 
@@ -27,6 +29,7 @@ public class WorkerController {
 
     @GET
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<WorkerDto> getAll() {
         List<WorkerDto> workers = workerService.findAll().stream()
                 .map(WorkerDto::fromWorker)
@@ -38,6 +41,7 @@ public class WorkerController {
     @GET
     @Path("signers")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<WorkerDto> getSigners() {
         return workerService.findSigners().stream()
                 .map(WorkerDto::fromWorker)
@@ -47,6 +51,7 @@ public class WorkerController {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response createWorker(WorkerDto workerDto) {
         Worker worker = workerService.create(workerDto.toWorker());
 

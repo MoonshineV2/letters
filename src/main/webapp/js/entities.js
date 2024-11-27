@@ -1315,7 +1315,7 @@ class Worker {
         bodyWrapper.innerHTML = body;
 
         const workgroupSelect = bodyWrapper.querySelector("#workgroup-select");
-        getWorkgroups().then(result => {
+        findWorkgroups().then(result => {
             result.forEach(wg => {
                 const opt = document.createElement("option");
                 opt.value = wg.id;

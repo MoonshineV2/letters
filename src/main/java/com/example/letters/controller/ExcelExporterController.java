@@ -2,6 +2,7 @@ package com.example.letters.controller;
 
 import com.example.letters.dto.ExcelExportData;
 import com.example.letters.service.ExcelExporterService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -22,6 +23,7 @@ public class ExcelExporterController {
     @Path("tableToExcel")
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response tableToExcel(ExcelExportData exportData) {
         String contentDisposition = "attachment;filename*=utf-8''" + exportData.getFilename() + ".xlsx";
         ByteArrayOutputStream os = excelExporterService.tableToExcel(exportData);

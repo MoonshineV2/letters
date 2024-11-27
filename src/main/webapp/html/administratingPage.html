@@ -12,6 +12,7 @@
     <script src="../js/entities.js"></script>
     <script src="../js/table.js"></script>
     <script src="../js/modal.js"></script>
+    <script src="../js/administration.js"></script>
 </head>
 <body>
   <header class="header">
@@ -20,17 +21,17 @@
   </header>
   <main class="main">
     <section class="to-administrate-section">
-      <div class="administrate-option">
+      <div id="administrate-doc-types" class="administrate-option">
         Типы документов
       </div>
-      <div class="administrate-option">
+      <div id="administrate-tags" class="administrate-option">
         Теги
       </div>
-      <div class="administrate-option">
+      <div id="administrate-workgroups" class="administrate-option">
         Рабочие группы
       </div>
     </section>
-    <section id="table-section" class="table-section hidden">
+    <section id="table-section" class="table-section">
       <div class="table-upper">
         <div style="position: relative">
           <button class="table-customization-btn excel-btn">

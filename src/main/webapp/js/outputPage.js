@@ -21,7 +21,7 @@ let requests = Promise.all([
     findWorkers(),
     findDocumentTypes(),
     getActualOutputNumberIVC(),
-    getTagsData()
+    findTags()
 ]).then((data) => {
     originsAndAddresses = data[0];
     participants = data[1];

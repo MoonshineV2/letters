@@ -6,6 +6,7 @@ import com.example.letters.model.OutputLetter;
 import com.example.letters.service.OutputLetterService;
 import com.example.letters.util.DBFile;
 import com.example.letters.util.FileNameEncoder;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -25,6 +26,7 @@ public class OutputLetterController {
 
     @GET
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<OutputLetterDto> getAll() {
         List<OutputLetter> inputLetters = outputLetterService.findAll();
         return inputLetters.stream()
@@ -34,6 +36,7 @@ public class OutputLetterController {
     @GET
     @Path("{id}")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public OutputLetterDto find(@PathParam("id") int id) {
         OutputLetter outputLetter = outputLetterService.findById(id);
         return OutputLetterDto.fromOutputLetter(outputLetter);
@@ -43,6 +46,7 @@ public class OutputLetterController {
     @Path("findByYears")
     @Consumes("application/json")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<OutputLetterDto> getByYears(Years years) {
         List<OutputLetter> letters = outputLetterService.findByYears(years.getYears());
         return letters.stream()
@@ -53,6 +57,7 @@ public class OutputLetterController {
     @GET
     @Path("{id}/file")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response getFileByLetterId(@PathParam("id") int id) {
         DBFile dbFile = outputLetterService.getFileById(id);
         InputStream inputStream = new ByteArrayInputStream(dbFile.getFile());
@@ -71,6 +76,7 @@ public class OutputLetterController {
     @POST
     @Path("")
     @Consumes("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response create(OutputLetterDto outputLetterDto) {
         outputLetterService.create(outputLetterDto.toOutputLetter());
 
@@ -81,6 +87,7 @@ public class OutputLetterController {
     @Path("findByFilters")
     @Consumes("application/json")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<OutputLetterDto> getByFilters(LetterFilters filters) {
         List<OutputLetter> letters = outputLetterService.findByFilters(filters);
         return letters.stream()
@@ -91,6 +98,7 @@ public class OutputLetterController {
     @GET
     @Path("actualNumberIVC")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public ActualNumberIVC getActualNumberIVC() {
         return new ActualNumberIVC(outputLetterService.getActualNumberIVC());
     }
@@ -98,6 +106,7 @@ public class OutputLetterController {
     @PUT
     @Consumes("application/json")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public OutputLetterDto update(OutputLetterDto outputLetterDto) {
         OutputLetter out = outputLetterService.update(outputLetterDto.toOutputLetter());
         return OutputLetterDto.fromOutputLetter(out);

@@ -3,6 +3,7 @@ package com.example.letters.controller;
 import com.example.letters.model.Participant;
 import com.example.letters.repository.ParticipantRepository;
 import com.example.letters.service.ParticipantService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
@@ -17,6 +18,7 @@ public class ParticipantController {
 
     @GET
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<Participant> getAll() {
         return participantService.findAll();
     }
@@ -24,6 +26,7 @@ public class ParticipantController {
     @GET
     @Path("signers")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<Participant> getSigners() {
         return participantService.findSigners();
     }
@@ -31,6 +34,7 @@ public class ParticipantController {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response createParticipant(Participant participant) {
         Participant persisted = participantService.create(participant);
 

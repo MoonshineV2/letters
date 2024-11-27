@@ -1,5 +1,6 @@
 package com.example.letters.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -19,6 +20,7 @@ public class SecurityController {
     @GET
     @Path("isAdmin")
     @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
     public Response isAdmin() {
         Map<String, Boolean> json = new HashMap<>();
         if (securityContext.isUserInRole("letters_admin")) {
