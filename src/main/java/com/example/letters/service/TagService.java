@@ -25,4 +25,13 @@ public class TagService {
 
         return tagRepository.create(tag);
     }
+
+    public Tag update(Tag tag) {
+
+        if (tag.getText() == null || tag.getText().isEmpty()) {
+            throw new IllegalArgumentException("Название тега не задано");
+        }
+
+        return tagRepository.update(tag);
+    }
 }

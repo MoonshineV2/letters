@@ -1,5 +1,6 @@
 package com.example.letters.dto;
 
+import com.example.letters.model.Worker;
 import com.example.letters.model.Workgroup;
 import lombok.Data;
 
@@ -21,5 +22,13 @@ public class WorkgroupDto {
         }
 
         return workgroupDto;
+    }
+
+    public Workgroup toWorkgroup() {
+        return new Workgroup(
+             id,
+             name,
+             leaderId == 0 ? null : new Worker(leaderId)
+        );
     }
 }

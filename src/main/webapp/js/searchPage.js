@@ -262,14 +262,14 @@ async function findLetters() {
 
         document.getElementById("table").innerHTML = "";
         document.querySelector("#table-section").classList.remove("hidden");
-        table = new Table(document.getElementById("table"), data, {columns: Object.keys(InputLetter.locale), locale:InputLetter.locale});
+        table = new Table(document.querySelector("#table-section"), data, {columns: Object.keys(InputLetter.locale), locale:InputLetter.locale});
     }
     else if (letterType === "output") {
         let data = await findOutputLettersByFilters(filters);
 
         document.getElementById("table").innerHTML = "";
         document.querySelector("#table-section").classList.remove("hidden");
-        table = new Table(document.getElementById("table"), data, {columns: Object.keys(OutputLetter.locale), locale:OutputLetter.locale});
+        table = new Table(document.querySelector("#table-section"), data, {columns: Object.keys(OutputLetter.locale), locale:OutputLetter.locale});
     }
 
     filterSection.classList.add("hidden");

@@ -15,43 +15,24 @@
     <script src="../js/administration.js"></script>
 </head>
 <body>
-  <header class="header">
-    <nav class="header-navigation">
-    </nav>
-  </header>
-  <main class="main">
-    <section class="to-administrate-section">
-      <div id="administrate-doc-types" class="administrate-option">
-        Типы документов
-      </div>
-      <div id="administrate-tags" class="administrate-option">
-        Теги
-      </div>
-      <div id="administrate-workgroups" class="administrate-option">
-        Рабочие группы
-      </div>
-    </section>
-    <section id="table-section" class="table-section">
-      <div class="table-upper">
-        <div style="position: relative">
-          <button class="table-customization-btn excel-btn">
-            Экспорт
-          </button>
-          <div class="table-customization-options excel-options">
-            <div class="custom-input">
-              <input id="excel-filename" type="text" placeholder="Название файла">
-              <p>.xlsx</p>
-              <button id="excel-save-btn" class="excel-save-btn" onclick="exportToExcel()">Сохранить</button>
+    <header class="header">
+        <nav class="header-navigation">
+        </nav>
+    </header>
+    <main class="main">
+        <section class="to-administrate-section">
+            <div id="administrate-doc-types" class="administrate-option">
+                Типы документов
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="table-container">
-        <table id="table" class="resizable">
-
-        </table>
-      </div>
-    </section>
-  </main>
+            <div id="administrate-tags" class="administrate-option">
+                Теги
+            </div>
+            <div id="administrate-workgroups" class="administrate-option">
+                Рабочие группы
+            </div>
+        </section>
+        <section id="table-section" class="table-section hidden">
+        </section>
+    </main>
 </body>
 </html>

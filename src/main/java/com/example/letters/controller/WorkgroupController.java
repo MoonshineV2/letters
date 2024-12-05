@@ -1,6 +1,8 @@
 package com.example.letters.controller;
 
+import com.example.letters.dto.DocumentTypeDto;
 import com.example.letters.dto.WorkgroupDto;
+import com.example.letters.model.DocumentType;
 import com.example.letters.model.Workgroup;
 import com.example.letters.service.WorkgroupService;
 import jakarta.annotation.security.RolesAllowed;
@@ -31,7 +33,17 @@ public class WorkgroupController {
     @Consumes("application/json")
     @Produces("application/json")
     @RolesAllowed({"letters_default", "letters_admin"})
-    public WorkgroupDto create(Workgroup workgroup) {
-        return WorkgroupDto.fromWorkgroup(workgroupService.create(workgroup));
+    public WorkgroupDto create(WorkgroupDto workgroupDto) {
+        Workgroup wg = workgroupService.create(workgroupDto.toWorkgroup());
+        return WorkgroupDto.fromWorkgroup(wg);
+    }
+
+    @PUT
+    @Consumes("application/json")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
+    public WorkgroupDto update(WorkgroupDto workgroupDto) {
+        Workgroup out = workgroupService.update(workgroupDto.toWorkgroup());
+        return WorkgroupDto.fromWorkgroup(out);
     }
 }

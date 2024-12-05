@@ -28,4 +28,13 @@ public class TagController {
     public Tag create(Tag tag) {
         return tagService.create(tag);
     }
+
+    @PUT
+    @Consumes("application/json")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
+    public Tag update(Tag tag) {
+        Tag out = tagService.update(tag);
+        return out;
+    }
 }

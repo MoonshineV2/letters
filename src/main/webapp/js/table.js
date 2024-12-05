@@ -7,6 +7,10 @@ class Table {
     dataRows = [];
 
     changeEventName;
+    createEventName;
+
+    createFormInstance;
+
     constructor(element, data, options = {}) {
 
 
@@ -20,6 +24,10 @@ class Table {
                 this.tableCellsResolver = data[0].constructor.tableCellsResolver;
             if (data[0].constructor.changeEventName)
                 this.changeEventName = data[0].constructor.changeEventName;
+            if (data[0].constructor.createEventName)
+                this.createEventName = data[0].constructor.createEventName;
+            if (data[0].constructor.createFormInstance)
+                this.createFormInstance = data[0].constructor.createFormInstance;
         }
 
         if (options.locale) {
@@ -48,12 +56,22 @@ class Table {
     initialize() {
         this.element.innerHTML = "";
 
+        this.element.appendChild(this.initUpper());
+
+        let tableContainer = document.createElement("div");
+        tableContainer.classList.add("table-container");
+        this.element.appendChild(tableContainer);
+
+        let tableHTML = document.createElement("table");
+        tableContainer.appendChild(tableHTML);
+        this.table = tableHTML;
+
         let theadHTML = document.createElement("thead");
-        this.element.appendChild(theadHTML);
+        tableHTML.appendChild(theadHTML);
         this.header = theadHTML;
 
         let tbodyHTML = document.createElement("tbody");
-        this.element.appendChild(tbodyHTML);
+        tableHTML.appendChild(tbodyHTML);
         this.body = tbodyHTML;
 
         this.data.forEach(el => {
@@ -70,6 +88,81 @@ class Table {
 
         //console.log(this.data);
         //console.log(this.dataRows)
+    }
+
+    initUpper() {
+        const root = document.createElement('div');
+        root.classList.add("table-upper");
+
+        let generated =
+            `<div style="position: relative">
+                <button id="add-option" class="table-customization-btn">
+                    Добавить
+                </button>
+            </div>
+            <div style="position: relative">
+                <button id="export-btn" class="table-customization-btn excel-btn">
+                    Экспорт
+                </button>
+                <div class="table-customization-options excel-options">
+                    <div class="custom-input">
+                        <input id="excel-filename" type="text" placeholder="Название файла">
+                        <p>.xlsx</p>
+                        <button class="excel-save-btn">Сохранить</button>
+                    </div>
+                </div>
+            </div>`
+
+        root.innerHTML = generated;
+
+        root.querySelector("#export-btn").onclick = (e) => {
+            e.currentTarget.classList.toggle("table-customization-btn-active");
+        }
+
+        const excelFilename = root.querySelector("#excel-filename");
+        root.querySelector(".excel-save-btn").onclick = () => {
+            if (!excelFilename.value) {
+                excelFilename.setAttribute("empty", "");
+
+                excelFilename.oninput = () => {
+                    excelFilename.removeAttribute("empty");
+                }
+
+                return;
+            }
+
+            const columns = Array.from(table.header.firstChild.children).map(th =>
+                th.firstChild.innerText
+            );
+            const rows = [];
+            Array.from(table.body.children).forEach(tr => {
+                const row = [];
+                Array.from(tr.children).forEach(td => {
+                    if (td.querySelector("a")) {
+                        row.push(td.querySelector("a").href);
+                    }
+                    else {
+                        row.push(td.innerText);
+                    }
+                });
+
+                rows.push(row);
+            })
+
+            tableToExcel({
+                filename:excelFilename.value,
+                headerRow:columns,
+                dataRows:rows
+            })
+        }
+
+        if (this.createFormInstance) {
+            root.querySelector("#add-option").addEventListener("click", (e) => {
+                this.createFormInstance();
+            })
+        }
+
+        return root;
     }
 
     initHeader() {
@@ -141,8 +234,8 @@ class Table {
     }
 
     updateRow(id) {
+        console.log(this.dataRows);
         let dataRow = this.dataRows.find(row => row.id === id);
-        console.log(dataRow);
         for (const child of dataRow.row.children) {
             child.innerHTML = "";
         }
@@ -214,7 +307,24 @@ class Table {
                 }
 
             });
-            observer.observe(this.element, {childList: true, subtree: true});
+            observer.observe(this.table, {childList: true, subtree: true});
+        }
+
+        if (this.createEventName) {
+            const unSubscribe = EventEmitter.subscribe(this.createEventName, (data) => {
+                const createdRow = this.createRow(data);
+                this.body.appendChild(createdRow);
+                this.dataRows.push({id:data.id, row:createdRow, assignedData:data});
+            });
+
+            let observer = new MutationObserver((mutations) => {
+                if (!document.body.contains(this.header)) {
+                    unSubscribe();
+                    observer.disconnect();
+                }
+
+            });
+            observer.observe(this.table, {childList: true, subtree: true});
         }
     }
 
@@ -290,18 +400,18 @@ class Table {
     }
 
     resizableGrid() {
-        const row = this.element.getElementsByTagName('tr')[0],
+        const row = this.table.getElementsByTagName('tr')[0],
             cols = row ? row.children : undefined;
         if (!cols) return;
 
 
-        let tableHeight = this.element.offsetHeight;
+        let tableHeight = this.table.offsetHeight;
 
         for (let i = 0; i < cols.length; i++) {
             let div = createDiv(tableHeight);
             cols[i].appendChild(div);
             cols[i].style.position = 'relative';
-            setListeners(this.element, div);
+            setListeners(this.table, div);
         }
 
         function setListeners(table, div) {
@@ -379,6 +489,14 @@ class Table {
         function getStyleVal(elm, css) {
             return (window.getComputedStyle(elm, null).getPropertyValue(css))
         }
+    }
+
+    set table(value) {
+        this.options.table = value;
+    }
+
+    get table() {
+        return this.options.table;
     }
 
     set header(value) {

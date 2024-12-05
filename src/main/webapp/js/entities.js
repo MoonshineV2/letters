@@ -1410,6 +1410,9 @@ class DocumentType {
             this.name = documentType.name;
     }
 
+    static createEventName = "DocumentTypeCreated"
+    static changeEventName = "DocumentTypeChanged";
+
     static compare(o1, o2) {
         if (!(o1 instanceof DocumentType)) {
             return -1;
@@ -1426,6 +1429,137 @@ class DocumentType {
             return -1;
         }
         return this.name.localeCompare(another.name);
+    }
+
+    static createFormInstance() {
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="doctype-name">Название типа документа</label>
+                            <input id="doctype-name" type="text">
+                            <p id="doctype-name-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </d/iv>
+                </div>
+            </div>
+        `;
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        let footer = `
+            <button class="letter-save-btn">
+                Создать
+            </button>
+        `;
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Создание типа документа", body:bodyWrapper, footer:footerWrapper});
+
+        const nameInput = bodyWrapper.querySelector("#doctype-name");
+
+        nameInput.oninput = () => {
+            nameInput.removeAttribute("empty");
+        }
+
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+            let notOkay = false;
+
+            if (!nameInput.value) {
+                nameInput.setAttribute("empty", "");
+                notOkay = true;
+            }
+
+            if (notOkay) {
+                return;
+            }
+
+            try {
+                const created = await saveOrUpdateDocumentType({
+                    name: nameInput.value
+                })
+
+                EventEmitter.dispatch(DocumentType.createEventName, created);
+
+                modal.close();
+                informerStatus200Instance(5, "Тип документа был сохранён");
+            }
+            catch (e) {
+                informerStatusNot200Instance(30, "Тип документа не был сохранён", e.message);
+                console.error(e.stack);
+            }
+        }
+    }
+
+    async editFormInstance() {
+
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <label for="dt-name">Название типа документа</label>
+                        <input id="dt-name" type="text" value="${this.name}">
+                </div>
+            </div>
+        `;
+
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        bodyWrapper.querySelectorAll("select, input, textarea").forEach((el) => {
+            const persistedValue = el.value;
+            el.oninput = () => {
+                if (persistedValue !== el.value) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        bodyWrapper.querySelectorAll("input[type=\"checkbox\"]").forEach((el) => {
+            const persistedValue = el.checked;
+            el.oninput = () => {
+                if (persistedValue !== el.checked) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        let footer = `
+            <button class="letter-save-btn">
+                Сохранить изменения
+            </button>
+        `;
+
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Редактирование типа документа", body:bodyWrapper, footer:footerWrapper});
+
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+            const clonedDocType = {...this};
+
+            clonedDocType.name = bodyWrapper.querySelector("#dt-name").value;
+
+            try {
+                const returnedDocType  = await saveOrUpdateDocumentType(clonedDocType);
+
+                modal.close();
+                informerStatus200Instance(5, "Тип документа был изменён");
+
+                Object.assign(this, returnedDocType);
+
+                EventEmitter.dispatch(DocumentType.changeEventName, this);
+            }
+            catch (e) {
+                console.error(e.stack);
+                informerStatusNot200Instance(30, "Не получилось изменить тип документа", e.message);
+            }
+        }
     }
 }
 
@@ -1453,6 +1587,7 @@ class Tags {
             })
         }
     }
+
     compare(another) {
         if (!(another instanceof Tags)) {
             return -1;
@@ -1464,11 +1599,336 @@ class Tags {
 
 class Tag {
     id;
+    text;
+
+    constructor(data) {
+        this.id = data.id;
+        this.text = data.text;
+    }
+
+    static changeEventName = "tagChanged";
+    static createEventName = "tagCreated";
+
+    static createFormInstance() {
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="tag-name">Название тега</label>
+                            <input id="tag-name" type="text">
+                            <p id="tag-name-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </d/iv>
+                </div>
+            </div>
+        `;
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        let footer = `
+            <button class="letter-save-btn">
+                Создать
+            </button>
+        `;
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Создание тега", body:bodyWrapper, footer:footerWrapper});
+
+        const nameInput = bodyWrapper.querySelector("#tag-name");
+
+        nameInput.oninput = () => {
+            nameInput.removeAttribute("empty");
+        }
+
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+            let notOkay = false;
+
+            if (!nameInput.value) {
+                nameInput.setAttribute("empty", "");
+                notOkay = true;
+            }
+
+            if (notOkay) {
+                return;
+            }
+
+            try {
+                const created = await saveOrUpdateTag({
+                    text: nameInput.value
+                })
+
+                EventEmitter.dispatch(Tag.createEventName, created);
+
+                modal.close();
+                informerStatus200Instance(5, "Тег был сохранён");
+            }
+            catch (e) {
+                informerStatusNot200Instance(30, "Тег не был сохранён", e.message);
+                console.error(e.stack);
+            }
+        }
+    }
+
+    async editFormInstance() {
+
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <label for="tag-name">Название тега</label>
+                        <input id="tag-name" type="text" value="${this.text}">
+                </div>
+            </div>
+        `;
+
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        bodyWrapper.querySelectorAll("select, input, textarea").forEach((el) => {
+            const persistedValue = el.value;
+            el.oninput = () => {
+                if (persistedValue !== el.value) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        bodyWrapper.querySelectorAll("input[type=\"checkbox\"]").forEach((el) => {
+            const persistedValue = el.checked;
+            el.oninput = () => {
+                if (persistedValue !== el.checked) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        let footer = `
+            <button class="letter-save-btn">
+                Сохранить изменения
+            </button>
+        `;
+
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Редактирование тега", body:bodyWrapper, footer:footerWrapper});
+
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+            const clonedTag = {...this};
+
+            clonedTag.text = bodyWrapper.querySelector("#tag-name").value;
+
+            try {
+                const returnedTag  = await saveOrUpdateTag(clonedTag);
+
+                modal.close();
+                informerStatus200Instance(5, "Тег был изменён");
+
+                Object.assign(this, returnedTag);
+
+                EventEmitter.dispatch(Tag.changeEventName, this);
+            }
+            catch (e) {
+                console.error(e.stack);
+                informerStatusNot200Instance(30, "Не получилось изменить тег", e.message);
+            }
+        }
+    }
+
+}
+
+class Workgroup {
+    id;
     name;
+    leaderId;
 
     constructor(data) {
         this.id = data.id;
         this.name = data.name;
+        this.leaderId = data.leaderId;
+    }
+
+    static createEventName = "WorkgroupCreated"
+    static changeEventName = "WorkgroupChanged";
+
+    static createFormInstance() {
+        let WorkerOptions = '';
+        WorkerOptions += `<option value="" selected>Не выбрано</option>`;
+        workers.forEach((worker) => {
+            WorkerOptions += `<option value="${worker.id}">${worker.initials}</option>`;
+        })
+
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="wg-name">Название рабочей группы</label>
+                            <input id="wg-name" type="text">
+                            <p id="wg-name-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-select">
+                    <div class="field-container">
+                        <label for="wg-leader-select">Руководитель рабочей группы</label>
+                        <select name="leader" id="wg-leader-select">
+                            ${WorkerOptions}
+                        </select>
+                        <p id="wg-leader-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        let footer = `
+            <button class="letter-save-btn">
+                Создать
+            </button>
+        `;
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Создание рабочей группы", body:bodyWrapper, footer:footerWrapper});
+
+        const nameInput = bodyWrapper.querySelector("#wg-name");
+        const leaderSelect = bodyWrapper.querySelector("#wg-leader-select");
+
+        nameInput.oninput = () => {
+            nameInput.removeAttribute("empty");
+        }
+
+        leaderSelect.oninput = () => {
+            leaderSelect.removeAttribute("empty");
+        }
+
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+            let notOkay = false;
+
+            if (!nameInput.value) {
+                nameInput.setAttribute("empty", "");
+                notOkay = true;
+            }
+
+            if (!leaderSelect.value) {
+                leaderSelect.setAttribute("empty", "");
+                notOkay = true;
+            }
+
+            if (notOkay) {
+                return;
+            }
+
+            try {
+                const created = await saveOrUpdateWorkgroup({
+                    name: nameInput.value,
+                    leaderId: leaderSelect.value
+                })
+
+                EventEmitter.dispatch(Workgroup.createEventName, created);
+
+                modal.close();
+                informerStatus200Instance(5, "Рабочая группа была сохранена");
+            }
+            catch (e) {
+                informerStatusNot200Instance(30, "Рабочая группа не была сохранена", e.message);
+                console.error(e.stack);
+            }
+        }
+    }
+
+    async editFormInstance() {
+
+        let WorkerOptions = '';
+        WorkerOptions += `<option value="" selected>Не выбрано</option>`;
+        workers.forEach((worker) => {
+            if (this.leaderId && worker.id === this.leaderId) {
+                WorkerOptions += `<option value="${worker.id}" selected>${worker.initials}</option>`;
+            }
+            else {
+                WorkerOptions += `<option value="${worker.id}">${worker.initials}</option>`;
+            }
+        })
+
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <label for="wg-name">Название рабочей группы</label>
+                        <input id="wg-name" type="text" value="${this.name}">
+                </div>
+                <div class="custom-select">
+                    <label for="wg-leader-select">Руководитель рабочей группы</label>
+                    <select name="leader" id="wg-leader-select">
+                        ${WorkerOptions}
+                    </select>
+                </div>
+            </div>
+        `;
+
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        bodyWrapper.querySelectorAll("select, input, textarea").forEach((el) => {
+            const persistedValue = el.value;
+            el.oninput = () => {
+                if (persistedValue !== el.value) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        bodyWrapper.querySelectorAll("input[type=\"checkbox\"]").forEach((el) => {
+            const persistedValue = el.checked;
+            el.oninput = () => {
+                if (persistedValue !== el.checked) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        let footer = `
+            <button class="letter-save-btn">
+                Сохранить изменения
+            </button>
+        `;
+
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Редактирование рабочей группы", body:bodyWrapper, footer:footerWrapper});
+
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+            const clonedWorkgroup = {...this};
+
+            clonedWorkgroup.name = bodyWrapper.querySelector("#wg-name").value;
+            clonedWorkgroup.leaderId = bodyWrapper.querySelector("#wg-leader-select").value;
+
+            try {
+                const returnedWorkgroup  = await saveOrUpdateWorkgroup(clonedWorkgroup);
+
+                modal.close();
+                informerStatus200Instance(5, "Рабочая группа была изменена");
+
+                Object.assign(this, returnedWorkgroup);
+
+                EventEmitter.dispatch(Workgroup.changeEventName, this);
+            }
+            catch (e) {
+                console.error(e.stack);
+                informerStatusNot200Instance(30, "Не получилось изменить Рабочую группу", e.message);
+            }
+        }
     }
 }
 

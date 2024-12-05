@@ -1,23 +1,28 @@
+// Основной файл для всех html страниц.
+// В основном содержит запросы к серверу и utility-функции.
+
+
+// Адрес сервера
 const BACKEND_API_URL = 'http://localhost:8080/letters';
 
+// Есть ли роль администратора у пользователя
 let isAdmin = false;
 
-const outputLetters = [];
-const inputLetters = [];
-let workgroups;
 
+// массив входящих и исходящих писем
+const inputLetters = [];
+const outputLetters = [];
+
+// Вызванные запросы на сервер до того, как html страница была полностью загружена
 const beforeLoadRequests = Promise.all([getIsAdminRole()]).then(responses => {
     isAdmin = responses[0];
 })
 
+// Функция, которая вызывается после полной загрузки страницы
 window.addEventListener("load",async () => {
     await beforeLoadRequests;
 
     document.querySelector(".header-navigation").replaceWith(getHeaderNavigationHTMLInstance(isAdmin));
-
-    document.querySelectorAll(".table-customization-btn").forEach(el =>
-        el.onclick = (e) => e.currentTarget.classList.toggle("table-customization-btn-active")
-    )
 });
 
 async function findOriginsAndAddresses(){
@@ -334,7 +339,8 @@ async function findTags() {
         throw new Error("Тэги не были загружены с сервера");
     }
 
-    return await response.json();
+    data = await response.json()
+    return data.map(el => new Tag(el));
 }
 
 async function getActualInputNumberIVC() {
@@ -430,18 +436,9 @@ async function saveOrUpdateInputLetter(inputLetter) {
     cloned.tags = inputLetter.tags.array;
     cloned.file = arrayBufferToBase64(binary);
 
-    const getMethodRequest = () => {
-        if (inputLetter.id) {
-            if (inputLetter.id !== 0 || inputLetter.id !== '0') {
-                return "PUT";
-            }
-        }
-
-        return "POST";
-    }
 
     const response = await fetch(BACKEND_API_URL + "/api/inputLetters", {
-        method: getMethodRequest() ,
+        method: getMethodRequest(inputLetter) ,
         headers: {
             "Content-Type": "application/json",
         },
@@ -469,20 +466,10 @@ async function saveOrUpdateOutputLetter(outputLetter) {
     cloned.tags = outputLetter.tags.array;
     cloned.file = arrayBufferToBase64(binary);
 
-    const getMethodRequest = () => {
-        if (outputLetter.id) {
-            if (outputLetter.id !== 0 || outputLetter.id !== '0') {
-                return "PUT";
-            }
-        }
-
-        return "POST";
-    }
-
     //console.log(JSON.stringify(cloned));
 
     const response = await fetch(BACKEND_API_URL + "/api/outputLetters", {
-        method: getMethodRequest() ,
+        method: getMethodRequest(outputLetter) ,
         headers: {
             "Content-Type": "application/json",
         },
@@ -497,6 +484,42 @@ async function saveOrUpdateOutputLetter(outputLetter) {
         const returned = await response.json();
         return new InputLetter(returned);
     }
+}
+
+async function saveOrUpdateDocumentType(documentType) {
+
+    const response = await fetch(BACKEND_API_URL + "/api/documentTypes", {
+        method: getMethodRequest(documentType),
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(documentType),
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    const returned = await response.json();
+    return new DocumentType(returned);
+}
+
+async function saveOrUpdateWorkgroup(workgroup) {
+
+    const response = await fetch(BACKEND_API_URL + "/api/workgroups", {
+        method: getMethodRequest(workgroup) ,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(workgroup),
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    const returned = await response.json();
+    return new Workgroup(returned);
 }
 
 async function saveOriginAndAddress(originAndAddress) {
@@ -551,6 +574,23 @@ async function saveWorker(worker) {
     }
 
     return new Worker(await response.json());
+}
+
+async function saveOrUpdateTag(tag) {
+    const response = await fetch(BACKEND_API_URL + "/api/tags", {
+        method: getMethodRequest(tag),
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tag),
+    });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
+
+    return new Tag(await response.json());
+
 }
 
 async function getInputLetterFileById(id, filename) {
@@ -791,7 +831,8 @@ async function findWorkgroups() {
         throw new Error(`Response status: ${response.status}`);
     }
 
-    return response.json();
+    const data = await response.json();
+    return data.map(el => new Workgroup(el))
 }
 
 function arrayBufferToBase64( buffer ) {
@@ -856,40 +897,12 @@ function getDateFormat_yy_mm_dd(intValue) {
     return  yyyy + '-' + mm + '-' + dd;
 }
 
-function exportToExcel() {
-
-    const excelFilename = document.querySelector("#excel-filename");
-    if (!excelFilename.value) {
-        excelFilename.setAttribute("empty", "");
-
-        excelFilename.oninput = () => {
-            excelFilename.removeAttribute("empty");
+const getMethodRequest = (object) => {
+    if (object.id) {
+        if (object.id !== 0 || object.id !== '0') {
+            return "PUT";
         }
-
-        return;
     }
 
-    const columns = Array.from(table.header.firstChild.children).map(th =>
-        th.firstChild.innerText
-    );
-    const rows = [];
-    Array.from(table.body.children).forEach(tr => {
-        const row = [];
-        Array.from(tr.children).forEach(td => {
-            if (td.querySelector("a")) {
-                row.push(td.querySelector("a").href);
-            }
-            else {
-                row.push(td.innerText);
-            }
-        });
-
-        rows.push(row);
-    })
-
-    tableToExcel({
-        filename:excelFilename.value,
-        headerRow:columns,
-        dataRows:rows
-    })
+    return "POST";
 }

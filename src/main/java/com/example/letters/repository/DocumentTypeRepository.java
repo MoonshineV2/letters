@@ -1,7 +1,6 @@
 package com.example.letters.repository;
 
 import com.example.letters.model.DocumentType;
-import com.example.letters.model.InputLetter;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -15,6 +14,15 @@ public class DocumentTypeRepository {
     private EntityManager entityManager;
 
     public List<DocumentType> findAll() {
-        return entityManager.createQuery("SELECT dt FROM DocumentType dt", DocumentType.class).getResultList();
+        return entityManager.createQuery("SELECT dt FROM DocumentType dt ORDER BY dt.id ASC", DocumentType.class).getResultList();
+    }
+
+    public DocumentType create(DocumentType dt) {
+        entityManager.persist(dt);
+        return dt;
+    }
+
+    public DocumentType update(DocumentType documentType) {
+        return entityManager.merge(documentType);
     }
 }

@@ -20,4 +20,8 @@ public class TagRepository {
         entityManager.persist(tag);
         return tag;
     }
+
+    public Tag update(Tag tag) {
+        return entityManager.merge(tag);
+    }
 }

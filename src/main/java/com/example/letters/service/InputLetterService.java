@@ -271,70 +271,70 @@ public class InputLetterService {
         return inputLetterRepository.update(inputLetter);
     }
 
-    private void validateLetter(InputLetter inputLetter) throws RuntimeException {
+    private void validateLetter(InputLetter inputLetter) throws IllegalArgumentException {
         if (inputLetter.getNumberIVC() == 0) {
-            throw new RuntimeException("Номер ИВЦ ЖА не задан");
+            throw new IllegalArgumentException("Номер ИВЦ ЖА не задан");
         }
 
         if (inputLetter.getRegistrationDate() == null) {
-            throw new RuntimeException("Дата регистрации не задана");
+            throw new IllegalArgumentException("Дата регистрации не задана");
         }
 
         if (inputLetter.getPostuplenieDate() == null) {
-            throw new RuntimeException("Дата поступления не задана");
+            throw new IllegalArgumentException("Дата поступления не задана");
         }
 
         if (inputLetter.getDocumentDate() == null) {
-            throw new RuntimeException("Дата письма не задана");
+            throw new IllegalArgumentException("Дата письма не задана");
         }
 
         if (inputLetter.getDocumentNumber() == null || inputLetter.getDocumentNumber().isEmpty()) {
-            throw new RuntimeException("Номер письма не задан");
+            throw new IllegalArgumentException("Номер письма не задан");
         }
 
         if (inputLetter.getDocumentType() == null) {
-            throw new RuntimeException("Тип документа не задан");
+            throw new IllegalArgumentException("Тип документа не задан");
         }
 
         if (inputLetter.getOrigin() == null) {
-            throw new RuntimeException("Источник письма не задан");
+            throw new IllegalArgumentException("Источник письма не задан");
         }
 
         if (inputLetter.getSigner() == null) {
-            throw new RuntimeException("Подписант письма не задан");
+            throw new IllegalArgumentException("Подписант письма не задан");
         }
 
         if (inputLetter.getExecutor() == null) {
-            throw new RuntimeException("Исполнитель письма не задан");
+            throw new IllegalArgumentException("Исполнитель письма не задан");
         }
 
         if (inputLetter.getTargetWorker() == null) {
-            throw new RuntimeException("\"Кому расписано\" не задано");
+            throw new IllegalArgumentException("\"Кому расписано\" не задано");
         }
 
         if (inputLetter.getEasdNumber() == 0) {
-            throw new RuntimeException("Номер ЕАСД не задан");
+            throw new IllegalArgumentException("Номер ЕАСД не задан");
         }
 
         if (inputLetter.getTags().isEmpty()) {
-            throw new RuntimeException("Ни один тег не выбран");
+            throw new IllegalArgumentException("Ни один тег не выбран");
         }
 
         if (inputLetter.getTopic() == null || inputLetter.getTopic().isEmpty()) {
-            throw new RuntimeException("Тема не расписана");
+            throw new IllegalArgumentException("Тема не расписана");
         }
 
         if (inputLetter.getNote() == null || inputLetter.getNote().isEmpty()) {
-            throw new RuntimeException("Примечание не расписано");
+            throw new IllegalArgumentException("Примечание не расписано");
         }
 
         if (inputLetter.getFile() == null || inputLetter.getFile().length == 0) {
-            throw new RuntimeException("Файл для письма не выбран");
+            throw new IllegalArgumentException("Файл для письма не выбран");
         }
 
         if (inputLetter.isAnswer()) {
             if (inputLetter.getOutputLetter() == null) {
-                throw new RuntimeException("Ответное письмо не выбрано");
+                throw new IllegalArgumentException("Ответное письмо не выбрано");
             }
         }
         else {
@@ -342,15 +342,15 @@ public class InputLetterService {
         }
 
         if (inputLetter.getDocumentName() != null && inputLetter.getDocumentName().length() > 100) {
-            throw new RuntimeException("Название файла не может быть больше 100 символов");
+            throw new IllegalArgumentException("Название файла не может быть больше 100 символов");
         }
 
         if (inputLetter.getTopic() != null && inputLetter.getTopic().length() > 100) {
-            throw new RuntimeException("Название темы не может быть больше 100 символов");
+            throw new IllegalArgumentException("Название темы не может быть больше 100 символов");
         }
 
         if (inputLetter.getNote() != null && inputLetter.getNote().length() > 500) {
-            throw new RuntimeException("Примечание не может быть больше 500 символов");
+            throw new IllegalArgumentException("Примечание не может быть больше 500 символов");
         }
     }
 }

@@ -21,4 +21,8 @@ public class WorkgroupRepository {
         entityManager.persist(workgroup);
         return workgroup;
     }
+
+    public Workgroup update(Workgroup workgroup) {
+        return entityManager.merge(workgroup);
+    }
 }
