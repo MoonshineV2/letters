@@ -1,4 +1,6 @@
 class MultiSelect {
+    closeCallback;
+
     constructor(element, options = {}) {
         let defaults = {
             placeholder: 'Выберите из списка...',
@@ -132,7 +134,26 @@ class MultiSelect {
                 }
             };
         });
-        headerElement.onclick = () => headerElement.classList.toggle('multi-select-header-active');
+        headerElement.onclick = () => {
+            if (!this.closeCallback) {
+                this.closeCallback = (event) => {
+                    if (!event.target.closest('.' + this.name) && !event.target.closest('label[for="' + this.selectElement.id + '"]')) {
+                        headerElement.classList.remove('multi-select-header-active');
+                        this.element.querySelector('.multi-select-options').scrollTop = this.scroll;
+                        document.removeEventListener('click', this.closeCallback);
+                    }
+                }
+            }
+
+            if (!headerElement.classList.contains('multi-select-header-active')) {
+                headerElement.classList.add('multi-select-header-active');
+                document.addEventListener('click', this.closeCallback);
+            }
+            else {
+                headerElement.classList.remove('multi-select-header-active');
+                document.removeEventListener('click', this.closeCallback)
+            }
+        }
         if (this.options.search === true || this.options.search === 'true') {
             let search = this.element.querySelector('.multi-select-search');
             search.oninput = () => {
@@ -163,12 +184,6 @@ class MultiSelect {
                 headerElement.classList.toggle('multi-select-header-active');
             };
         }
-        document.addEventListener('click', event => {
-            if (!event.target.closest('.' + this.name) && !event.target.closest('label[for="' + this.selectElement.id + '"]')) {
-                headerElement.classList.remove('multi-select-header-active');
-            }
-            this.element.querySelector('.multi-select-options').scrollTop = this.scroll;
-        });
     }
 
     _updateSelected() {
@@ -266,11 +281,14 @@ class MultiSelect {
     }
 }
 
-class CustomSelect {
+class SingleSelect {
+
+    closeCallback;
 
     constructor(element, options = {}) {
         let defaults = {
-            placeholder: 'Выберите из списка...',
+            placeholder: 'Выберите вариант',
+            max: null,
             search: true,
             listAll: false,
             disabled: false,
@@ -284,6 +302,7 @@ class CustomSelect {
             onSelect: function() {},
             onUnselect: function() {}
         };
+
         this.options = Object.assign(defaults, options);
         this.selectElement = typeof element === 'string' ? document.querySelector(element) : element;
         for(const prop in this.selectElement.dataset) {
@@ -306,28 +325,35 @@ class CustomSelect {
         }
         this.element = this._template();
         this.selectElement.replaceWith(this.element);
-        /*this._updateSelected();
-        this._eventHandlers();*/
+        this._updateSelected();
+        this._eventHandlers();
     }
 
     _template() {
         let optionsHTML = '';
         for (let i = 0; i < this.data.length; i++) {
             optionsHTML += `
-                <div class="multi-select-option${this.selectedValues.includes(this.data[i].value) ? ' multi-select-selected' : ''}" data-value="${this.data[i].value}">
+                <div class="multi-select-option${this.selectedValue === this.data[i].value ? ' multi-select-selected' : ''}" data-value="${this.data[i].value}">
                     <span class="multi-select-option-text">${this.data[i].html ? this.data[i].html : this.data[i].text}</span>
                 </div>
             `;
         }
+        let selectAllHTML = '';
+        if (this.options.selectAll === true || this.options.selectAll === 'true') {
+            selectAllHTML = `<div class="multi-select-all">
+                <span class="multi-select-option-radio"></span>
+                <span class="multi-select-option-text">Выбрать всё</span>
+            </div>`;
+        }
         let template = `
             <div class="multi-select ${this.name}"${this.selectElement.id ? ' id="' + this.selectElement.id + '"' : ''} style="${this.width ? 'width:' + this.width + ';' : ''}${this.height ? 'height:' + this.height + ';' : ''}">
-                ${this.selectedValues.map(value => `<input type="hidden" name="${this.name}[]" value="${value}">`).join('')}
                 <div class="multi-select-header ${this.options.disabled ? 'disabled' : ''}" style="${this.width ? 'width:' + this.width + ';' : ''}${this.height ? 'height:' + this.height + ';' : ''}">
                     <span class="multi-select-header-placeholder">${this.placeholder}</span>
                     <span class="multi-select-header-max">${this.options.max ? this.selectedValues.length + '/' + this.options.max : ''}</span>
                 </div>
                 <div class="multi-select-options" style="${this.options.dropdownWidth ? 'width:' + this.options.dropdownWidth + ';' : ''}${this.options.dropdownHeight ? 'height:' + this.options.dropdownHeight + ';' : ''}">
                     ${this.options.search === true || this.options.search === 'true' ? '<input type="text" class="multi-select-search" placeholder="Поиск...">' : ''}
+                    ${selectAllHTML}
                     ${optionsHTML}
                 </div>
             </div>
@@ -345,28 +371,26 @@ class CustomSelect {
                 let selected = true;
                 this.scroll = this.element.querySelector('.multi-select-options').scrollTop;
                 if (!option.classList.contains('multi-select-selected')) {
-                    if (this.options.max && this.selectedValues.length >= this.options.max) {
-                        return;
-                    }
+                    this.element.querySelectorAll('.multi-select-option').forEach(others => {
+                        others.classList.remove('multi-select-selected');
+                        this.data.filter(data => data.value == others.dataset.value)[0].selected = false;
+                        this.element.querySelectorAll('.multi-select-header-option').forEach(headerOption => headerOption.dataset.value == others.dataset.value ? headerOption.remove() : '');
+                    });
+
                     option.classList.add('multi-select-selected');
+
                     if (this.options.listAll === true || this.options.listAll === 'true') {
-                        headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
+                        headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
                     }
-                    this.element.querySelector('.multi-select').insertAdjacentHTML('afterbegin', `<input type="hidden" name="${this.name}[]" value="${option.dataset.value}">`);
                     this.data.filter(data => data.value == option.dataset.value)[0].selected = true;
-                } else {
-                    option.classList.remove('multi-select-selected');
-                    this.element.querySelectorAll('.multi-select-header-option').forEach(headerOption => headerOption.dataset.value == option.dataset.value ? headerOption.remove() : '');
-                    this.element.querySelector(`input[value="${option.dataset.value}"]`).remove();
-                    this.data.filter(data => data.value == option.dataset.value)[0].selected = false;
-                    selected = false;
+                    document.removeEventListener('click', this.closeCallback);
                 }
                 if (this.options.listAll === false || this.options.listAll === 'false') {
                     if (this.element.querySelector('.multi-select-header-option')) {
                         this.element.querySelector('.multi-select-header-option').remove();
                     }
                     if (this.selectedValues.length > 0) {
-                        headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option">${this.selectedValues.length} выбрано</span>`);
+                        headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select">${this.selectedValues.length} выбрано</span>`);
                     }
                 }
                 if (!this.element.querySelector('.multi-select-header-option')) {
@@ -381,7 +405,7 @@ class CustomSelect {
                     this.element.querySelector('.multi-select-search').value = '';
                 }
                 this.element.querySelectorAll('.multi-select-option').forEach(option => option.style.display = 'flex');
-                //headerElement.classList.remove('multi-select-header-active');
+                headerElement.classList.remove('multi-select-header-active');
                 this.options.onChange(option.dataset.value, option.querySelector('.multi-select-option-text').innerHTML, option);
                 if (selected) {
                     this.options.onSelect(option.dataset.value, option.querySelector('.multi-select-option-text').innerHTML, option);
@@ -390,7 +414,26 @@ class CustomSelect {
                 }
             };
         });
-        headerElement.onclick = () => headerElement.classList.toggle('multi-select-header-active');
+        headerElement.onclick = () => {
+            if (!this.closeCallback) {
+                this.closeCallback = (event) => {
+                    if (!event.target.closest('.' + this.name) && !event.target.closest('label[for="' + this.selectElement.id + '"]')) {
+                        headerElement.classList.remove('multi-select-header-active');
+                        this.element.querySelector('.multi-select-options').scrollTop = this.scroll;
+                        document.removeEventListener('click', this.closeCallback);
+                    }
+                }
+            }
+
+            if (!headerElement.classList.contains('multi-select-header-active')) {
+                headerElement.classList.add('multi-select-header-active');
+                document.addEventListener('click', this.closeCallback);
+            }
+            else {
+                headerElement.classList.remove('multi-select-header-active');
+                document.removeEventListener('click', this.closeCallback)
+            }
+        }
         if (this.options.search === true || this.options.search === 'true') {
             let search = this.element.querySelector('.multi-select-search');
             search.oninput = () => {
@@ -404,21 +447,36 @@ class CustomSelect {
                 headerElement.classList.toggle('multi-select-header-active');
             };
         }
-        document.addEventListener('click', event => {
-            if (!event.target.closest('.' + this.name) && !event.target.closest('label[for="' + this.selectElement.id + '"]')) {
-                headerElement.classList.remove('multi-select-header-active');
+    }
+
+    _updateSelected() {
+        if (this.options.listAll === true || this.options.listAll === 'true') {
+            this.element.querySelectorAll('.multi-select-option').forEach(option => {
+                if (option.classList.contains('multi-select-selected')) {
+                    this.element.querySelector('.multi-select-header').insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
+                }
+            });
+        } else {
+            if (this.selectedValues.length > 0) {
+                this.element.querySelector('.multi-select-header').insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select">${this.selectedValues.length} выбрано</span>`);
             }
-            this.element.querySelector('.multi-select-options').scrollTop = this.scroll;
-        });
+        }
+        if (this.element.querySelector('.multi-select-header-option')) {
+            this.element.querySelector('.multi-select-header-placeholder').remove();
+        }
     }
 
-    get selectedValues() {
-        return this.data.filter(data => data.selected).map(data => data.value);
+    get selectedValue() {
+        const selected = this.data.filter(data => data.selected).map(data => data.value);
+        if (selected.length > 0) {
+            return selected[0];
+        }
+        return null;
     }
 
-    get selectedItems() {
+    /*get selectedItems() {
         return this.data.filter(data => data.selected);
-    }
+    }*/
 
     set disabled(value) {
         this.options.disabled = value;

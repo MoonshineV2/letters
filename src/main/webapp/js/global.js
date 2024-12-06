@@ -8,6 +8,8 @@ const BACKEND_API_URL = 'http://localhost:8080/letters';
 // Есть ли роль администратора у пользователя
 let isAdmin = false;
 
+let globalIsLoaded = false;
+const callbacksQueue = [];
 
 // массив входящих и исходящих писем
 const inputLetters = [];
@@ -23,7 +25,21 @@ window.addEventListener("load",async () => {
     await beforeLoadRequests;
 
     document.querySelector(".header-navigation").replaceWith(getHeaderNavigationHTMLInstance(isAdmin));
+
+    globalIsLoaded = true;
+    callbacksQueue.forEach((callback) => {
+        callback();
+    })
 });
+
+function addCallbackToQueue(callback) {
+    if (globalIsLoaded) {
+        callback();
+    }
+    else {
+        callbacksQueue.push(callback);
+    }
+}
 
 async function findOriginsAndAddresses(){
     const response = await fetch(BACKEND_API_URL + '/api/originsAndAddresses');
@@ -436,7 +452,6 @@ async function saveOrUpdateInputLetter(inputLetter) {
     cloned.tags = inputLetter.tags.array;
     cloned.file = arrayBufferToBase64(binary);
 
-
     const response = await fetch(BACKEND_API_URL + "/api/inputLetters", {
         method: getMethodRequest(inputLetter) ,
         headers: {
@@ -449,10 +464,8 @@ async function saveOrUpdateInputLetter(inputLetter) {
         throw new Error(await response.text());
     }
 
-    if (getMethodRequest() === "PUT") {
-        const returned = await response.json();
-        return new InputLetter(returned);
-    }
+    const returned = await response.json();
+    return new InputLetter(returned);
 }
 
 async function saveOrUpdateOutputLetter(outputLetter) {
@@ -905,4 +918,22 @@ const getMethodRequest = (object) => {
     }
 
     return "POST";
+}
+
+function getDocTypesSingleSelectInstance(root, docTypes, onChange) {
+    const data = [];
+    docTypes.forEach(element => {
+        data.push({
+            value: element.id,
+            text: element.name
+        })
+    })
+
+    return  new SingleSelect(root, {
+        data: data,
+        placeholder: "Выберите вариант",
+        search: true,
+        listAll: true,
+        onChange: onChange ? onChange : () => {}
+    })
 }

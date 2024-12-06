@@ -84,17 +84,16 @@ window.addEventListener("load", async () => {
         }
     }
 
-    document.getElementById("input-ref").classList.add("li-selected");
+    addCallbackToQueue(() => document.getElementById("input-ref").classList.add("li-selected"));
 
     tagsMultiSelect = await getTagsMultiselectInstance();
-
-    /*const test = await getTestselectInstance();*/
 
     setOriginsAndAddressesOptions(document.querySelector("#origin-select"), originsAndAddresses, true);
     setParticipantSignersOptions(document.querySelector("#signer-select"), signers, true);
     setParticipantsOptions(document.querySelector("#executor-select"), executors, true)
     setWorkersOptions(document.querySelector("#target-select"), workers, true);
-    setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes, true);
+    //setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes, true);
+    const docTypesSelect = getDocTypesSingleSelectInstance(document.querySelector("#doc-type-select"), documentTypes);
     setActualNumberIVC();
     autoInsertRegistrationDate();
 
@@ -110,7 +109,7 @@ window.addEventListener("load", async () => {
     form.postuplenieDate = document.querySelector("#postuplenie-date");
     form.documentDate = document.querySelector("#date-doc");
     form.documentNumber = document.querySelector("#doc-num");
-    form.documentType = document.querySelector("#doc-type-select");
+    form.documentType = docTypesSelect;
     form.origin = document.querySelector("#origin-select");
     form.signer = document.querySelector("#signer-select");
     form.executor = document.querySelector("#executor-select");
@@ -146,24 +145,6 @@ function getTagsMultiselectInstance() {
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
         }
-    })
-}
-
-function getTestselectInstance() {
-    const data = [];
-    tags.forEach(element => {
-        data.push({
-            value: element.id,
-            text: element.text
-        })
-    })
-
-    return  new CustomSelect("#test", {
-        data: data,
-        placeholder: "Выберите 123",
-        search: true,
-        selectAll: false,
-        listAll: false
     })
 }
 
@@ -256,11 +237,11 @@ async function saveDocument() {
         hasAttentions = true;
     }
 
-    if (!form.documentType.value) {
-        form.documentType.setAttribute("empty", "");
+    if (!form.documentType.selectedValue) {
+        form.documentType.element.setAttribute("empty", "");
 
         form.documentType.oninput = () => {
-            form.documentType.removeAttribute("empty");
+            form.documentType.element.removeAttribute("empty");
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
         }
@@ -367,7 +348,7 @@ async function saveDocument() {
         postuplenieDate: form.postuplenieDate.value,
         documentDate: form.documentDate.value,
         documentNumber: form.documentNumber.value,
-        documentType: {id:form.documentType.value},
+        documentType: {id:form.documentType.selectedValue},
         documentName: form.fileUploader.file ? form.fileUploader.file.name : "",
         origin: {id:form.origin.value},
         signer: {id:form.signer.value},

@@ -91,10 +91,11 @@ public class InputLetterController {
     @POST
     @Path("")
     @Consumes("application/json")
+    @Produces("application/json")
     @RolesAllowed({"letters_default", "letters_admin"})
-    public Response create(InputLetterDto inputLetterDto) {
-        inputLetterService.create(inputLetterDto.toInputLetter());
-        return Response.ok().build();
+    public InputLetterDto create(InputLetterDto inputLetterDto) {
+        InputLetter inputLetter = inputLetterService.create(inputLetterDto.toInputLetter());
+        return InputLetterDto.fromInputLetter(inputLetter);
     }
 
     @GET

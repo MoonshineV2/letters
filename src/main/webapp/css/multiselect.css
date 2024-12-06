@@ -50,6 +50,13 @@
     padding: 0.1em 8px;
     border-radius: 5px;
 }
+
+.multi-select .multi-select-header .multi-select-header-option.single-select {
+    background-color: transparent;
+    font-size: 16px;
+    padding: 0;
+}
+
 .multi-select .multi-select-header .multi-select-header-max {
     font-size: 14px;
     color: #65727e;

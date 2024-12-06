@@ -1212,7 +1212,7 @@ class Participant {
             }
 
             try {
-                await saveOrUpdateParticipant(new Participant({
+                const returned = await saveOrUpdateParticipant(new Participant({
                     fullName: nameInput.value,
                     initials: shortNameInput.value,
                     post: post.value,
@@ -1226,6 +1226,8 @@ class Participant {
                     const eventSigners = new Event("participantSignersChanged");
                     document.dispatchEvent(eventSigners);
                 }
+
+                EventEmitter.dispatch(Participant.createEventName, returned);
 
                 modal.close();
                 informerStatus200Instance(5, "Подписант/адресат/исполнитель был сохранён");
