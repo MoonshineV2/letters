@@ -487,6 +487,10 @@ class SingleSelect {
         }
     }
 
+    set onChange(callback) {
+        this.options.onChange = callback;
+    }
+
     get disabled() {
         return this.options.disabled;
     }

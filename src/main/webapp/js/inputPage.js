@@ -88,12 +88,11 @@ window.addEventListener("load", async () => {
 
     tagsMultiSelect = await getTagsMultiselectInstance();
 
-    setOriginsAndAddressesOptions(document.querySelector("#origin-select"), originsAndAddresses, true);
-    setParticipantSignersOptions(document.querySelector("#signer-select"), signers, true);
-    setParticipantsOptions(document.querySelector("#executor-select"), executors, true)
-    setWorkersOptions(document.querySelector("#target-select"), workers, true);
-    //setDocumentTypesOptions(document.querySelector("#doc-type-select"), documentTypes, true);
-    const docTypesSelect = getDocTypesSingleSelectInstance(document.querySelector("#doc-type-select"), documentTypes);
+    const docTypesSelect = getSingleSelectInstance(document.querySelector("#doc-type-select"), documentTypes, "id", "name");
+    const originsAndAddressesSelect = getSingleSelectInstance(document.querySelector("#origin-select"), originsAndAddresses, "id", "shortName");
+    const participantSignersSelect = getSingleSelectInstance(document.querySelector("#signer-select"), signers, "id", "initials");
+    const participantsSelect = getSingleSelectInstance(document.querySelector("#executor-select"), executors, "id", "initials");
+    const workersSelect = getSingleSelectInstance(document.querySelector("#target-select"), workers, "id", "initials");
     setActualNumberIVC();
     autoInsertRegistrationDate();
 
@@ -110,16 +109,16 @@ window.addEventListener("load", async () => {
     form.documentDate = document.querySelector("#date-doc");
     form.documentNumber = document.querySelector("#doc-num");
     form.documentType = docTypesSelect;
-    form.origin = document.querySelector("#origin-select");
-    form.signer = document.querySelector("#signer-select");
-    form.executor = document.querySelector("#executor-select");
+    form.origin = originsAndAddressesSelect;
+    form.signer =participantSignersSelect;
+    form.executor = participantsSelect;
     form.easdNumber = document.querySelector("#easd-num");
     form.answer = document.querySelector("#is-answer");
     form.prilojenie = document.querySelector("#prilojenie");
     form.topic = document.querySelector("#topic");
     form.tags = tagsMultiSelect;
     form.note = document.querySelector("#note");
-    form.targetWorker = document.querySelector("#target-select");
+    form.targetWorker = workersSelect;
     form.reserve = document.querySelector("#reserve");
     form.fileUploader = fileUploader;
     form.outputLetter = document.querySelector("#output-select");
@@ -240,7 +239,7 @@ async function saveDocument() {
     if (!form.documentType.selectedValue) {
         form.documentType.element.setAttribute("empty", "");
 
-        form.documentType.oninput = () => {
+        form.documentType.onChange = () => {
             form.documentType.element.removeAttribute("empty");
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
@@ -249,11 +248,11 @@ async function saveDocument() {
         hasAttentions = true;
     }
 
-    if (!form.origin.value) {
-        form.origin.setAttribute("empty", "");
+    if (!form.origin.selectedValue) {
+        form.origin.element.setAttribute("empty", "");
 
-        form.origin.oninput = () => {
-            form.origin.removeAttribute("empty");
+        form.origin.onChange = () => {
+            form.origin.element.removeAttribute("empty");
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
         }
@@ -261,11 +260,11 @@ async function saveDocument() {
         hasAttentions = true;
     }
 
-    if (!form.signer.value) {
-        form.signer.setAttribute("empty", "");
+    if (!form.signer.selectedValue) {
+        form.signer.element.setAttribute("empty", "");
 
-        form.signer.oninput = () => {
-            form.signer.removeAttribute("empty");
+        form.signer.onChange = () => {
+            form.signer.element.removeAttribute("empty");
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
         }
@@ -273,11 +272,11 @@ async function saveDocument() {
         hasAttentions = true;
     }
 
-    if (!form.executor.value) {
-        form.executor.setAttribute("empty", "");
+    if (!form.executor.selectedValue) {
+        form.executor.element.setAttribute("empty", "");
 
-        form.executor.oninput = () => {
-            form.executor.removeAttribute("empty");
+        form.executor.onChange = () => {
+            form.executor.element.removeAttribute("empty");
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
         }
@@ -285,11 +284,11 @@ async function saveDocument() {
         hasAttentions = true;
     }
 
-    if (!form.targetWorker.value) {
-        form.targetWorker.setAttribute("empty", "");
+    if (!form.targetWorker.selectedValue) {
+        form.targetWorker.element.setAttribute("empty", "");
 
-        form.targetWorker.oninput = () => {
-            form.targetWorker.removeAttribute("empty");
+        form.targetWorker.onChange = () => {
+            form.targetWorker.element.removeAttribute("empty");
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
         }
@@ -299,6 +298,13 @@ async function saveDocument() {
 
     if (form.tags.selectedValues.length === 0) {
         form.tags.element.setAttribute("empty", "");
+
+        form.tags.onChange = () => {
+            form.tags.element.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
@@ -350,16 +356,16 @@ async function saveDocument() {
         documentNumber: form.documentNumber.value,
         documentType: {id:form.documentType.selectedValue},
         documentName: form.fileUploader.file ? form.fileUploader.file.name : "",
-        origin: {id:form.origin.value},
-        signer: {id:form.signer.value},
-        executor: {id:form.executor.value},
+        origin: {id:form.origin.selectedValue},
+        signer: {id:form.signer.selectedValue},
+        executor: {id:form.executor.selectedValue},
         easdNumber: form.easdNumber.value,
         answer: form.answer.checked,
         prilojenie: form.prilojenie.checked,
         topic: form.topic.value,
         tags: form.tags.selectedValues,
         note: form.note.value,
-        targetWorker: {id:form.targetWorker.value},
+        targetWorker: {id:form.targetWorker.selectedValue},
         reserve: form.reserve.checked,
         file: form.fileUploader.file,
         outputLetter: {id:form.outputLetter.value}

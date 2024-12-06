@@ -29,4 +29,6 @@ window.addEventListener("load", async () => {
         table = new Table(document.querySelector("#table-section"), workgroups);
         document.querySelector("#table-section").classList.remove("hidden");
     }
+
+    addCallbackToQueue(() => document.getElementById("administration-ref").classList.add("li-selected"));
 })

@@ -77,7 +77,7 @@ public class ExcelExporterService {
                     cell.setCellValue("Ссылка");
                     XSSFHyperlink link = (XSSFHyperlink)createHelper.createHyperlink(HyperlinkType.URL);
                     link.setAddress(data.getDataRows().get(i).get(j));
-                    cell.setHyperlink((XSSFHyperlink) link);
+                    cell.setHyperlink(link);
                     cell.setCellStyle(hlinkstyle);
                 }
                 else {

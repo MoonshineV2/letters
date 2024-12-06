@@ -392,7 +392,7 @@ function getHeaderNavigationHTMLInstance(isAdmin) {
                 <a href="${BACKEND_API_URL}/api/pages/search">Поиск</a>
             </li>
             ${isAdmin ? 
-                `<li id="bd-ref">
+                `<li id="administration-ref">
                     <a href="${BACKEND_API_URL}/api/pages/administrating">Администрирование</a>
                 </li>`
                 : ``
@@ -770,6 +770,8 @@ async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMul
         option.value = element.id;
         outputSelect.appendChild(option);
     })
+
+    getSingleSelectInstance(outputSelect, outputLettersFiltered, "id", "documentNumber")
 }
 
 async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMultiSelect) {
@@ -920,17 +922,17 @@ const getMethodRequest = (object) => {
     return "POST";
 }
 
-function getDocTypesSingleSelectInstance(root, docTypes, onChange) {
-    const data = [];
-    docTypes.forEach(element => {
-        data.push({
-            value: element.id,
-            text: element.name
+function getSingleSelectInstance(root, data, idName, textName, onChange) {
+    const selectData = [];
+    data.forEach(element => {
+        selectData.push({
+            value: element[idName],
+            text: element[textName]
         })
     })
 
     return  new SingleSelect(root, {
-        data: data,
+        data: selectData,
         placeholder: "Выберите вариант",
         search: true,
         listAll: true,
