@@ -543,9 +543,9 @@ async function saveOriginAndAddress(originAndAddress) {
 
 }
 
-async function saveParticipant(participant) {
+async function saveOrUpdateParticipant(participant) {
     const response = await fetch(BACKEND_API_URL + "/api/participants", {
-        method: "POST",
+        method: getMethodRequest(participant),
         headers: {
             "Content-Type": "application/json",
         },

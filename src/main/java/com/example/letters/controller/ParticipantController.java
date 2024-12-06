@@ -1,7 +1,7 @@
 package com.example.letters.controller;
 
+import com.example.letters.dto.ParticipantDto;
 import com.example.letters.model.Participant;
-import com.example.letters.repository.ParticipantRepository;
 import com.example.letters.service.ParticipantService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -39,5 +39,14 @@ public class ParticipantController {
         Participant persisted = participantService.create(participant);
 
         return Response.ok(persisted).build();
+    }
+
+    @PUT
+    @Consumes("application/json")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
+    public ParticipantDto update(ParticipantDto participantDto) {
+        Participant out = participantService.update(participantDto.toParticipant());
+        return ParticipantDto.fromParticipant(out);
     }
 }

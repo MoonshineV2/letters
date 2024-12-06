@@ -26,4 +26,8 @@ public class ParticipantRepository {
 
         return participant;
     }
+
+    public Participant update(Participant participant) {
+        return entityManager.merge(participant);
+    }
 }

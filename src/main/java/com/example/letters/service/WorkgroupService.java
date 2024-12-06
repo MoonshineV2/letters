@@ -43,4 +43,5 @@ public class WorkgroupService {
 
         return workgroupRepository.update(workgroup);
     }
+
 }

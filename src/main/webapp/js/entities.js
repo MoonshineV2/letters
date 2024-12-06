@@ -1137,6 +1137,9 @@ class Participant {
         canSign:"Право подписи"
     }
 
+    static createEventName = "ParticipantCreated";
+    static changeEventName = "ParticipantChanged";
+
     static createFormInstance(isSigner) {
         let body = `
             <div class="fields">
@@ -1209,7 +1212,7 @@ class Participant {
             }
 
             try {
-                await saveParticipant(new Participant({
+                await saveOrUpdateParticipant(new Participant({
                     fullName: nameInput.value,
                     initials: shortNameInput.value,
                     post: post.value,
@@ -1230,6 +1233,101 @@ class Participant {
             catch (e) {
                 informerStatusNot200Instance(30, "Подписант/адресат/исполнитель не был сохранён", e.message);
                 console.error(e.stack);
+            }
+        }
+    }
+
+    async editFormInstance() {
+
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="participant-fullname">${Participant.locale.fullName}</label>
+                            <input id="participant-fullname" type="text" value="${this.fullName}">
+                            <p id="participant-fullname-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input"> 
+                        <div class="field-container">
+                            <label for="participant-initials">${Participant.locale.initials}</label>
+                            <input id="participant-initials" type="text" value="${this.initials}">
+                            <p id="participant-initials-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for=participant-post">${Participant.locale.post}</label>
+                            <input id="participant-post" type="text" value="${this.post}">
+                            <p id="participant-post-empty" class="under-attention under-attention-empty" hidden>поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-checkbox">
+                    <input id="participant-cansign" type="checkbox" ${this.canSign ? 'checked' : ""}>
+                    <label for="participant-cansign">${Participant.locale.canSign.toLowerCase()}</label>
+                </div>
+            </div>
+        `;
+
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        bodyWrapper.querySelectorAll("select, input, textarea").forEach((el) => {
+            const persistedValue = el.value;
+            el.oninput = () => {
+                if (persistedValue !== el.value) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        bodyWrapper.querySelectorAll("input[type=\"checkbox\"]").forEach((el) => {
+            const persistedValue = el.checked;
+            el.oninput = () => {
+                if (persistedValue !== el.checked) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        let footer = `
+            <button class="letter-save-btn">
+                Сохранить изменения
+            </button>
+        `;
+
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Редактирование подписанта/адресата/исполнителя", body:bodyWrapper, footer:footerWrapper});
+
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+            const clonedParticipant = {...this};
+
+            clonedParticipant.fullName = bodyWrapper.querySelector("#participant-fullname").value;
+            clonedParticipant.initials = bodyWrapper.querySelector("#participant-initials").value;
+            clonedParticipant.post = bodyWrapper.querySelector("#participant-post").value;
+            clonedParticipant.canSign = bodyWrapper.querySelector("#participant-cansign").checked;
+
+            try {
+                const returned  = await saveOrUpdateParticipant(clonedParticipant);
+
+                modal.close();
+                informerStatus200Instance(5, "подписант/адресат/исполнитель был изменён");
+
+                Object.assign(this, returned);
+
+                EventEmitter.dispatch(Participant.changeEventName, this);
+            }
+            catch (e) {
+                console.error(e.stack);
+                informerStatusNot200Instance(30, "Не получилось изменить подписанта/адресата/исполнителя", e.message);
             }
         }
     }
@@ -1410,7 +1508,7 @@ class DocumentType {
             this.name = documentType.name;
     }
 
-    static createEventName = "DocumentTypeCreated"
+    static createEventName = "DocumentTypeCreated";
     static changeEventName = "DocumentTypeChanged";
 
     static compare(o1, o2) {
