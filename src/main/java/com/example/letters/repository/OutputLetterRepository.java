@@ -179,8 +179,9 @@ public class OutputLetterRepository {
         return Optional.of(dbFile);
     }
 
-    public void create(OutputLetter outputLetter) {
+    public OutputLetter create(OutputLetter outputLetter) {
         entityManager.persist(outputLetter);
+        return outputLetter;
     }
 
     public OutputLetter update(OutputLetter outputLetter) {

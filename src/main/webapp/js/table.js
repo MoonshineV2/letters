@@ -11,6 +11,8 @@ class Table {
 
     createFormInstance;
 
+    addOption = false;
+
     constructor(element, data, options = {}) {
 
 
@@ -44,6 +46,10 @@ class Table {
 
         if (options.columns) {
             options.columns.forEach(column => this.columns.push(column));
+        }
+
+        if (options.addOption) {
+            this.addOption = options.addOption;
         }
 
         this.initialize();
@@ -95,10 +101,14 @@ class Table {
         root.classList.add("table-upper");
 
         let generated =
-            `<div style="position: relative">
-                <button id="add-option" class="table-customization-btn">
-                    Добавить
-                </button>
+            `<div>
+                ${this.addOption ? `
+                    <div style="position: relative">
+                        <button id="add-option" class="table-customization-btn add-option">
+                            Добавить
+                        </button>
+                    </div>
+                ` : ''}
             </div>
             <div style="position: relative">
                 <button id="export-btn" class="table-customization-btn excel-btn">
@@ -156,7 +166,7 @@ class Table {
             })
         }
 
-        if (this.createFormInstance) {
+        if (this.createFormInstance && this.addOption) {
             root.querySelector("#add-option").addEventListener("click", (e) => {
                 this.createFormInstance();
             })
@@ -234,7 +244,6 @@ class Table {
     }
 
     updateRow(id) {
-        console.log(this.dataRows);
         let dataRow = this.dataRows.find(row => row.id === id);
         for (const child of dataRow.row.children) {
             child.innerHTML = "";
@@ -314,6 +323,7 @@ class Table {
             const unSubscribe = EventEmitter.subscribe(this.createEventName, (data) => {
                 const createdRow = this.createRow(data);
                 this.body.appendChild(createdRow);
+                this.data.push(data);
                 this.dataRows.push({id:data.id, row:createdRow, assignedData:data});
             });
 

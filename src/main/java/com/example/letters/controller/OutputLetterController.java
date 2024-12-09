@@ -76,11 +76,12 @@ public class OutputLetterController {
     @POST
     @Path("")
     @Consumes("application/json")
+    @Produces("application/json")
     @RolesAllowed({"letters_default", "letters_admin"})
-    public Response create(OutputLetterDto outputLetterDto) {
-        outputLetterService.create(outputLetterDto.toOutputLetter());
+    public OutputLetterDto create(OutputLetterDto outputLetterDto) {
+        OutputLetter outputLetter = outputLetterService.create(outputLetterDto.toOutputLetter());
 
-        return Response.ok().build();
+        return OutputLetterDto.fromOutputLetter(outputLetter);
     }
 
     @POST

@@ -41,9 +41,9 @@ window.onload = async function () {
     filterSection = document.getElementById("filter-section");
     headerFilters = document.getElementById('header-filters');
 
-    await requests;
+    addCallbackToQueue(() => document.getElementById("search-ref").classList.add("li-selected"));
 
-    document.getElementById("search-ref").classList.add("li-selected");
+    await requests;
 
     originsAndAddressesMultiSelect = getOriginsMultiselectInstance();
     signerMultiSelect = getParticipantSignersMultiselectInstance("#signer-select");
@@ -269,7 +269,7 @@ async function findLetters() {
 
         document.getElementById("table").innerHTML = "";
         document.querySelector("#table-section").classList.remove("hidden");
-        table = new Table(document.querySelector("#table-section"), data, {columns: Object.keys(OutputLetter.locale), locale:OutputLetter.locale});
+        table = new Table(document.querySelector("#table-section"), data, {locale:OutputLetter.locale});
     }
 
     filterSection.classList.add("hidden");

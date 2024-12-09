@@ -20,11 +20,11 @@ public class OriginAndAddressesService {
     public OriginAndAddress create(OriginAndAddress originAndAddress) {
 
         if (originAndAddress.getShortName() == null || originAndAddress.getShortName().isEmpty()) {
-            throw new RuntimeException("Краткое наименование не задано");
+            throw new IllegalArgumentException("Краткое наименование не задано");
         }
 
         if (originAndAddress.getKodADM() == 0) {
-            throw new RuntimeException("Код администрации не задан");
+            throw new IllegalArgumentException("Код администрации не задан");
         }
 
         return originAndAddressRepository.create(originAndAddress);
@@ -33,11 +33,11 @@ public class OriginAndAddressesService {
     public OriginAndAddress update(OriginAndAddress originAndAddress) {
 
         if (originAndAddress.getShortName() == null || originAndAddress.getShortName().isEmpty()) {
-            throw new RuntimeException("Краткое наименование не задано");
+            throw new IllegalArgumentException("Краткое наименование не задано");
         }
 
         if (originAndAddress.getKodADM() == 0) {
-            throw new RuntimeException("Код администрации не задан");
+            throw new IllegalArgumentException("Код администрации не задан");
         }
 
         return originAndAddressRepository.update(originAndAddress);

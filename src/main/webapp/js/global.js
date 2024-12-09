@@ -3,7 +3,8 @@
 
 
 // Адрес сервера
-const BACKEND_API_URL = 'http://localhost:8080/letters';
+//const BACKEND_API_URL = 'http://localhost:8080/letters';
+const BACKEND_API_URL = '/letters';
 
 // Есть ли роль администратора у пользователя
 let isAdmin = false;
@@ -493,10 +494,8 @@ async function saveOrUpdateOutputLetter(outputLetter) {
         throw new Error(await response.text());
     }
 
-    if (getMethodRequest() === "PUT") {
-        const returned = await response.json();
-        return new InputLetter(returned);
-    }
+    const returned = await response.json();
+    return new OutputLetter(returned);
 }
 
 async function saveOrUpdateDocumentType(documentType) {
@@ -777,7 +776,7 @@ async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMul
 
     outputLettersFiltered.forEach(element => {
         const option = document.createElement("option");
-        option.innerText = element.numberIVC;
+        option.innerText = element.documentNumber;
         option.value = element.id;
         outputSelect.appendChild(option);
     })

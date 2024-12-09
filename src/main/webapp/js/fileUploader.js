@@ -60,7 +60,6 @@ class FileUploader {
 
         // We’ll discuss `handleDrop` function down the road
         const handleDrop = (e) => {
-            console.log("handleDrop(e)");
             e.preventDefault();
             this.dropArea.classList.remove('drag-over');
             // Getting the list of dragged files
@@ -90,8 +89,6 @@ class FileUploader {
 
         this.fileInput.onchange = () => {
             this.processFileChange();
-            console.log(123);
-            console.log(this.onChange());
             this.onChange();
         }
 

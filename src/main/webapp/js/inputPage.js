@@ -32,7 +32,7 @@ let requests = Promise.all([
     tags = data[6];
 })
 
-document.addEventListener("originsAndAddressesChanged", async() => {
+/*document.addEventListener("originsAndAddressesChanged", async() => {
     originsAndAddresses = await findOriginsAndAddresses();
     setOriginsAndAddressesOptions(document.querySelector("#origin-select"), originsAndAddresses, true);
 });
@@ -50,7 +50,7 @@ document.addEventListener("participantSignersChanged", async() => {
 document.addEventListener("WorkersChanged", async() => {
     workers = await findWorkers();
     setWorkersOptions(document.querySelector("#target-select"), workers, true);
-});
+});*/
 
 window.addEventListener("load", async () => {
     fileUploader = new FileUploader(document.getElementById("file-uploader"), {onChange: () => {

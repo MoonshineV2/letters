@@ -59,7 +59,7 @@ class InputLetter {
 
     static changeEventName = "inputLetterChanged";
 
-    static locale = {
+    static locale =   {
         id:"Id",
         year:"Год",
         numberIVC:"Номер ИВЦ ЖА",
@@ -608,7 +608,7 @@ class OutputLetter {
                 td.innerText = letter.documentType.name;
         },
         targetParticipant: function (td, letter) {
-            if (td.innerText)
+            if (letter.targetParticipant)
                 td.innerText = letter.targetParticipant.initials;
         },
         address: function (td, letter) {

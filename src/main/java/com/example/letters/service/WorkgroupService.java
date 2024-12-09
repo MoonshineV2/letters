@@ -1,6 +1,5 @@
 package com.example.letters.service;
 
-import com.example.letters.model.DocumentType;
 import com.example.letters.model.Workgroup;
 import com.example.letters.repository.WorkgroupRepository;
 import jakarta.enterprise.inject.Model;
