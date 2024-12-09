@@ -1,5 +1,6 @@
 package com.example.letters.controller;
 
+import com.example.letters.dto.OriginAndAddressDto;
 import com.example.letters.model.OriginAndAddress;
 import com.example.letters.service.OriginAndAddressesService;
 import jakarta.annotation.security.RolesAllowed;
@@ -25,10 +26,19 @@ public class OriginAndAddressesController {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    @RolesAllowed({"letters_default", "letters_admin"})
-    public Response create(OriginAndAddress originAndAddress) {
-        OriginAndAddress toReturn = originAndAddressesService.create(originAndAddress);
+    @RolesAllowed({"letters_admin"})
+    public OriginAndAddressDto create(OriginAndAddressDto originAndAddressDto) {
+        OriginAndAddress toReturn = originAndAddressesService.create(originAndAddressDto.toOriginAndAddress());
 
-        return Response.ok(toReturn).build();
+        return OriginAndAddressDto.fromOriginAndAddress(toReturn);
+    }
+
+    @PUT
+    @Consumes("application/json")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
+    public OriginAndAddressDto update(OriginAndAddressDto originAndAddressDto) {
+        OriginAndAddress out = originAndAddressesService.update(originAndAddressDto.toOriginAndAddress());
+        return OriginAndAddressDto.fromOriginAndAddress(out);
     }
 }

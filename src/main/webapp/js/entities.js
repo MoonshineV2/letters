@@ -1004,6 +1004,9 @@ class OriginAndAddress {
         this.kodADM = origin.kodADM;
     }
 
+    static createEventName = "OriginAndAddressCreated";
+    static changeEventName = "OriginAndAddressChanged";
+
     compare(another) {
         if (!(another instanceof OriginAndAddress)) {
             return -1;
@@ -1086,7 +1089,7 @@ class OriginAndAddress {
             }
 
             try {
-                await saveOriginAndAddress({
+                const returned = await saveOrUpdateOriginAndAddress({
                     name: nameInput.value,
                     shortName: shortNameInput.value,
                     kodADM: kodADMInput.value
@@ -1095,12 +1098,104 @@ class OriginAndAddress {
                 const event = new Event("originsAndAddressesChanged");
                 document.dispatchEvent(event);
 
+                EventEmitter.dispatch(OriginAndAddress.createEventName, returned);
+
                 modal.close();
                 informerStatus200Instance(5, "Источник/Адрес был сохранён");
             }
             catch (e) {
                 informerStatusNot200Instance(30, "Источник/Адрес не был сохранён", e.message);
                 console.error(e.stack);
+            }
+        }
+    }
+
+    async editFormInstance() {
+
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="origin-address-name">${OriginAndAddress.locale.name}</label>
+                            <input id="origin-address-name" type="text" value="${this.name}">
+                            <p id="origin-address-name-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="origin-address-shortname">${OriginAndAddress.locale.shortName}</label>
+                            <input id="origin-address-shortname" type="text" value="${this.shortName}">
+                            <p id="origin-address-shortname-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="origin-address-kodadm">${OriginAndAddress.locale.kodADM}</label>
+                            <input id="origin-address-kodadm" type="text" value="${this.kodADM}">
+                            <p id="origin-address-kodadm-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
+            </div>
+        `;
+
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        bodyWrapper.querySelectorAll("select, input, textarea").forEach((el) => {
+            const persistedValue = el.value;
+            el.oninput = () => {
+                if (persistedValue !== el.value) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        bodyWrapper.querySelectorAll("input[type=\"checkbox\"]").forEach((el) => {
+            const persistedValue = el.checked;
+            el.oninput = () => {
+                if (persistedValue !== el.checked) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        let footer = `
+            <button class="letter-save-btn">
+                Сохранить изменения
+            </button>
+        `;
+
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Редактирование источника/адреса", body:bodyWrapper, footer:footerWrapper});
+
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+            const clonedOriginAndAddress = {...this};
+
+            clonedOriginAndAddress.name = bodyWrapper.querySelector("#origin-address-name").value;
+            clonedOriginAndAddress.shortName = bodyWrapper.querySelector("#origin-address-shortname").value;
+            clonedOriginAndAddress.kodADM = bodyWrapper.querySelector("#origin-address-kodadm").value;
+
+            try {
+                const returned  = await saveOrUpdateOriginAndAddress(clonedOriginAndAddress);
+
+                modal.close();
+                informerStatus200Instance(5, "Источник/адрес был изменён");
+
+                Object.assign(this, returned);
+
+                EventEmitter.dispatch(OriginAndAddress.changeEventName, this);
+            }
+            catch (e) {
+                console.error(e.stack);
+                informerStatusNot200Instance(30, "Не получилось изменить Источник/адрес", e.message);
             }
         }
     }
@@ -1354,6 +1449,10 @@ class Worker {
         this.workgroupId = worker.workgroupId;
         this.workgroupName = worker.workgroupName;
     }
+
+    static changeEventName = "WorkerChanged";
+    static createEventName = "WorkerCreated";
+
     compare(another) {
         if (!(another instanceof Worker)) {
             return -1;
@@ -1462,17 +1561,12 @@ class Worker {
                 notOkay = true;
             }
 
-            if (workgroupSelect.value === "") {
-                workgroupSelect.setAttribute("empty", "");
-                notOkay = true;
-            }
-
             if (notOkay) {
                 return;
             }
 
             try {
-                await saveWorker(new Worker({
+                const created = await saveOrUpdateWorker(new Worker({
                     fullName: nameInput.value,
                     initials: shortNameInput.value,
                     post: post.value,
@@ -1482,6 +1576,8 @@ class Worker {
 
                 const event = new Event("WorkersChanged");
                 document.dispatchEvent(event);
+
+                EventEmitter.dispatch(Worker.createEventName, created);
 
                 if (canSign.checked) {
                     const eventSigners = new Event("WorkerSignersChanged");
@@ -1494,6 +1590,124 @@ class Worker {
             } catch (e) {
                 informerStatusNot200Instance(30, "Сотрудник отдела не был сохранён", e.message);
                 console.error(e.stack);
+            }
+        }
+    }
+
+    async editFormInstance() {
+
+        let body = `
+            <div class="fields">
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="worker-fullname">${Worker.locale.fullName}</label>
+                            <input id="worker-fullname" type="text" value="${this.fullName}">
+                            <p id="worker-fullname-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="worker-initials">${Worker.locale.initials}</label>
+                            <input id="worker-initials" type="text" value="${this.initials}">
+                            <p id="worker-initials-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="worker-post">${Worker.locale.post}</label>
+                            <input id="worker-post" type="text" value="${this.post}">
+                            <p id="worker-post-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-select">
+                    <div class="field-container">
+                        <label for="workgroup-select">Рабочая группа</label>
+                        <select name="workgroups" id="workgroup-select">
+                            <option value="" disabled selected hidden>Выберите вариант</option>
+                        </select>
+                        <p id="doc-type-select-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                    </div>
+                </div>
+                <div class="custom-checkbox">
+                    <input id="worker-cansign" type="checkbox" ${this.canSign ? "checked" : ""}>
+                    <label for="worker-cansign">${Worker.locale.canSign.toLowerCase()}</label>
+                </div>
+            </div>
+        `;
+
+        const bodyWrapper = document.createElement("div");
+        bodyWrapper.innerHTML = body;
+
+        const workgroupSelect = bodyWrapper.querySelector("#workgroup-select");
+        findWorkgroups().then(result => {
+            result.forEach(wg => {
+                const opt = document.createElement("option");
+                opt.value = wg.id;
+                opt.innerText = wg.name;
+                workgroupSelect.appendChild(opt);
+                if (wg.id === this.workgroupId) {
+                    opt.selected = true;
+                }
+            })
+        });
+
+        bodyWrapper.querySelectorAll("select, input, textarea").forEach((el) => {
+            const persistedValue = el.value;
+            el.oninput = () => {
+                if (persistedValue !== el.value) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        bodyWrapper.querySelectorAll("input[type=\"checkbox\"]").forEach((el) => {
+            const persistedValue = el.checked;
+            el.oninput = () => {
+                if (persistedValue !== el.checked) {
+                    el.classList.add("field-changed");
+                }
+                else {
+                    el.classList.remove("field-changed");
+                }
+            }
+        })
+
+        let footer = `
+            <button class="letter-save-btn">
+                Сохранить изменения
+            </button>
+        `;
+
+        const footerWrapper = document.createElement("div");
+        footerWrapper.innerHTML = footer;
+
+        const modal = new Modal({headerName:"Редактирование рабочей группы", body:bodyWrapper, footer:footerWrapper});
+
+        footerWrapper.querySelector(".letter-save-btn").onclick = async () => {
+            const clonedWorker = {...this};
+
+            clonedWorker.fullName = bodyWrapper.querySelector("#worker-fullname").value;
+            clonedWorker.initials = bodyWrapper.querySelector("#worker-initials").value;
+            clonedWorker.post = bodyWrapper.querySelector("#worker-post").value;
+            clonedWorker.workgroupId = bodyWrapper.querySelector("#workgroup-select").value;
+            clonedWorker.canSign = bodyWrapper.querySelector("#worker-cansign").checked;
+
+            try {
+                const returned  = await saveOrUpdateWorker(clonedWorker);
+
+                modal.close();
+                informerStatus200Instance(5, "Сотрудник отдела был изменён");
+
+                Object.assign(this, returned);
+
+                EventEmitter.dispatch(Worker.changeEventName, this);
+            }
+            catch (e) {
+                console.error(e.stack);
+                informerStatusNot200Instance(30, "Не получилось изменить сотрудника отдела", e.message);
             }
         }
     }
@@ -1846,23 +2060,19 @@ class Workgroup {
     id;
     name;
     leaderId;
+    leaderName;
 
     constructor(data) {
         this.id = data.id;
         this.name = data.name;
         this.leaderId = data.leaderId;
+        this.leaderName = data.leaderName;
     }
 
     static createEventName = "WorkgroupCreated"
     static changeEventName = "WorkgroupChanged";
 
     static createFormInstance() {
-        let WorkerOptions = '';
-        WorkerOptions += `<option value="" selected>Не выбрано</option>`;
-        workers.forEach((worker) => {
-            WorkerOptions += `<option value="${worker.id}">${worker.initials}</option>`;
-        })
-
         let body = `
             <div class="fields">
                 <div class="custom-input">
@@ -1876,7 +2086,6 @@ class Workgroup {
                     <div class="field-container">
                         <label for="wg-leader-select">Руководитель рабочей группы</label>
                         <select name="leader" id="wg-leader-select">
-                            ${WorkerOptions}
                         </select>
                         <p id="wg-leader-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                     </div>
@@ -1885,6 +2094,16 @@ class Workgroup {
         `;
         const bodyWrapper = document.createElement("div");
         bodyWrapper.innerHTML = body;
+
+        const leaderSelect = bodyWrapper.querySelector("#wg-leader-select");
+        findWorkers().then(result => {
+            result.forEach(worker => {
+                const opt = document.createElement("option");
+                opt.value = worker.id;
+                opt.innerText = worker.initials;
+                leaderSelect.appendChild(opt);
+            })
+        });
 
         let footer = `
             <button class="letter-save-btn">
@@ -1897,7 +2116,6 @@ class Workgroup {
         const modal = new Modal({headerName:"Создание рабочей группы", body:bodyWrapper, footer:footerWrapper});
 
         const nameInput = bodyWrapper.querySelector("#wg-name");
-        const leaderSelect = bodyWrapper.querySelector("#wg-leader-select");
 
         nameInput.oninput = () => {
             nameInput.removeAttribute("empty");
@@ -1944,17 +2162,6 @@ class Workgroup {
 
     async editFormInstance() {
 
-        let WorkerOptions = '';
-        WorkerOptions += `<option value="" selected>Не выбрано</option>`;
-        workers.forEach((worker) => {
-            if (this.leaderId && worker.id === this.leaderId) {
-                WorkerOptions += `<option value="${worker.id}" selected>${worker.initials}</option>`;
-            }
-            else {
-                WorkerOptions += `<option value="${worker.id}">${worker.initials}</option>`;
-            }
-        })
-
         let body = `
             <div class="fields">
                 <div class="custom-input">
@@ -1964,7 +2171,6 @@ class Workgroup {
                 <div class="custom-select">
                     <label for="wg-leader-select">Руководитель рабочей группы</label>
                     <select name="leader" id="wg-leader-select">
-                        ${WorkerOptions}
                     </select>
                 </div>
             </div>
@@ -1972,6 +2178,19 @@ class Workgroup {
 
         const bodyWrapper = document.createElement("div");
         bodyWrapper.innerHTML = body;
+
+        const leaderSelect = bodyWrapper.querySelector("#wg-leader-select");
+        findWorkers().then(result => {
+            result.forEach(worker => {
+                const opt = document.createElement("option");
+                opt.value = worker.id;
+                opt.innerText = worker.initials;
+                leaderSelect.appendChild(opt);
+                if (worker.id === this.leaderId) {
+                    opt.selected = true;
+                }
+            })
+        });
 
         bodyWrapper.querySelectorAll("select, input, textarea").forEach((el) => {
             const persistedValue = el.value;

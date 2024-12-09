@@ -61,16 +61,20 @@ window.addEventListener("load", async () => {
         }});
     saveButton = document.querySelector("#save-letter");
 
-    await requests;
+    addCallbackToQueue(() => document.getElementById("output-ref").classList.add("li-selected"));
+
+    generateYears(document.querySelector("#years"), 2017);
 
     document.querySelector("#is-answer").onchange = (e) => {
         if (e.target.checked) {
             monthMultiSelect.disabled = false;
             yearMultiSelect.disabled = false;
+            document.querySelector("#input-select").disabled = false;
         }
         else {
             monthMultiSelect.disabled = true;
             yearMultiSelect.disabled = true;
+            document.querySelector("#input-select").disabled = true;
         }
     }
 
@@ -85,7 +89,7 @@ window.addEventListener("load", async () => {
         }
     })
 
-    document.getElementById("output-ref").classList.add("li-selected");
+    await requests;
 
     tagsMultiSelect = await getTags();
 

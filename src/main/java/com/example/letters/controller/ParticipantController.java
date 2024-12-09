@@ -6,7 +6,6 @@ import com.example.letters.service.ParticipantService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
@@ -34,11 +33,11 @@ public class ParticipantController {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    @RolesAllowed({"letters_default", "letters_admin"})
-    public Response createParticipant(Participant participant) {
-        Participant persisted = participantService.create(participant);
+    @RolesAllowed({"letters_admin"})
+    public ParticipantDto createParticipant(ParticipantDto participantDto) {
+        Participant persisted = participantService.create(participantDto.toParticipant());
 
-        return Response.ok(persisted).build();
+        return ParticipantDto.fromParticipant(persisted);
     }
 
     @PUT

@@ -1,13 +1,11 @@
 package com.example.letters.controller;
 
 import com.example.letters.dto.WorkerDto;
-import com.example.letters.model.Participant;
 import com.example.letters.model.Worker;
 import com.example.letters.service.WorkerService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,10 +49,19 @@ public class WorkerController {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    @RolesAllowed({"letters_default", "letters_admin"})
-    public Response createWorker(WorkerDto workerDto) {
+    @RolesAllowed({"letters_admin"})
+    public WorkerDto createWorker(WorkerDto workerDto) {
         Worker worker = workerService.create(workerDto.toWorker());
 
-        return Response.ok(worker).build();
+        return WorkerDto.fromWorker(worker);
+    }
+
+    @PUT
+    @Consumes("application/json")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
+    public WorkerDto update(WorkerDto workerDto) {
+        Worker out = workerService.update(workerDto.toWorker());
+        return WorkerDto.fromWorker(out);
     }
 }

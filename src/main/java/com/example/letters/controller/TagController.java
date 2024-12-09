@@ -24,7 +24,7 @@ public class TagController {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    @RolesAllowed({"letters_default", "letters_admin"})
+    @RolesAllowed({"letters_admin"})
     public Tag create(Tag tag) {
         return tagService.create(tag);
     }

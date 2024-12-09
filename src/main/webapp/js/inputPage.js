@@ -60,7 +60,7 @@ window.addEventListener("load", async () => {
         }});
     saveButton = document.querySelector("#save-letter");
 
-    await requests;
+    generateYears(document.querySelector("#years"), 2017);
 
     monthMultiSelect = new MultiSelect(document.getElementById("months"), {
         onChange: function(value, text, element) {
@@ -77,14 +77,18 @@ window.addEventListener("load", async () => {
         if (e.target.checked) {
             monthMultiSelect.disabled = false;
             yearMultiSelect.disabled = false;
+            document.querySelector("#output-select").disabled = false;
         }
         else {
             monthMultiSelect.disabled = true;
             yearMultiSelect.disabled = true;
+            document.querySelector("#output-select").disabled = true;
         }
     }
 
     addCallbackToQueue(() => document.getElementById("input-ref").classList.add("li-selected"));
+
+    await requests;
 
     tagsMultiSelect = await getTagsMultiselectInstance();
 

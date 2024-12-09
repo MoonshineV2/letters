@@ -1,12 +1,11 @@
 package com.example.letters.service;
 
 import com.example.letters.model.Worker;
+import com.example.letters.model.Workgroup;
 import com.example.letters.repository.WorkerRepository;
+import com.example.letters.repository.WorkgroupRepository;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
@@ -17,6 +16,8 @@ public class WorkerService {
 
     @Inject
     private WorkerRepository workerRepository;
+    @Inject
+    private WorkgroupRepository workgroupRepository;
 
     public List<Worker> findAll() {
         return workerRepository.findAll();
@@ -34,14 +35,37 @@ public class WorkerService {
     public Worker create(Worker worker) {
 
         if (worker.getInitials() == null || worker.getInitials().isEmpty()) {
-            throw new RuntimeException("Фамилия, инициалы не заданы");
+            throw new IllegalArgumentException("Фамилия, инициалы не заданы");
         }
 
         if (worker.getPost() == null || worker.getPost().isEmpty()) {
-            throw new RuntimeException("Должность не задана");
+            throw new IllegalArgumentException("Должность не задана");
+        }
+
+        if (worker.getWorkgroup() != null) {
+            Workgroup workgroup = workgroupRepository.findById(worker.getWorkgroup().getId());
+            worker.setWorkgroup(workgroup);
         }
 
         return workerRepository.create(worker);
+    }
+
+    public Worker update(Worker worker) {
+
+        if (worker.getInitials() == null || worker.getInitials().isEmpty()) {
+            throw new IllegalArgumentException("Фамилия, инициалы не заданы");
+        }
+
+        if (worker.getPost() == null || worker.getPost().isEmpty()) {
+            throw new IllegalArgumentException("Должность не задана");
+        }
+
+        if (worker.getWorkgroup() != null) {
+            Workgroup workgroup = workgroupRepository.findById(worker.getWorkgroup().getId());
+            worker.setWorkgroup(workgroup);
+        }
+
+        return workerRepository.update(worker);
     }
 
 }

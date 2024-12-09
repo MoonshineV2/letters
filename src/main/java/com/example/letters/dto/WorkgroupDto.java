@@ -12,6 +12,7 @@ public class WorkgroupDto {
     private String name;
 
     private int leaderId;
+    private String leaderName;
 
     public static WorkgroupDto fromWorkgroup(Workgroup workgroup) {
         WorkgroupDto workgroupDto = new WorkgroupDto();
@@ -19,16 +20,18 @@ public class WorkgroupDto {
         workgroupDto.name = workgroup.getName();
         if (workgroup.getLeader() != null) {
             workgroupDto.leaderId = workgroup.getLeader().getId();
+            workgroupDto.leaderName = workgroup.getLeader().getFullName();
         }
 
         return workgroupDto;
     }
 
     public Workgroup toWorkgroup() {
-        return new Workgroup(
-             id,
-             name,
-             leaderId == 0 ? null : new Worker(leaderId)
-        );
+        Worker worker = null;
+        if (leaderId > 0) {
+            worker = new Worker(leaderId);
+            worker.setFullName(leaderName);
+        }
+        return new Workgroup(id, name, worker);
     }
 }

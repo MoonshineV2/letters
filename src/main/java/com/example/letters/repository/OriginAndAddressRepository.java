@@ -1,6 +1,5 @@
 package com.example.letters.repository;
 
-import com.example.letters.model.InputLetter;
 import com.example.letters.model.OriginAndAddress;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -22,5 +21,9 @@ public class OriginAndAddressRepository {
         entityManager.persist(originAndAddress);
 
         return originAndAddress;
+    }
+
+    public OriginAndAddress update(OriginAndAddress originAndAddress) {
+        return entityManager.merge(originAndAddress);
     }
 }

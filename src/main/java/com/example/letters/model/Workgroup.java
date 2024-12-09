@@ -27,4 +27,6 @@ public class Workgroup {
     public Workgroup(int id) {
         this.id = id;
     }
+
+
 }

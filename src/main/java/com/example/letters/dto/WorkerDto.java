@@ -15,26 +15,34 @@ public class WorkerDto {
     String initials;
     String post;
     int workgroupId;
+    String workgroupName;
     boolean canSign;
 
     public static WorkerDto fromWorker(Worker worker) {
+
         return new WorkerDto(
                 worker.getId(),
                 worker.getFullName(),
                 worker.getInitials(),
                 worker.getPost(),
                 worker.getWorkgroup() != null ? worker.getWorkgroup().getId() : 0,
+                worker.getWorkgroup() != null ? worker.getWorkgroup().getName() : null,
                 worker.isCanSign()
         );
     }
 
     public Worker toWorker() {
+        Workgroup workgroup = null;
+        if (workgroupId > 0) {
+            workgroup = new Workgroup(workgroupId);
+            workgroup.setName(workgroupName);
+        }
         return new Worker(
                 id,
                 fullName,
                 initials,
                 post,
-                workgroupId == 0 ? null : new Workgroup(workgroupId),
+                workgroup,
                 canSign
         );
     }

@@ -535,17 +535,13 @@ async function saveOrUpdateWorkgroup(workgroup) {
     return new Workgroup(returned);
 }
 
-async function saveOriginAndAddress(originAndAddress) {
+async function saveOrUpdateOriginAndAddress(originAndAddress) {
     const response = await fetch(BACKEND_API_URL + "/api/originsAndAddresses", {
-        method: "POST",
+        method: getMethodRequest(originAndAddress),
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            name: originAndAddress.name,
-            shortName: originAndAddress.shortName,
-            kodADM: originAndAddress.kodADM
-        }),
+        body: JSON.stringify(originAndAddress)
     });
 
     if (!response.ok) {
@@ -573,9 +569,9 @@ async function saveOrUpdateParticipant(participant) {
 
 }
 
-async function saveWorker(worker) {
+async function saveOrUpdateWorker(worker) {
     const response = await fetch(BACKEND_API_URL + "/api/workers", {
-        method: "POST",
+        method: getMethodRequest(worker),
         headers: {
             "Content-Type": "application/json",
         },
@@ -771,7 +767,20 @@ async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMul
         outputSelect.appendChild(option);
     })
 
-    getSingleSelectInstance(outputSelect, outputLettersFiltered, "id", "documentNumber")
+    //getSingleSelectInstance(outputSelect, outputLettersFiltered, "id", "documentNumber")
+
+    if(outputLettersFiltered.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+    }
+
+    outputLettersFiltered.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.numberIVC;
+        option.value = element.id;
+        outputSelect.appendChild(option);
+    })
 }
 
 async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMultiSelect) {
@@ -938,4 +947,18 @@ function getSingleSelectInstance(root, data, idName, textName, onChange) {
         listAll: true,
         onChange: onChange ? onChange : () => {}
     })
+}
+
+function generateYears(select, since) {
+    if (typeof since !== "number" && Number.isInteger(since)) {
+        throw new Error("Параметр \"since\" не является целым числом");
+    }
+
+    const currentYear = new Date().getFullYear();
+    for (let i = currentYear; i >= since; i--) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.innerText = i;
+        select.appendChild(option);
+    }
 }

@@ -1,11 +1,11 @@
-let workers;
+//let workers;
 let table;
 
-let requests = Promise.all([
+/*let requests = Promise.all([
     findWorkers()
 ]).then((data) => {
     workers = data[0];
-})
+})*/
 
 
 window.addEventListener("load", async () => {
@@ -27,6 +27,16 @@ window.addEventListener("load", async () => {
     document.querySelector("#administrate-workgroups").onclick = async () => {
         const workgroups = await findWorkgroups();
         table = new Table(document.querySelector("#table-section"), workgroups);
+        document.querySelector("#table-section").classList.remove("hidden");
+    }
+    document.querySelector("#administrate-origins-and-addresses").onclick = async () => {
+        const originsAndAddresses = await findOriginsAndAddresses();
+        table = new Table(document.querySelector("#table-section"), originsAndAddresses);
+        document.querySelector("#table-section").classList.remove("hidden");
+    }
+    document.querySelector("#administrate-workers").onclick = async () => {
+        const workers = await findWorkers();
+        table = new Table(document.querySelector("#table-section"), workers);
         document.querySelector("#table-section").classList.remove("hidden");
     }
 

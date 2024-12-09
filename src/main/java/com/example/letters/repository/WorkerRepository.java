@@ -1,9 +1,6 @@
 package com.example.letters.repository;
 
-import com.example.letters.model.InputLetter;
-import com.example.letters.model.Participant;
-import com.example.letters.model.Tag;
-import com.example.letters.model.Worker;
+import com.example.letters.model.*;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -29,7 +26,10 @@ public class WorkerRepository {
 
     public Worker create(Worker worker) {
         entityManager.persist(worker);
-
         return worker;
+    }
+
+    public Worker update(Worker worker) {
+        return entityManager.merge(worker);
     }
 }
