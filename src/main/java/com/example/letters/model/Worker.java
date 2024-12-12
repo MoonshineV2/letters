@@ -32,6 +32,9 @@ public class Worker {
     @Column(name = "can_sign")
     private boolean canSign;
 
+    @Column(name = "disabled")
+    private boolean disabled;
+
     public Worker(int id) {
         this.id = id;
     }

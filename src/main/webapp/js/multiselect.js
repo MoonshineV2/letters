@@ -181,7 +181,9 @@ class MultiSelect {
         }
         if (this.selectElement.id && document.querySelector('label[for="' + this.selectElement.id + '"]')) {
             document.querySelector('label[for="' + this.selectElement.id + '"]').onclick = () => {
-                headerElement.classList.toggle('multi-select-header-active');
+                if (!this.options.disabled) {
+                    headerElement.classList.toggle('multi-select-header-active');
+                }
             };
         }
     }
@@ -349,7 +351,7 @@ class SingleSelect {
             <div class="multi-select ${this.name}"${this.selectElement.id ? ' id="' + this.selectElement.id + '"' : ''} style="${this.width ? 'width:' + this.width + ';' : ''}${this.height ? 'height:' + this.height + ';' : ''}">
                 <div class="multi-select-header ${this.options.disabled ? 'disabled' : ''}" style="${this.width ? 'width:' + this.width + ';' : ''}${this.height ? 'height:' + this.height + ';' : ''}">
                     <span class="multi-select-header-placeholder">${this.placeholder}</span>
-                    <span class="multi-select-header-max">${this.options.max ? this.selectedValues.length + '/' + this.options.max : ''}</span>
+                    <span class="multi-select-header-max"></span>
                 </div>
                 <div class="multi-select-options" style="${this.options.dropdownWidth ? 'width:' + this.options.dropdownWidth + ';' : ''}${this.options.dropdownHeight ? 'height:' + this.options.dropdownHeight + ';' : ''}">
                     ${this.options.search === true || this.options.search === 'true' ? '<input type="text" class="multi-select-search" placeholder="Поиск...">' : ''}
@@ -379,27 +381,15 @@ class SingleSelect {
 
                     option.classList.add('multi-select-selected');
 
-                    if (this.options.listAll === true || this.options.listAll === 'true') {
-                        headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
-                    }
+
+                    headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
                     this.data.filter(data => data.value == option.dataset.value)[0].selected = true;
                     document.removeEventListener('click', this.closeCallback);
-                }
-                if (this.options.listAll === false || this.options.listAll === 'false') {
-                    if (this.element.querySelector('.multi-select-header-option')) {
-                        this.element.querySelector('.multi-select-header-option').remove();
-                    }
-                    if (this.selectedValues.length > 0) {
-                        headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select">${this.selectedValues.length} выбрано</span>`);
-                    }
                 }
                 if (!this.element.querySelector('.multi-select-header-option')) {
                     headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-placeholder">${this.placeholder}</span>`);
                 } else if (this.element.querySelector('.multi-select-header-placeholder')) {
                     this.element.querySelector('.multi-select-header-placeholder').remove();
-                }
-                if (this.options.max) {
-                    this.element.querySelector('.multi-select-header-max').innerHTML = this.selectedValues.length + '/' + this.options.max;
                 }
                 if (this.options.search === true || this.options.search === 'true') {
                     this.element.querySelector('.multi-select-search').value = '';
@@ -444,23 +434,19 @@ class SingleSelect {
         }
         if (this.selectElement.id && document.querySelector('label[for="' + this.selectElement.id + '"]')) {
             document.querySelector('label[for="' + this.selectElement.id + '"]').onclick = () => {
-                headerElement.classList.toggle('multi-select-header-active');
+                if (!this.options.disabled) {
+                    headerElement.classList.toggle('multi-select-header-active');
+                }
             };
         }
     }
 
     _updateSelected() {
-        if (this.options.listAll === true || this.options.listAll === 'true') {
-            this.element.querySelectorAll('.multi-select-option').forEach(option => {
-                if (option.classList.contains('multi-select-selected')) {
-                    this.element.querySelector('.multi-select-header').insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
-                }
-            });
-        } else {
-            if (this.selectedValues.length > 0) {
-                this.element.querySelector('.multi-select-header').insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select">${this.selectedValues.length} выбрано</span>`);
+        this.element.querySelectorAll('.multi-select-option').forEach(option => {
+            if (option.classList.contains('multi-select-selected')) {
+                this.element.querySelector('.multi-select-header').insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option single-select" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
             }
-        }
+        });
         if (this.element.querySelector('.multi-select-header-option')) {
             this.element.querySelector('.multi-select-header-placeholder').remove();
         }

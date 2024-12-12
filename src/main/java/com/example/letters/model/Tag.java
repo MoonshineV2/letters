@@ -19,6 +19,9 @@ public class Tag {
     @Column(name = "text")
     private String text;
 
+    @Column(name = "disabled")
+    private boolean disabled;
+
     public Tag(int id) {
         this.id = id;
     }

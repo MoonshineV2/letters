@@ -14,6 +14,8 @@ public class WorkgroupDto {
     private int leaderId;
     private String leaderName;
 
+    boolean disabled;
+
     public static WorkgroupDto fromWorkgroup(Workgroup workgroup) {
         WorkgroupDto workgroupDto = new WorkgroupDto();
         workgroupDto.id = workgroup.getId();
@@ -22,6 +24,7 @@ public class WorkgroupDto {
             workgroupDto.leaderId = workgroup.getLeader().getId();
             workgroupDto.leaderName = workgroup.getLeader().getFullName();
         }
+        workgroupDto.disabled = workgroup.isDisabled();
 
         return workgroupDto;
     }
@@ -32,6 +35,6 @@ public class WorkgroupDto {
             worker = new Worker(leaderId);
             worker.setFullName(leaderName);
         }
-        return new Workgroup(id, name, worker);
+        return new Workgroup(id, name, worker, disabled);
     }
 }

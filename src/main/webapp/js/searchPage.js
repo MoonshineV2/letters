@@ -35,8 +35,10 @@ let requests = Promise.all([
 
 window.onload = async function () {
 
-    document.getElementById("registration-date").value = new Date("2017-01-01").toISOString().split('T')[0];
-    document.getElementById("registration-date-2").value = new Date(Date.now()).toISOString().split('T')[0];
+    const dateNow = new Date(Date.now());
+    const dateOneYearAgo = new Date(new Date().setFullYear(dateNow.getFullYear() - 1))
+    document.getElementById("registration-date").value = dateOneYearAgo.toISOString().split('T')[0];
+    document.getElementById("registration-date-2").value = dateNow.toISOString().split('T')[0];
 
     filterSection = document.getElementById("filter-section");
     headerFilters = document.getElementById('header-filters');
@@ -260,16 +262,16 @@ async function findLetters() {
 
         let data = await findInputLettersByFilters(filters);
 
-        document.getElementById("table").innerHTML = "";
+        //document.getElementById("table").innerHTML = "";
         document.querySelector("#table-section").classList.remove("hidden");
         table = new Table(document.querySelector("#table-section"), data, {columns: Object.keys(InputLetter.locale), locale:InputLetter.locale});
     }
     else if (letterType === "output") {
         let data = await findOutputLettersByFilters(filters);
 
-        document.getElementById("table").innerHTML = "";
+        //document.getElementById("table").innerHTML = "";
         document.querySelector("#table-section").classList.remove("hidden");
-        table = new Table(document.querySelector("#table-section"), data, {locale:OutputLetter.locale});
+        table = new Table(document.querySelector("#table-section"), data, {columns: Object.keys(InputLetter.locale), locale:OutputLetter.locale});
     }
 
     filterSection.classList.add("hidden");

@@ -19,6 +19,18 @@ public class WorkgroupController {
     @GET
     @Produces("application/json")
     @RolesAllowed({"letters_default", "letters_admin"})
+    public List<WorkgroupDto> getAllActive() {
+        List<WorkgroupDto> workgroups = workgroupService.findAllActive().stream()
+                .map(WorkgroupDto::fromWorkgroup)
+                .collect(Collectors.toList());
+
+        return workgroups;
+    }
+
+    @GET
+    @Path("withDisabled")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
     public List<WorkgroupDto> getAll() {
         List<WorkgroupDto> workgroups = workgroupService.findAll().stream()
                 .map(WorkgroupDto::fromWorkgroup)

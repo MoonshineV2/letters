@@ -17,6 +17,10 @@ public class DocumentTypeRepository {
         return entityManager.createQuery("SELECT dt FROM DocumentType dt ORDER BY dt.id ASC", DocumentType.class).getResultList();
     }
 
+    public List<DocumentType> findAllActive() {
+        return entityManager.createQuery("SELECT dt FROM DocumentType dt WHERE dt.disabled = false ORDER BY dt.id ASC", DocumentType.class).getResultList();
+    }
+
     public DocumentType create(DocumentType dt) {
         entityManager.persist(dt);
         return dt;

@@ -19,6 +19,17 @@ public class DocumentTypeController {
     @GET
     @Produces("application/json")
     @RolesAllowed({"letters_default", "letters_admin"})
+    public List<DocumentTypeDto> getAllActive() {
+        return documentTypeService.findAllActive()
+                .stream()
+                .map(DocumentTypeDto::fromDocumentType)
+                .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("withDisabled")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
     public List<DocumentTypeDto> getAll() {
         return documentTypeService.findAll()
                 .stream()

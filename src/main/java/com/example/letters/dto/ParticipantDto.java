@@ -4,7 +4,6 @@ import com.example.letters.model.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -15,6 +14,7 @@ public class ParticipantDto {
     public String initials;
     public String post;
     public boolean canSign;
+    public boolean disabled;
 
     public static ParticipantDto fromParticipant(Participant participant) {
         return new ParticipantDto(
@@ -22,7 +22,8 @@ public class ParticipantDto {
                 participant.getFullName(),
                 participant.getInitials(),
                 participant.getPost(),
-                participant.isCanSign()
+                participant.isCanSign(),
+                participant.isDisabled()
         );
     }
 
@@ -32,7 +33,8 @@ public class ParticipantDto {
                 fullName,
                 initials,
                 post,
-                canSign
+                canSign,
+                disabled
         );
     }
 }

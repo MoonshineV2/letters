@@ -17,6 +17,10 @@ public class DocumentTypeService {
         return documentTypeRepository.findAll();
     }
 
+    public List<DocumentType> findAllActive() {
+        return documentTypeRepository.findAllActive();
+    }
+
     public DocumentType create(DocumentType documentType) {
 
         if (documentType.getName() == null || documentType.getName().isEmpty()) {

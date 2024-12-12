@@ -17,6 +17,9 @@ public class DocumentType {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "disabled")
+    private boolean disabled;
+
     public DocumentType(int id) {
         this.id = id;
     }

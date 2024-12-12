@@ -13,13 +13,15 @@ public class OriginAndAddressDto {
     String name;
     String shortName;
     int kodADM;
+    boolean disabled;
 
     public static OriginAndAddressDto fromOriginAndAddress(OriginAndAddress oa) {
         return new OriginAndAddressDto(
                 oa.getId(),
                 oa.getName(),
                 oa.getShortName(),
-                oa.getKodADM()
+                oa.getKodADM(),
+                oa.isDisabled()
         );
     }
 
@@ -28,7 +30,8 @@ public class OriginAndAddressDto {
                 id,
                 name,
                 shortName,
-                kodADM
+                kodADM,
+                disabled
         );
     }
 }

@@ -17,6 +17,7 @@ public class WorkerDto {
     int workgroupId;
     String workgroupName;
     boolean canSign;
+    boolean disabled;
 
     public static WorkerDto fromWorker(Worker worker) {
 
@@ -27,7 +28,8 @@ public class WorkerDto {
                 worker.getPost(),
                 worker.getWorkgroup() != null ? worker.getWorkgroup().getId() : 0,
                 worker.getWorkgroup() != null ? worker.getWorkgroup().getName() : null,
-                worker.isCanSign()
+                worker.isCanSign(),
+                worker.isDisabled()
         );
     }
 
@@ -43,7 +45,8 @@ public class WorkerDto {
                 initials,
                 post,
                 workgroup,
-                canSign
+                canSign,
+                disabled
         );
     }
 }

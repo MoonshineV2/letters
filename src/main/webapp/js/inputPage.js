@@ -67,7 +67,7 @@ window.addEventListener("load", async () => {
             onOutputYearOrMonthChange(document.querySelector("#output-select"), yearMultiSelect, monthMultiSelect);
         }
     })
-    yearMultiSelect = new MultiSelect(document.getElementById("years"), {
+    yearMultiSelect = new SingleSelect(document.querySelector("#years"),  {
         onChange: function(value, text, element) {
             onOutputYearOrMonthChange(document.querySelector("#output-select"), yearMultiSelect, monthMultiSelect);
         }
@@ -77,7 +77,9 @@ window.addEventListener("load", async () => {
         if (e.target.checked) {
             monthMultiSelect.disabled = false;
             yearMultiSelect.disabled = false;
-            document.querySelector("#output-select").disabled = false;
+            if (document.querySelector("#output-select").children.length > 1) {
+                document.querySelector("#output-select").disabled = false;
+            }
         }
         else {
             monthMultiSelect.disabled = true;
@@ -99,6 +101,8 @@ window.addEventListener("load", async () => {
     const workersSelect = getSingleSelectInstance(document.querySelector("#target-select"), workers, "id", "initials");
     setActualNumberIVC();
     autoInsertRegistrationDate();
+    autoInsertDocumentDate();
+    autoInsertPostuplenieDate();
 
     document.querySelectorAll("textarea").forEach((el) => {
         auto_grow(el);
@@ -127,6 +131,48 @@ window.addEventListener("load", async () => {
     form.fileUploader = fileUploader;
     form.outputLetter = document.querySelector("#output-select");
 })
+
+async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMultiSelect) {
+
+    outputSelect.innerHTML = "";
+    outputSelect.disabled = false;
+    const option = document.createElement("option");
+    option.innerText = "Выберите вариант";
+    option.disabled = true;
+    option.selected = true;
+    option.hidden = true;
+    outputSelect.appendChild(option)
+
+    if (!yearMultiSelect.selectedValue) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+        return;
+    }
+    if (monthMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+        return;
+    }
+
+    const data = await findOutputLettersByYears([yearMultiSelect.selectedValue]);
+
+    let outputLettersFiltered = data.filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()));
+
+    if(outputLettersFiltered.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+    }
+
+    outputLettersFiltered.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.documentNumber;
+        option.value = element.id;
+        outputSelect.appendChild(option);
+    })
+}
 
 function getTagsMultiselectInstance() {
     const data = [];
@@ -389,26 +435,25 @@ async function saveDocument() {
 }
 
 function autoInsertRegistrationDate() {
-    document.getElementById("registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
-    document.getElementById("registration-date-auto-insert-info").hidden = false;
-    document.getElementById("registration-date").oninput = () => {
-        document.getElementById("registration-date-auto-insert-info").hidden = true;
+    document.querySelector("#registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
+    document.querySelector("#registration-date-auto-insert-info").hidden = false;
+    document.querySelector("#registration-date").oninput = () => {
+        document.querySelector("#registration-date-auto-insert-info").hidden = true;
     }
 }
 
-function generateAttentionHTML(text) {
-    const attention = document.createElement("div");
-    attention.classList.add("attention-on-submit");
+function autoInsertDocumentDate() {
+    document.querySelector("#date-doc").value = new Date(Date.now()).toISOString().split('T')[0];
+    document.querySelector("#date-doc-auto-insert-info").hidden = false;
+    document.querySelector("#date-doc").oninput = () => {
+        document.querySelector("#date-doc-auto-insert-info").hidden = true;
+    }
+}
 
-    const icon = document.createElement("div");
-    icon.classList.add("attention-icon");
-
-    const p = document.createElement("p");
-    icon.classList.add("attention-text");
-    p.innerText = text;
-
-    attention.appendChild(icon);
-    attention.appendChild(p);
-
-    return attention;
+function autoInsertPostuplenieDate() {
+    document.querySelector("#postuplenie-date").value = new Date(Date.now()).toISOString().split('T')[0];
+    document.querySelector("#postuplenie-date-auto-insert-info").hidden = false;
+    document.querySelector("#postuplenie-date").oninput = () => {
+        document.querySelector("#postuplenie-date-auto-insert-info").hidden = true;
+    }
 }

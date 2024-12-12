@@ -17,6 +17,10 @@ public class ParticipantService {
         return participantRepository.findAll();
     }
 
+    public List<Participant> findAllActive() {
+        return participantRepository.findAllActive();
+    }
+
     public List<Participant> findSigners() {
         return participantRepository.findSigners();
     }

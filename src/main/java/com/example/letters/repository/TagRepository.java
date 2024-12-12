@@ -16,6 +16,10 @@ public class TagRepository {
         return entityManager.createQuery("SELECT t FROM Tag t ORDER BY t.id ASC", Tag.class).getResultList();
     }
 
+    public List<Tag> findAllActive() {
+        return entityManager.createQuery("SELECT t FROM Tag t WHERE t.disabled = false ORDER BY t.id ASC", Tag.class).getResultList();
+    }
+
     public Tag create (Tag tag) {
         entityManager.persist(tag);
         return tag;

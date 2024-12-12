@@ -17,6 +17,14 @@ public class TagController {
     @GET
     @Produces("application/json")
     @RolesAllowed({"letters_default", "letters_admin"})
+    public List<Tag> getTagsActive() {
+        return tagService.findAllActive();
+    }
+
+    @GET
+    @Path("withDisabled")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
     public List<Tag> getTags() {
         return tagService.findAll();
     }

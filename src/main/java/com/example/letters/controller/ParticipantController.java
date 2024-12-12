@@ -18,6 +18,14 @@ public class ParticipantController {
     @GET
     @Produces("application/json")
     @RolesAllowed({"letters_default", "letters_admin"})
+    public List<Participant> getAllActive() {
+        return participantService.findAllActive();
+    }
+
+    @GET
+    @Path("withDisabled")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
     public List<Participant> getAll() {
         return participantService.findAll();
     }

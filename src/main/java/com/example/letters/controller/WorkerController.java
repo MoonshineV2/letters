@@ -28,6 +28,18 @@ public class WorkerController {
     @GET
     @Produces("application/json")
     @RolesAllowed({"letters_default", "letters_admin"})
+    public List<WorkerDto> getAllActive() {
+        List<WorkerDto> workers = workerService.findAllActive().stream()
+                .map(WorkerDto::fromWorker)
+                .collect(Collectors.toList());
+
+        return workers;
+    }
+
+    @GET
+    @Path("withDisabled")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
     public List<WorkerDto> getAll() {
         List<WorkerDto> workers = workerService.findAll().stream()
                 .map(WorkerDto::fromWorker)

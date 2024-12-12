@@ -22,6 +22,9 @@ public class WorkerService {
     public List<Worker> findAll() {
         return workerRepository.findAll();
     }
+    public List<Worker> findAllActive() {
+        return workerRepository.findAllActive();
+    }
 
     public Worker findById(long id) {
          return workerRepository.findById(id)

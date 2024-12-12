@@ -69,7 +69,9 @@ window.addEventListener("load", async () => {
         if (e.target.checked) {
             monthMultiSelect.disabled = false;
             yearMultiSelect.disabled = false;
-            document.querySelector("#input-select").disabled = false;
+            if (document.querySelector("#input-select").children.length > 1) {
+                document.querySelector("#input-select").disabled = false;
+            }
         }
         else {
             monthMultiSelect.disabled = true;
@@ -83,7 +85,7 @@ window.addEventListener("load", async () => {
             onInputYearOrMonthChange(document.querySelector("#input-select"), yearMultiSelect, monthMultiSelect);
         }
     })
-    yearMultiSelect = new MultiSelect(document.getElementById("years"), {
+    yearMultiSelect = new SingleSelect(document.getElementById("years"), {
         onChange: function(value, text, element) {
             onInputYearOrMonthChange(document.querySelector("#input-select"), yearMultiSelect, monthMultiSelect);
         }
@@ -100,6 +102,8 @@ window.addEventListener("load", async () => {
     const signersSelect = getSingleSelectInstance(document.querySelector("#signer-select"), workerSigners, "id", "initials");
 
     setActualNumberIVC();
+    autoInsertDocumentDate();
+    autoInsertRegistrationDate();
 
     document.querySelectorAll("textarea").forEach((el) => {
         auto_grow(el);
@@ -157,6 +161,49 @@ async function getTags() {
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
         }
+    })
+}
+
+async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMultiSelect) {
+
+    inputSelect.innerHTML = "";
+    inputSelect.disabled = false;
+    const option = document.createElement("option");
+    option.innerText = "Выберите вариант";
+    option.disabled = true;
+    option.selected = true;
+    option.hidden = true;
+    inputSelect.appendChild(option)
+
+    if (yearMultiSelect.selectedValue === null) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        inputSelect.disabled = true;
+        return;
+    }
+    if (monthMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        inputSelect.disabled = true;
+        return;
+    }
+
+    const data = await findInputLettersByYears([yearMultiSelect.selectedValue]);
+
+    let inputLettersFiltered = data.filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()))
+
+
+    if(inputLettersFiltered.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        inputSelect.disabled = true;
+    }
+
+    inputLettersFiltered.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.numberIVC;
+        option.value = element.id;
+        inputSelect.appendChild(option);
     })
 }
 
@@ -370,4 +417,20 @@ async function saveDocument() {
 }
 function isNumeric(value) {
     return /^-?\d+$/.test(value);
+}
+
+function autoInsertRegistrationDate() {
+    document.querySelector("#registration-date").value = new Date(Date.now()).toISOString().split('T')[0];
+    document.querySelector("#registration-date-auto-insert-info").hidden = false;
+    document.querySelector("#registration-date").oninput = () => {
+        document.querySelector("#registration-date-auto-insert-info").hidden = true;
+    }
+}
+
+function autoInsertDocumentDate() {
+    document.querySelector("#date-doc").value = new Date(Date.now()).toISOString().split('T')[0];
+    document.querySelector("#date-doc-auto-insert-info").hidden = false;
+    document.querySelector("#date-doc").oninput = () => {
+        document.querySelector("#date-doc-auto-insert-info").hidden = true;
+    }
 }

@@ -17,6 +17,10 @@ public class WorkgroupRepository {
         return entityManager.createQuery("SELECT w FROM Workgroup w ORDER BY w.id ASC", Workgroup.class).getResultList();
     }
 
+    public List<Workgroup> findAllActive() {
+        return entityManager.createQuery("SELECT w FROM Workgroup w WHERE w.disabled = false ORDER BY w.id ASC", Workgroup.class).getResultList();
+    }
+
     public Workgroup findById(int id) {
         return entityManager.find(Workgroup.class, id);
     }

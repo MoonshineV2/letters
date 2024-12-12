@@ -25,6 +25,9 @@ public class OriginAndAddress {
     @Column(name = "kod_adm")
     private int kodADM;
 
+    @Column(name = "disabled")
+    private boolean disabled;
+
     public OriginAndAddress(int id) {
         this.id = id;
     }

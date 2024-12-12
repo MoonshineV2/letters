@@ -17,6 +17,10 @@ public class OriginAndAddressesService {
         return originAndAddressRepository.findAll();
     }
 
+    public List<OriginAndAddress> findAllActive() {
+        return originAndAddressRepository.findAllActive();
+    }
+
     public OriginAndAddress create(OriginAndAddress originAndAddress) {
 
         if (originAndAddress.getShortName() == null || originAndAddress.getShortName().isEmpty()) {

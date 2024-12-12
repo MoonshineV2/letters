@@ -17,6 +17,10 @@ public class TagService {
         return tagRepository.findAll();
     }
 
+    public List<Tag> findAllActive() {
+        return tagRepository.findAllActive();
+    }
+
     public Tag create(Tag tag) {
 
         if (tag.getText() == null || tag.getText().isEmpty()) {

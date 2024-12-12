@@ -17,6 +17,10 @@ public class OriginAndAddressRepository {
         return entityManager.createQuery("SELECT oa FROM OriginAndAddress oa ORDER BY oa.id ASC", OriginAndAddress.class).getResultList();
     }
 
+    public List<OriginAndAddress> findAllActive() {
+        return entityManager.createQuery("SELECT oa FROM OriginAndAddress oa WHERE oa.disabled = false ORDER BY oa.id ASC", OriginAndAddress.class).getResultList();
+    }
+
     public OriginAndAddress create(OriginAndAddress originAndAddress) {
         entityManager.persist(originAndAddress);
 

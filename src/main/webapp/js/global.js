@@ -42,8 +42,13 @@ function addCallbackToQueue(callback) {
     }
 }
 
-async function findOriginsAndAddresses(){
-    const response = await fetch(BACKEND_API_URL + '/api/originsAndAddresses');
+async function findOriginsAndAddresses(withDisabled){
+    let url = BACKEND_API_URL + '/api/originsAndAddresses';
+    if (withDisabled && withDisabled === true) {
+        url += "/withDisabled"
+    }
+
+    const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error("Источники и адреса не были загружены с сервера");
@@ -188,10 +193,15 @@ function setWorkerSignersOptions(selectHTML, signers, addDefaultOption) {
     }
 
 }
-async function findParticipants() {
+async function findParticipants(withDisabled) {
+    let url = BACKEND_API_URL + '/api/participants';
+    if (withDisabled && withDisabled === true) {
+        url += "/withDisabled"
+    }
+
     let response;
     try {
-        response = await fetch(BACKEND_API_URL + '/api/participants');
+        response = await fetch(url);
     }
     catch (error) {
         alert(error.message);
@@ -264,8 +274,13 @@ function setWorkerExecutorsOptions(selectHTML, executors) {
     }
 }
 
-async function findWorkers() {
-    const response = await fetch(BACKEND_API_URL + '/api/workers');
+async function findWorkers(withDisabled) {
+    let url = BACKEND_API_URL + '/api/workers';
+    if (withDisabled && withDisabled === true) {
+        url += "/withDisabled"
+    }
+
+    const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error("Сотрудники отдела не были загружены с сервера");
@@ -311,8 +326,12 @@ function setWorkersOptions(selectHTML, workers, addDefaultOption) {
     }
 }
 
-async function findDocumentTypes() {
-    const response = await fetch(BACKEND_API_URL + '/api/documentTypes');
+async function findDocumentTypes(withDisabled) {
+    let url = BACKEND_API_URL + '/api/documentTypes';
+    if (withDisabled && withDisabled === true) {
+        url += "/withDisabled"
+    }
+    const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error("Типы письма не были загружены с сервера");
@@ -343,10 +362,15 @@ function setDocumentTypesOptions(selectHTML, types, addDefaultOption) {
     })
 }
 
-async function findTags() {
+async function findTags(withDisabled) {
+    let url = BACKEND_API_URL + '/api/tags';
+    if (withDisabled && withDisabled === true) {
+        url += "/withDisabled"
+    }
+
     let response;
     try {
-        response = await fetch(BACKEND_API_URL + '/api/tags');
+        response = await fetch(url);
     }
     catch (error) {
         alert(error.message);
@@ -702,153 +726,13 @@ async function tableToExcel(tableData) {
     a.click();
 }
 
-async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMultiSelect) {
-
-    outputSelect.innerHTML = "";
-    outputSelect.disabled = false;
-    const option = document.createElement("option");
-    option.innerText = "Выберите вариант";
-    option.disabled = true;
-    option.selected = true;
-    option.hidden = true;
-    outputSelect.appendChild(option)
-
-    if (yearMultiSelect.selectedItems.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        outputSelect.disabled = true;
-        return;
-    }
-    if (monthMultiSelect.selectedItems.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        outputSelect.disabled = true;
-        return;
+async function findWorkgroups(withDisabled) {
+    let url = BACKEND_API_URL + `/api/workgroups`;
+    if (withDisabled && withDisabled === true) {
+        url += "/withDisabled"
     }
 
-    keys = Object.keys(outputLetters);
-    neededYears = [];
-
-    yearMultiSelect.selectedValues.forEach(el => {
-        if (!keys.includes(el)) {
-            neededYears.push(el);
-        }
-    })
-
-    neededYears.forEach(el => {
-        outputLetters[el] = [];
-    })
-
-    if (neededYears.length > 0) {
-        const data = await findOutputLettersByYears(neededYears);
-
-        data.forEach(el => {
-            outputLetters[el.year].push(el);
-        })
-    }
-
-    let outputLettersFiltered = Object.values(outputLetters)
-        .flat()
-        .filter(el => yearMultiSelect.selectedValues.includes(el.year.toString()))
-        .filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()))
-
-
-    if(outputLettersFiltered.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        outputSelect.disabled = true;
-    }
-
-    outputLettersFiltered.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.numberIVC;
-        option.value = element.id;
-        outputSelect.appendChild(option);
-    })
-
-    //getSingleSelectInstance(outputSelect, outputLettersFiltered, "id", "documentNumber")
-
-    if(outputLettersFiltered.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        outputSelect.disabled = true;
-    }
-
-    outputLettersFiltered.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.documentNumber;
-        option.value = element.id;
-        outputSelect.appendChild(option);
-    })
-}
-
-async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMultiSelect) {
-
-    inputSelect.innerHTML = "";
-    inputSelect.disabled = false;
-    const option = document.createElement("option");
-    option.innerText = "Выберите вариант";
-    option.disabled = true;
-    option.selected = true;
-    option.hidden = true;
-    inputSelect.appendChild(option)
-
-    if (yearMultiSelect.selectedItems.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        inputSelect.disabled = true;
-        return;
-    }
-    if (monthMultiSelect.selectedItems.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        inputSelect.disabled = true;
-        return;
-    }
-
-    keys = Object.keys(inputLetters);
-    neededYears = [];
-
-    yearMultiSelect.selectedValues.forEach(el => {
-        if (!keys.includes(el)) {
-            neededYears.push(el);
-        }
-    })
-
-    neededYears.forEach(el => {
-        inputLetters[el] = [];
-    })
-
-    if (neededYears.length > 0) {
-        const data = await findInputLettersByYears(neededYears);
-
-        data.forEach(el => {
-            inputLetters[el.year].push(el);
-        })
-    }
-
-    let inputLettersFiltered = Object.values(inputLetters)
-        .flat()
-        .filter(el => yearMultiSelect.selectedValues.includes(el.year.toString()))
-        .filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()))
-
-
-    if(inputLettersFiltered.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        inputSelect.disabled = true;
-    }
-
-    inputLettersFiltered.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.numberIVC;
-        option.value = element.id;
-        inputSelect.appendChild(option);
-    })
-}
-
-async function findWorkgroups() {
-    const response = await fetch(BACKEND_API_URL + `/api/workgroups`);
+    const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error(`Response status: ${response.status}`);
@@ -930,7 +814,7 @@ const getMethodRequest = (object) => {
     return "POST";
 }
 
-function getSingleSelectInstance(root, data, idName, textName, onChange) {
+function getSingleSelectInstance(root, data, idName, textName, onChange, placeholder) {
     const selectData = [];
     data.forEach(element => {
         selectData.push({
@@ -941,7 +825,7 @@ function getSingleSelectInstance(root, data, idName, textName, onChange) {
 
     return  new SingleSelect(root, {
         data: selectData,
-        placeholder: "Выберите вариант",
+        placeholder: placeholder ? placeholder : "Выберите вариант",
         search: true,
         listAll: true,
         onChange: onChange ? onChange : () => {}

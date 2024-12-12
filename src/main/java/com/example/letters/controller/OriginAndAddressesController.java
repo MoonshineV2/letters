@@ -19,6 +19,14 @@ public class OriginAndAddressesController {
     @GET
     @Produces("application/json")
     @RolesAllowed({"letters_default", "letters_admin"})
+    public List<OriginAndAddress> findAllActive() {
+        return originAndAddressesService.findAllActive();
+    }
+
+    @GET
+    @Path("withDisabled")
+    @Produces("application/json")
+    @RolesAllowed({"letters_admin"})
     public List<OriginAndAddress> findAll() {
         return originAndAddressesService.findAll();
     }

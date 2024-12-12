@@ -23,6 +23,8 @@ public class Workgroup {
     @JoinColumn(name="leader_id")
     private Worker leader;
 
+    @Column(name = "disabled")
+    private boolean disabled;
 
     public Workgroup(int id) {
         this.id = id;

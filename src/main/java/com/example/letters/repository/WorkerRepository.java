@@ -16,6 +16,11 @@ public class WorkerRepository {
     public List<Worker> findAll() {
         return entityManager.createQuery("SELECT w FROM Worker w ORDER BY w.id ASC", Worker.class).getResultList();
     }
+
+    public List<Worker> findAllActive() {
+        return entityManager.createQuery("SELECT w FROM Worker w WHERE w.disabled = false ORDER BY w.id ASC", Worker.class).getResultList();
+    }
+
     public Optional<Worker> findById(Long id) {
         return Optional.ofNullable(entityManager.find(Worker.class, id));
     }

@@ -17,6 +17,10 @@ public class WorkgroupService {
         return workgroupRepository.findAll();
     }
 
+    public List<Workgroup> findAllActive() {
+        return workgroupRepository.findAllActive();
+    }
+
     public Workgroup create(Workgroup workgroup) {
 
         if (workgroup.getName() == null || workgroup.getName().isEmpty()) {

@@ -23,6 +23,8 @@ public class Participant {
     private String post;
     @Column(name = "can_sign")
     private boolean canSign;
+    @Column(name = "disabled")
+    private boolean disabled;
 
     public Participant(int id) {
         this.id = id;

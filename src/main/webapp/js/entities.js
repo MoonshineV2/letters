@@ -63,13 +63,13 @@ class InputLetter {
         id:"Id",
         year:"Год",
         numberIVC:"Номер ИВЦ ЖА",
-        createDate:"Дата создания",
+        file:"Файл",
         registrationDate:"Дата регистрации",
         postuplenieDate:"Дата поступления",
         documentDate:"Дата письма",
         documentNumber:"Номер письма",
         documentName:"Название файла",
-        documentType:"Тип документа",
+        documentType:"Тип письма",
         origin:"Источник",
         signer:"Подписант",
         executor:"Исполнитель",
@@ -82,7 +82,7 @@ class InputLetter {
         note:"Примечание",
         targetWorker:"Кому расписано",
         reserve:"Резерв",
-        file:"Файл"
+        createDate:"Дата записи в БД"
     }
 
     static tableCellsResolver = {
@@ -182,14 +182,14 @@ class InputLetter {
         }
 
         let documentTypeOptions = '';
-        documentTypeOptions += `<option value="" selected>Не выбрано</option>`;
-        documentTypes.forEach((dt) => {
-            if (this.documentType && dt.id === this.documentType.id) {
-                documentTypeOptions += `<option value="${dt.id}" selected>${dt.name}</option>`;
-            }
-            else {
-                documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
-            }
+        if (this.documentType.id > 0) {
+            documentTypeOptions += `<option value="${this.documentType.id}" selected>${this.documentType.name}</option>`;
+        }
+        else {
+            documentTypeOptions += `<option value="" selected>Не выбрано</option>`;
+        }
+        documentTypes.filter(el => el.id !== this.documentType.id).forEach((dt) => {
+            documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
         })
 
         let originAndAddressOptions = '';
@@ -204,14 +204,14 @@ class InputLetter {
         })
 
         let signerOptions = '';
-        signerOptions += `<option value="" selected>Не выбрано</option>`;
-        participantSigners.forEach((sr) => {
-            if (this.signer && sr.id === this.signer.id) {
-                signerOptions += `<option value="${sr.id}" selected>${sr.initials}</option>`;
-            }
-            else {
-                signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
-            }
+        if (this.signer.id > 0) {
+            signerOptions += `<option value="${this.signer.id}" selected>${this.signer.initials}</option>`;
+        }
+        else {
+            signerOptions += `<option value="" selected disabled hidden>Не выбрано</option>`;
+        }
+        participantSigners.filter(el => el.id !== this.signer.id).forEach((sr) => {
+            signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
         })
 
         let executorOptions = '';
@@ -565,12 +565,12 @@ class OutputLetter {
         id:"Id",
         year:"Год",
         numberIVC:"Номер ИВЦ ЖА",
-        createDate:"Дата создания",
+        file:"Файл",
         registrationDate:"Дата регистрации",
         documentDate:"Дата письма",
         documentNumber:"Номер письма",
         documentName:"Название файла",
-        documentType:"Тип документа",
+        documentType:"Тип письма",
         address:"Куда направлено",
         targetParticipant:"Кому направлено",
         signer:"Подписант",
@@ -583,7 +583,7 @@ class OutputLetter {
         tags:"Теги",
         note:"Примечание",
         reserve:"Резерв",
-        file:"Файл"
+        createDate:"Дата записи в БД"
     }
 
     static tableCellsResolver = {
@@ -995,6 +995,7 @@ class OriginAndAddress {
     name = "";
     shortName = "";
     kodADM;
+    disabled;
 
     constructor(origin) {
         this.id = origin.id;
@@ -1002,6 +1003,7 @@ class OriginAndAddress {
         if (origin.shortName)
             this.shortName = origin.shortName;
         this.kodADM = origin.kodADM;
+        this.disabled = origin.disabled;
     }
 
     static createEventName = "OriginAndAddressCreated";
@@ -1135,6 +1137,10 @@ class OriginAndAddress {
                             <p id="origin-address-kodadm-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                         </div>
                 </div>
+                <div class="custom-checkbox">
+                    <input id="origin-address-disabled" type="checkbox" ${this.disabled ? "checked" : ""}>
+                    <label for="origin-address-disabled">Неактивен</label>
+                </div>
             </div>
         `;
 
@@ -1182,6 +1188,7 @@ class OriginAndAddress {
             clonedOriginAndAddress.name = bodyWrapper.querySelector("#origin-address-name").value;
             clonedOriginAndAddress.shortName = bodyWrapper.querySelector("#origin-address-shortname").value;
             clonedOriginAndAddress.kodADM = bodyWrapper.querySelector("#origin-address-kodadm").value;
+            clonedOriginAndAddress.disabled = bodyWrapper.querySelector("#origin-address-disabled").checked;
 
             try {
                 const returned  = await saveOrUpdateOriginAndAddress(clonedOriginAndAddress);
@@ -1207,6 +1214,7 @@ class Participant {
     initials = "";
     post;
     canSign;
+    disabled;
 
     constructor(participant) {
         this.id = participant.id;
@@ -1215,6 +1223,7 @@ class Participant {
             this.initials = participant.initials;
         this.post = participant.post;
         this.canSign = participant.canSign;
+        this.disabled = participant.disabled;
     }
 
     compare(another) {
@@ -1363,6 +1372,10 @@ class Participant {
                     <input id="participant-cansign" type="checkbox" ${this.canSign ? 'checked' : ""}>
                     <label for="participant-cansign">${Participant.locale.canSign.toLowerCase()}</label>
                 </div>
+                <div class="custom-checkbox">
+                    <input id="worker-disabled" type="checkbox" ${this.disabled ? "checked" : ""}>
+                    <label for="worker-disabled">Неактивен</label>
+                </div>
             </div>
         `;
 
@@ -1411,6 +1424,7 @@ class Participant {
             clonedParticipant.initials = bodyWrapper.querySelector("#participant-initials").value;
             clonedParticipant.post = bodyWrapper.querySelector("#participant-post").value;
             clonedParticipant.canSign = bodyWrapper.querySelector("#participant-cansign").checked;
+            clonedParticipant.disabled = bodyWrapper.querySelector("#worker-disabled").checked;
 
             try {
                 const returned  = await saveOrUpdateParticipant(clonedParticipant);
@@ -1438,6 +1452,7 @@ class Worker {
     canSign;
     workgroupId;
     workgroupName;
+    disabled;
 
     constructor(worker) {
         this.id = worker.id;
@@ -1448,6 +1463,7 @@ class Worker {
         this.canSign = worker.canSign;
         this.workgroupId = worker.workgroupId;
         this.workgroupName = worker.workgroupName;
+        this.disabled = worker.disabled;
     }
 
     static changeEventName = "WorkerChanged";
@@ -1632,6 +1648,10 @@ class Worker {
                     <input id="worker-cansign" type="checkbox" ${this.canSign ? "checked" : ""}>
                     <label for="worker-cansign">${Worker.locale.canSign.toLowerCase()}</label>
                 </div>
+                <div class="custom-checkbox">
+                    <input id="worker-disabled" type="checkbox" ${this.disabled ? "checked" : ""}>
+                    <label for="worker-disabled">Неактивен</label>
+                </div>
             </div>
         `;
 
@@ -1694,6 +1714,7 @@ class Worker {
             clonedWorker.post = bodyWrapper.querySelector("#worker-post").value;
             clonedWorker.workgroupId = bodyWrapper.querySelector("#workgroup-select").value;
             clonedWorker.canSign = bodyWrapper.querySelector("#worker-cansign").checked;
+            clonedWorker.disabled = bodyWrapper.querySelector("#worker-disabled").checked;
 
             try {
                 const returned  = await saveOrUpdateWorker(clonedWorker);
@@ -1717,11 +1738,14 @@ class DocumentType {
 
     id;
     name = "";
+    disabled;
 
     constructor(documentType) {
         this.id = documentType.id;
         if (documentType.name)
             this.name = documentType.name;
+
+        this.disabled = documentType.disabled;
     }
 
     static createEventName = "DocumentTypeCreated";
@@ -1750,10 +1774,10 @@ class DocumentType {
             <div class="fields">
                 <div class="custom-input">
                         <div class="field-container">
-                            <label for="doctype-name">Название типа документа</label>
+                            <label for="doctype-name">Название типа письма</label>
                             <input id="doctype-name" type="text">
                             <p id="doctype-name-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
-                        </d/iv>
+                        </div>
                 </div>
             </div>
         `;
@@ -1810,8 +1834,12 @@ class DocumentType {
         let body = `
             <div class="fields">
                 <div class="custom-input">
-                        <label for="dt-name">Название типа документа</label>
+                        <label for="dt-name">Название типа письма</label>
                         <input id="dt-name" type="text" value="${this.name}">
+                </div>
+                <div class="custom-checkbox">
+                    <input id="dt-disabled" type="checkbox" ${this.disabled ? "checked" : ""}>
+                    <label for="dt-disabled">Неактивен</label>
                 </div>
             </div>
         `;
@@ -1858,6 +1886,7 @@ class DocumentType {
             const clonedDocType = {...this};
 
             clonedDocType.name = bodyWrapper.querySelector("#dt-name").value;
+            clonedDocType.disabled = bodyWrapper.querySelector("#dt-disabled").checked;
 
             try {
                 const returnedDocType  = await saveOrUpdateDocumentType(clonedDocType);
@@ -1914,10 +1943,12 @@ class Tags {
 class Tag {
     id;
     text;
+    disabled;
 
     constructor(data) {
         this.id = data.id;
         this.text = data.text;
+        this.disabled = data.disabled;
     }
 
     static changeEventName = "tagChanged";
@@ -1991,6 +2022,10 @@ class Tag {
                         <label for="tag-name">Название тега</label>
                         <input id="tag-name" type="text" value="${this.text}">
                 </div>
+                <div class="custom-checkbox">
+                    <input id="tag-disabled" type="checkbox" ${this.disabled ? "checked" : ""}>
+                    <label for="tag-disabled">Неактивен</label>
+                </div>
             </div>
         `;
 
@@ -2036,6 +2071,7 @@ class Tag {
             const clonedTag = {...this};
 
             clonedTag.text = bodyWrapper.querySelector("#tag-name").value;
+            clonedTag.disabled = bodyWrapper.querySelector("#tag-disabled").checked;
 
             try {
                 const returnedTag  = await saveOrUpdateTag(clonedTag);
@@ -2061,12 +2097,14 @@ class Workgroup {
     name;
     leaderId;
     leaderName;
+    disabled;
 
     constructor(data) {
         this.id = data.id;
         this.name = data.name;
         this.leaderId = data.leaderId;
         this.leaderName = data.leaderName;
+        this.disabled = data.disabled;
     }
 
     static createEventName = "WorkgroupCreated"
@@ -2173,6 +2211,10 @@ class Workgroup {
                     <select name="leader" id="wg-leader-select">
                     </select>
                 </div>
+                <div class="custom-checkbox">
+                    <input id="wg-disabled" type="checkbox" ${this.disabled ? "checked" : ""}>
+                    <label for="wg-disabled">Неактивен</label>
+                </div>
             </div>
         `;
 
@@ -2232,6 +2274,7 @@ class Workgroup {
 
             clonedWorkgroup.name = bodyWrapper.querySelector("#wg-name").value;
             clonedWorkgroup.leaderId = bodyWrapper.querySelector("#wg-leader-select").value;
+            clonedWorkgroup.disabled = bodyWrapper.querySelector("#wg-disabled").checked;
 
             try {
                 const returnedWorkgroup  = await saveOrUpdateWorkgroup(clonedWorkgroup);

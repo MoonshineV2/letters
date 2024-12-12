@@ -17,6 +17,10 @@ public class ParticipantRepository {
         return entityManager.createQuery("SELECT p FROM Participant p ORDER BY p.id ASC", Participant.class).getResultList();
     }
 
+    public List<Participant> findAllActive() {
+        return entityManager.createQuery("SELECT p FROM Participant p WHERE p.disabled = false ORDER BY p.id ASC", Participant.class).getResultList();
+    }
+
     public List<Participant> findSigners() {
         return entityManager.createQuery("SELECT p FROM Participant p WHERE p.canSign = true ORDER BY p.id ASC", Participant.class).getResultList();
     }
