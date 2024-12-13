@@ -37,6 +37,18 @@ public class InputLetterRepository {
                 .getResultList();
     }
 
+    public List<InputLetter> findByDates(int year, List<Integer> months) {
+        return (List<InputLetter>) entityManager.createQuery(
+                "SELECT il from InputLetter il " +
+                        "where (year(il.documentDate) in :year and month(il.documentDate) in :months) " +
+                        "or (year(il.registrationDate) in :year and month(il.registrationDate) in :months) " +
+                        "or (year(il.postuplenieDate) in :year and month(il.postuplenieDate) in :months)" +
+                        "ORDER BY il.id ASC")
+                .setParameter("year", year)
+                .setParameter("months", months)
+                .getResultList();
+    }
+
     public List<InputLetter> findByFilters(
             int numberIVC,
             String documentNumber,

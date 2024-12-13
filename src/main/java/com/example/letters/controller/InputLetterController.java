@@ -1,10 +1,8 @@
 package com.example.letters.controller;
 
-import com.example.letters.dto.ActualNumberIVC;
-import com.example.letters.dto.InputLetterDto;
-import com.example.letters.dto.LetterFilters;
-import com.example.letters.dto.Years;
+import com.example.letters.dto.*;
 import com.example.letters.model.InputLetter;
+import com.example.letters.model.OutputLetter;
 import com.example.letters.service.InputLetterService;
 import com.example.letters.util.DBFile;
 import com.example.letters.util.FileNameEncoder;
@@ -52,6 +50,18 @@ public class InputLetterController {
     @RolesAllowed({"letters_default", "letters_admin"})
     public List<InputLetterDto> getByYears(Years years) {
         List<InputLetter> letters = inputLetterService.findByYears(years.getYears());
+        return letters.stream()
+                .map(InputLetterDto::fromInputLetter)
+                .collect(Collectors.toList());
+    }
+
+    @POST
+    @Path("getByDates")
+    @Consumes("application/json")
+    @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
+    public List<InputLetterDto> getByDates(DatesFilter datesFilter) {
+        List<InputLetter> letters = inputLetterService.findByDates(datesFilter.getYear(), datesFilter.getMonths());
         return letters.stream()
                 .map(InputLetterDto::fromInputLetter)
                 .collect(Collectors.toList());

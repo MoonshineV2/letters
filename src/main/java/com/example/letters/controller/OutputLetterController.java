@@ -54,6 +54,18 @@ public class OutputLetterController {
                 .collect(Collectors.toList());
     }
 
+    @POST
+    @Path("getByDates")
+    @Consumes("application/json")
+    @Produces("application/json")
+    @RolesAllowed({"letters_default", "letters_admin"})
+    public List<OutputLetterDto> getByDates(DatesFilter datesFilter) {
+        List<OutputLetter> letters = outputLetterService.findByDates(datesFilter.getYear(), datesFilter.getMonths());
+        return letters.stream()
+                .map(OutputLetterDto::fromOutputLetter)
+                .collect(Collectors.toList());
+    }
+
     @GET
     @Path("{id}/file")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)

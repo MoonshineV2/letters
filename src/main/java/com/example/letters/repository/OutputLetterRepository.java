@@ -28,6 +28,18 @@ public class OutputLetterRepository {
                 .getResultList();
     }
 
+    public List<OutputLetter> findByDates(int year, List<Integer> months) {
+        return (List<OutputLetter>) entityManager.createQuery(
+                "SELECT ol " +
+                        "from OutputLetter ol " +
+                        "where (year(ol.documentDate) in :year and month(ol.documentDate) in :months) " +
+                        "or (year(ol.registrationDate) in :year and month(ol.registrationDate) in :months)" +
+                        "ORDER BY ol.id ASC")
+                .setParameter("year", year)
+                .setParameter("months", months)
+                .getResultList();
+    }
+
     public List<OutputLetter> findByFilters(
             int numberIVC,
             String documentNumber,

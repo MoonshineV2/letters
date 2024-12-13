@@ -49,6 +49,10 @@ public class InputLetterService {
         return inputLetterRepository.findByYears(years);
     }
 
+    public List<InputLetter> findByDates(int year, List<Integer> months) {
+        return inputLetterRepository.findByDates(year, months);
+    }
+
     public List<InputLetter> findByFilters(LetterFilters filters) {
         return inputLetterRepository.findByFilters(
                 filters.getNumberIVC(),

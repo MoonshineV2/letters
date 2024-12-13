@@ -634,7 +634,9 @@ async function getInputLetterFileById(id, filename) {
     });
 
     if (!response.ok) {
-        throw new Error(await response.text());
+        console.error(await response.text());
+        //throw new Error(await response.text());
+        return null;
     }
 
     let blob =  await response.blob();

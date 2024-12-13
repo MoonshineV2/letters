@@ -158,7 +158,17 @@ async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMul
 
     const data = await findOutputLettersByYears([yearMultiSelect.selectedValue]);
 
-    let outputLettersFiltered = data.filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()));
+
+    let outputLettersFiltered = new Set();// = data.filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()));
+
+    data.forEach(el => {
+        console.log(monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1)).toString())
+        if (monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString())) {
+            outputLettersFiltered.add(el);
+        }
+    });
+
+    console.log(outputLettersFiltered);
 
     if(outputLettersFiltered.length === 0) {
         option.innerText = "Нет писем";
