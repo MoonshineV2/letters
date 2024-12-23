@@ -15,6 +15,12 @@ let workersSigners;
 let documentTypes;
 let tags;
 
+let originsAndAddressesFilter;
+let participantSignersFilter;
+let participantsFilter;
+let workersFilter;
+let workersSignersFilter;
+
 let requests = Promise.all([
     findOriginsAndAddresses(true),
     findParticipantSigners(),
@@ -31,6 +37,20 @@ let requests = Promise.all([
     workersSigners = data[4];
     documentTypes = data[5];
     tags = data[6];
+
+    originsAndAddressesFilter = {...originsAndAddresses};
+    participantSignersFilter = {...participantSigners};
+    participantsFilter = {...participants};
+    workersFilter = {...workers};
+    workersSignersFilter = {...workersSigners};
+
+    originsAndAddresses = originsAndAddresses.filter(el => el.disabled === false);
+    participants = participants.filter(el => el.disabled === false);
+    participantSigners = participantSigners.filter(el => el.disabled === false);
+    workers = workers.filter(el => el.disabled === false);
+    workersSigners = workersSigners.filter(el => el.disabled === false);
+    documentTypes = documentTypes.filter(el => el.disabled === false);
+    tags = tags.filter(el => el.disabled === false);
 })
 
 window.onload = async function () {
@@ -50,7 +70,7 @@ window.onload = async function () {
     originsAndAddressesMultiSelect = getOriginsMultiselectInstance();
     signerMultiSelect = getParticipantSignersMultiselectInstance("#signer-select");
     tagsMultiSelect = getTagsMultiselectInstance();
-    executorMultiSelect = getExecutorsMultiselectInstance();
+    executorMultiSelect = getParticipantExecutorsMultiselectInstance();
 
     let dragSrcEl;
 
@@ -120,10 +140,12 @@ window.onload = async function () {
         if (letterType.value === "input") {
             document.querySelector("label[for='originAndAddress-select']").innerText = "Источники";
             signerMultiSelect = getParticipantSignersMultiselectInstance(signerMultiSelect.element);
+            executorMultiSelect = getParticipantExecutorsMultiselectInstance();
         }
         else {
             document.querySelector("label[for='originAndAddress-select']").innerText = "Адреса";
             signerMultiSelect = getWorkerSignersMultiselectInstance(signerMultiSelect.element);
+            executorMultiSelect = getWorkerExecutorsMultiselectInstance();
         }
     }
 }
@@ -143,8 +165,8 @@ function swapElements(node1, node2) {
 
 function getOriginsMultiselectInstance() {
     const data = [];
-    originsAndAddresses = Object.values(originsAndAddresses).sort((a,b) => a.id - b.id);
-    originsAndAddresses.forEach(element => {
+    originsAndAddressesFilter = Object.values(originsAndAddressesFilter).sort((a,b) => a.id - b.id);
+    originsAndAddressesFilter.forEach(element => {
         data.push({
             value: element.id,
             text: element.shortName
@@ -161,8 +183,8 @@ function getOriginsMultiselectInstance() {
 
 function getParticipantSignersMultiselectInstance(selector) {
     const data = [];
-    participantSigners = Object.values(participantSigners).sort((a,b) => a.id - b.id);
-    participantSigners.forEach(element => {
+    participantSignersFilter = Object.values(participantSignersFilter).sort((a,b) => a.id - b.id);
+    participantSignersFilter.forEach(element => {
         data.push({
             value: element.id,
             text: element.initials
@@ -180,8 +202,8 @@ function getParticipantSignersMultiselectInstance(selector) {
 
 function getWorkerSignersMultiselectInstance(selector) {
     const data = [];
-    workersSigners = Object.values(workersSigners).sort((a,b) => a.id - b.id);
-    workersSigners.forEach(element => {
+    workersSignersFilter = Object.values(workersSignersFilter).sort((a,b) => a.id - b.id);
+    workersSignersFilter.forEach(element => {
         data.push({
             value: element.id,
             text: element.initials
@@ -196,10 +218,29 @@ function getWorkerSignersMultiselectInstance(selector) {
         listAll: false
     })
 }
-function getExecutorsMultiselectInstance() {
+function getParticipantExecutorsMultiselectInstance() {
     const data = [];
-    participants = Object.values(participants).sort((a,b) => a.id - b.id);
-    participants.forEach(element => {
+    participantsFilter = Object.values(participantsFilter).sort((a,b) => a.id - b.id);
+    participantsFilter.forEach(element => {
+        data.push({
+            value: element.id,
+            text: element.initials
+        })
+    })
+
+    return  new MultiSelect("#executor-select", {
+        data: data,
+        placeholder: "Без фильтра",
+        search: true,
+        selectAll: true,
+        listAll: false
+    })
+}
+
+function getWorkerExecutorsMultiselectInstance() {
+    const data = [];
+    workersFilter = Object.values(workersFilter).sort((a,b) => a.id - b.id);
+    workersFilter.forEach(element => {
         data.push({
             value: element.id,
             text: element.initials

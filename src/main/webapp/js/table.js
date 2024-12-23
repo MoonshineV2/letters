@@ -372,7 +372,7 @@ class Table {
 
     sortData(field, order) {
         const fieldType = this.getFieldType(this.data, field);
-        console.log(this.data);
+        //console.log(this.data);
         if (fieldType === "number") {
             //console.log("type of number");
             if (order === "ASC") {
@@ -406,10 +406,20 @@ class Table {
 
         try {
             if (order === "ASC") {
-                this.data.sort((a,b) => a[field].compare(b[field]));
+                this.data.sort((a,b) => {
+                    if (!a[field]) return 1;
+                    if (!b[field]) return -1;
+                    return  a[field].compare(b[field])
+                    }
+                );
             }
             else if (order === "DESC"){
-                this.data.sort((a,b) => b[field].compare(a[field]));
+                this.data.sort((a,b) => {
+                        if (!a[field]) return -1;
+                        if (!b[field]) return 1;
+                        return  b[field].compare(a[field])
+                    }
+                );
             }
         }
         catch (e) {

@@ -58,7 +58,7 @@ public class OutputLetter {
 
     @ManyToOne
     @JoinColumn(name="executor_id")
-    private Participant executor;
+    private Worker executor;
 
     @Column(name = "easd_num", columnDefinition = "numeric")
     private int easdNumber;

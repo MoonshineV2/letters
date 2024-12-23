@@ -182,59 +182,74 @@ class InputLetter {
         }
 
         let documentTypeOptions = '';
-        if (this.documentType.id > 0) {
+        if (this.documentType && this.documentType.id > 0) {
             documentTypeOptions += `<option value="${this.documentType.id}" selected>${this.documentType.name}</option>`;
+            documentTypes.filter(el => el.id !== this.documentType.id).forEach((dt) => {
+                documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
+            });
         }
         else {
             documentTypeOptions += `<option value="" selected>Не выбрано</option>`;
+            documentTypes.forEach((dt) => {
+                documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
+            });
         }
-        documentTypes.filter(el => el.id !== this.documentType.id).forEach((dt) => {
-            documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
-        })
 
         let originAndAddressOptions = '';
-        if (this.origin.id > 0) {
+        if (this.origin && this.origin.id > 0) {
             originAndAddressOptions += `<option value="${this.origin.id}" selected>${this.origin.shortName}</option>`;
+            originsAndAddresses.filter(el => el.id !== this.origin.id).forEach((oa) => {
+                originAndAddressOptions += `<option value="${oa.id}">${oa.shortName}</option>`;
+            });
         }
         else {
             originAndAddressOptions += `<option value="" selected>Не выбрано</option>`;
+            originsAndAddresses.forEach((oa) => {
+                originAndAddressOptions += `<option value="${oa.id}">${oa.shortName}</option>`;
+            });
         }
-        originsAndAddresses.filter(el => el.id !== this.origin.id).forEach((oa) => {
-            originAndAddressOptions += `<option value="${oa.id}">${oa.shortName}</option>`;
-        })
 
         let signerOptions = '';
-        if (this.signer.id > 0) {
+        if (this.signer && this.signer.id > 0) {
             signerOptions += `<option value="${this.signer.id}" selected>${this.signer.initials}</option>`;
+            participantSigners.filter(el => el.id !== this.signer.id).forEach((sr) => {
+                signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
+            });
         }
         else {
             signerOptions += `<option value="" selected disabled hidden>Не выбрано</option>`;
+            participantSigners.forEach((sr) => {
+                signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
+            });
         }
-        participantSigners.filter(el => el.id !== this.signer.id).forEach((sr) => {
-            signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
-        })
 
         let executorOptions = '';
-        if (this.executor.id > 0) {
+        if (this.executor && this.executor.id > 0) {
             executorOptions += `<option value="${this.executor.id}" selected>${this.executor.initials}</option>`;
+            participants.filter(el => el.id !== this.executor.id).forEach((ex) => {
+                executorOptions += `<option value="${ex.id}">${ex.initials}</option>`;
+            });
         }
         else {
             executorOptions += `<option value="" selected disabled hidden>Не выбрано</option>`;
+            participants.forEach((ex) => {
+                executorOptions += `<option value="${ex.id}">${ex.initials}</option>`;
+            });
         }
-        participants.filter(el => el.id !== this.executor.id).forEach((ex) => {
-            executorOptions += `<option value="${ex.id}">${ex.initials}</option>`;
-        })
 
         let targetOptions = '';
-        targetOptions += `<option value="" selected>Не выбрано</option>`;
-        workers.forEach((target) => {
-            if (this.targetWorker && target.id !== this.targetWorker.id) {
-                targetOptions += `<option value="${target.id}" selected>${target.initials}</option>`;
-            }
-            else {
+        if (this.targetWorker && this.targetWorker.id > 0) {
+            targetOptions += `<option value="${this.targetWorker.id}" selected>${this.targetWorker.initials}</option>`;
+            workers.filter(el => el.id !== this.targetWorker.id).forEach((target) => {
                 targetOptions += `<option value="${target.id}">${target.initials}</option>`;
-            }
-        });
+            });
+        }
+        else {
+            executorOptions += `<option value="" selected disabled hidden>Не выбрано</option>`;
+            workers.forEach((target) => {
+                targetOptions += `<option value="${target.id}">${target.initials}</option>`;
+            });
+        }
 
         let tagsOptions = '';
         this.tags.array.forEach(selected => {
@@ -538,7 +553,7 @@ class OutputLetter {
         if (data.signer)
             this.signer = new Worker(data.signer);
         if (data.executor)
-            this.executor = new Participant(data.executor);
+            this.executor = new Worker(data.executor);
         this.easdNumber = data.easdNumber;
         if (data.inputLetter)
             this.inputLetter = new InputLetter(data.inputLetter);
@@ -672,59 +687,74 @@ class OutputLetter {
         }
 
         let documentTypeOptions = '';
-        if (this.documentType.id > 0) {
+        if (this.documentType && this.documentType.id > 0) {
             documentTypeOptions += `<option value="${this.documentType.id}" selected>${this.documentType.name}</option>`;
+            documentTypes.filter(el => el.id !== this.documentType.id).forEach((dt) => {
+                documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
+            });
         }
         else {
             documentTypeOptions += `<option value="" selected>Не выбрано</option>`;
+            documentTypes.forEach((dt) => {
+                documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
+            });
         }
-        documentTypes.filter(el => el.id !== this.documentType.id).forEach((dt) => {
-            documentTypeOptions += `<option value="${dt.id}">${dt.name}</option>`;
-        })
 
         let originAndAddressOptions = '';
-        if (this.address.id > 0) {
+        if (this.address && this.address.id > 0) {
             originAndAddressOptions += `<option value="${this.address.id}" selected>${this.address.name}</option>`;
+            originsAndAddresses.filter(el => el.id !== this.address.id).forEach((oa) => {
+                originAndAddressOptions += `<option value="${oa.id}">${oa.shortName}</option>`;
+            });
         }
         else {
             originAndAddressOptions += `<option value="" selected>Не выбрано</option>`;
+            originsAndAddresses.forEach((oa) => {
+                originAndAddressOptions += `<option value="${oa.id}">${oa.shortName}</option>`;
+            });
         }
-        originsAndAddresses.filter(el => el.id !== this.address.id).forEach((oa) => {
-            originAndAddressOptions += `<option value="${oa.id}">${oa.shortName}</option>`;
-        })
 
         let signerOptions = '';
-        if (this.signer.id > 0) {
+        if (this.signer && this.signer.id > 0) {
             signerOptions += `<option value="${this.signer.id}" selected>${this.signer.initials}</option>`;
+            workersSigners.filter(el => el.id !== this.signer.id).forEach((sr) => {
+                signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
+            });
         }
         else {
             signerOptions += `<option value="" selected>Не выбрано</option>`;
+            workersSigners.forEach((sr) => {
+                signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
+            });
         }
-        workersSigners.filter(el => el.id !== this.signer.id).forEach((sr) => {
-            signerOptions += `<option value="${sr.id}">${sr.initials}</option>`;
-        })
 
         let executorOptions = '';
-        if (this.executor.id > 0) {
+        if (this.executor && this.executor.id > 0) {
             executorOptions += `<option value="${this.executor.id}" selected>${this.executor.initials}</option>`;
+            workers.filter(el => el.id !== this.executor.id).forEach((ex) => {
+                executorOptions += `<option value="${ex.id}">${ex.initials}</option>`;
+            });
         }
         else {
             executorOptions += `<option value="" selected>Не выбрано</option>`;
+            workers.forEach((ex) => {
+                executorOptions += `<option value="${ex.id}">${ex.initials}</option>`;
+            });
         }
-        participants.filter(el => el.id !== this.executor.id).forEach((ex) => {
-            executorOptions += `<option value="${ex.id}">${ex.initials}</option>`;
-        })
 
         let targetOptions = '';
-        if (this.targetParticipant.id > 0) {
+        if (this.targetParticipant && this.targetParticipant.id > 0) {
             targetOptions += `<option value="${this.targetParticipant.id}" selected>${this.targetParticipant.initials}</option>`;
+            participants.filter(el => el.id !== this.targetParticipant.id).forEach((target) => {
+                targetOptions += `<option value="${target.id}">${target.initials}</option>`;
+            });
         }
         else {
             targetOptions += `<option value="" selected>Не выбрано</option>`;
+            participants.forEach((target) => {
+                targetOptions += `<option value="${target.id}">${target.initials}</option>`;
+            });
         }
-        participants.filter(el => el.id !== this.targetParticipant.id).forEach((target) => {
-            targetOptions += `<option value="${target.id}">${target.initials}</option>`;
-        });
 
         let tagsOptions = '';
         this.tags.array.forEach(selected => {
@@ -733,7 +763,6 @@ class OutputLetter {
         tags.filter(el => !this.tags.array.some((t) => t.id === el.id)).forEach((tag) => {
             tagsOptions += `<option value="${tag.id}">${tag.text}</option>`;
         });
-
 
         let body = `
             <div class="fields">

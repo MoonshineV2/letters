@@ -145,10 +145,6 @@ public class OutputLetterService {
             throw new IllegalArgumentException("Номер ИВЦ ЖА не задан");
         }
 
-        if (outputLetter.getEasdNumber() == 0) {
-            throw new IllegalArgumentException("Номер ЕАСД не задан");
-        }
-
         if (outputLetter.getRegistrationDate() == null) {
             throw new IllegalArgumentException("Дата регистрации не задана");
         }

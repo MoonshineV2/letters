@@ -39,7 +39,7 @@ public class OutputLetterDto {
 
     public WorkerDto signer;
 
-    public ParticipantDto executor;
+    public WorkerDto executor;
 
     public int easdNumber;
 
@@ -81,7 +81,7 @@ public class OutputLetterDto {
             dto.signer = WorkerDto.fromWorker(outputLetter.getSigner());
         }
         if (outputLetter.getExecutor() != null) {
-            dto.executor = ParticipantDto.fromParticipant(outputLetter.getExecutor());
+            dto.executor = WorkerDto.fromWorker(outputLetter.getExecutor());
         }
         dto.easdNumber = outputLetter.getEasdNumber();
         if (outputLetter.getInputLetter() != null) {
@@ -115,7 +115,7 @@ public class OutputLetterDto {
         if (address != null && address.id != 0) outputLetter.setAddress(address.toOriginAndAddress());
         if (targetParticipant != null && targetParticipant.id != 0) outputLetter.setTargetParticipant(targetParticipant.toParticipant());
         if (signer != null && signer.id != 0) outputLetter.setSigner(signer.toWorker());
-        if (executor != null && executor.id != 0) outputLetter.setExecutor(executor.toParticipant());
+        if (executor != null && executor.id != 0) outputLetter.setExecutor(executor.toWorker());
         outputLetter.setEasdNumber(easdNumber);
         if (inputLetter != null && inputLetter.id != 0) outputLetter.setInputLetter(inputLetter.toInputLetter());
         outputLetter.setAnswer(answer);

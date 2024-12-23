@@ -97,7 +97,7 @@ window.addEventListener("load", async () => {
 
     const docTypesSelect = getSingleSelectInstance(document.querySelector("#doc-type-select"), documentTypes, "id", "name");
     const originsAndAddressesSelect = getSingleSelectInstance(document.querySelector("#address-select"), originsAndAddresses, "id", "shortName");
-    const executorsSelect = getSingleSelectInstance(document.querySelector("#executor-select"), participants, "id", "initials");
+    const executorsSelect = getSingleSelectInstance(document.querySelector("#executor-select"), workers, "id", "initials");
     const targetParticipantsSelect = getSingleSelectInstance(document.querySelector("#participant-select"), participants, "id", "initials");
     const signersSelect = getSingleSelectInstance(document.querySelector("#signer-select"), workerSigners, "id", "initials");
 
