@@ -39,7 +39,7 @@ public class WorkerController {
     @GET
     @Path("withDisabled")
     @Produces("application/json")
-    @RolesAllowed({"letters_admin"})
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<WorkerDto> getAll() {
         List<WorkerDto> workers = workerService.findAll().stream()
                 .map(WorkerDto::fromWorker)

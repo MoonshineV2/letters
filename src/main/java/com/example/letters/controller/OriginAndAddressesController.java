@@ -26,7 +26,7 @@ public class OriginAndAddressesController {
     @GET
     @Path("withDisabled")
     @Produces("application/json")
-    @RolesAllowed({"letters_admin"})
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<OriginAndAddress> findAll() {
         return originAndAddressesService.findAll();
     }

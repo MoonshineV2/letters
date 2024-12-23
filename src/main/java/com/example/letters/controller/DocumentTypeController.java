@@ -29,7 +29,7 @@ public class DocumentTypeController {
     @GET
     @Path("withDisabled")
     @Produces("application/json")
-    @RolesAllowed({"letters_admin"})
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<DocumentTypeDto> getAll() {
         return documentTypeService.findAll()
                 .stream()

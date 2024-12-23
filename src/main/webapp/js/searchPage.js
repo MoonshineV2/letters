@@ -16,13 +16,13 @@ let documentTypes;
 let tags;
 
 let requests = Promise.all([
-    findOriginsAndAddresses(),
+    findOriginsAndAddresses(true),
     findParticipantSigners(),
-    findParticipants(),
-    findWorkers(),
+    findParticipants(true),
+    findWorkers(true),
     findWorkerSigners(),
-    findDocumentTypes(),
-    findTags()
+    findDocumentTypes(true),
+    findTags(true)
 ]).then((data) => {
     originsAndAddresses = data[0];
     participantSigners = data[1];

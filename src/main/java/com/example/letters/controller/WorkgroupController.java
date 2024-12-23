@@ -30,7 +30,7 @@ public class WorkgroupController {
     @GET
     @Path("withDisabled")
     @Produces("application/json")
-    @RolesAllowed({"letters_admin"})
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<WorkgroupDto> getAll() {
         List<WorkgroupDto> workgroups = workgroupService.findAll().stream()
                 .map(WorkgroupDto::fromWorkgroup)

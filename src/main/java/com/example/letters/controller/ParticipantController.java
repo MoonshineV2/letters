@@ -25,7 +25,7 @@ public class ParticipantController {
     @GET
     @Path("withDisabled")
     @Produces("application/json")
-    @RolesAllowed({"letters_admin"})
+    @RolesAllowed({"letters_default", "letters_admin"})
     public List<Participant> getAll() {
         return participantService.findAll();
     }
