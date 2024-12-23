@@ -657,7 +657,9 @@ async function getOutputLetterFileById(id, filename) {
     });
 
     if (!response.ok) {
-        throw new Error(await response.text());
+        console.error(await response.text());
+        //throw new Error(await response.text());
+        return null;
     }
 
     let blob =  await response.blob();
@@ -669,15 +671,13 @@ async function getOutputLetterFileById(id, filename) {
     return new File([blob], filename);
 }
 
-async function findOutputLettersByYears(neededYears) {
-    const response = await fetch(BACKEND_API_URL + `/api/outputLetters/findByYears`, {
+async function findOutputLettersByDates(dates) {
+    const response = await fetch(BACKEND_API_URL + `/api/outputLetters/getByDates`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            years: neededYears
-        }),
+        body: JSON.stringify(dates),
     });
 
     if (!response.ok) {
@@ -688,15 +688,13 @@ async function findOutputLettersByYears(neededYears) {
     return data.map(el => new OutputLetter(el))
 }
 
-async function findInputLettersByYears(neededYears) {
-    const response = await fetch(BACKEND_API_URL + `/api/inputLetters/findByYears`, {
+async function findInputLettersDates(dates) {
+    const response = await fetch(BACKEND_API_URL + `/api/inputLetters/getByDates`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            years: neededYears
-        }),
+        body: JSON.stringify(dates),
     });
 
     if (!response.ok) {
@@ -846,4 +844,92 @@ function generateYears(select, since) {
         option.innerText = i;
         select.appendChild(option);
     }
+}
+
+async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMultiSelect) {
+
+    outputSelect.innerHTML = "";
+    outputSelect.disabled = false;
+    const option = document.createElement("option");
+    option.innerText = "Выберите вариант";
+    option.disabled = true;
+    option.selected = true;
+    option.hidden = true;
+    outputSelect.appendChild(option)
+
+    if (!yearMultiSelect.selectedValue) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+        return;
+    }
+    if (monthMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+        return;
+    }
+
+    const data = await findOutputLettersByDates({
+        year: yearMultiSelect.selectedValue,
+        months: monthMultiSelect.selectedValues,
+    });
+
+    console.log(data);
+
+    if(data.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        outputSelect.disabled = true;
+    }
+
+    data.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.documentNumber;
+        option.value = element.id;
+        outputSelect.appendChild(option);
+    })
+}
+
+async function onInputYearOrMonthChange(inputSelect, yearMultiSelect, monthMultiSelect) {
+
+    inputSelect.innerHTML = "";
+    inputSelect.disabled = false;
+    const option = document.createElement("option");
+    option.innerText = "Выберите вариант";
+    option.disabled = true;
+    option.selected = true;
+    option.hidden = true;
+    inputSelect.appendChild(option)
+
+    if (yearMultiSelect.selectedValue === null) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        inputSelect.disabled = true;
+        return;
+    }
+    if (monthMultiSelect.selectedItems.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        inputSelect.disabled = true;
+        return;
+    }
+
+    const data = await findInputLettersDates({
+        year:yearMultiSelect.selectedValue,
+        months:monthMultiSelect.selectedValues,
+    });
+
+    if(data.length === 0) {
+        option.innerText = "Нет писем";
+        option.value = "0";
+        inputSelect.disabled = true;
+    }
+
+    data.forEach(element => {
+        const option = document.createElement("option");
+        option.innerText = element.numberIVC;
+        option.value = element.id;
+        inputSelect.appendChild(option);
+    })
 }

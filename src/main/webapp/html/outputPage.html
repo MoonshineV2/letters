@@ -73,10 +73,13 @@
                         </select>
                     </div>
                     <div class="custom-select answer-grid-select">
-                        <label for="input-select">Номер входящего</label>
-                        <select name="input-id" id="input-select" disabled>
-                            <option value="0" disabled selected hidden>Нет писем</option>
-                        </select>
+                        <div class="field-container">
+                            <label for="input-select">Номер входящего (номер ИВЦ ЖА)</label>
+                            <select name="input-id" id="input-select" disabled>
+                                <option value="0" disabled selected hidden>Нет писем</option>
+                            </select>
+                            <p id="input-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
                     </div>
                 </div>
                 <div class="dividing-line dividing-up"></div>

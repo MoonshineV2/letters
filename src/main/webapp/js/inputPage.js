@@ -132,58 +132,6 @@ window.addEventListener("load", async () => {
     form.outputLetter = document.querySelector("#output-select");
 })
 
-async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMultiSelect) {
-
-    outputSelect.innerHTML = "";
-    outputSelect.disabled = false;
-    const option = document.createElement("option");
-    option.innerText = "Выберите вариант";
-    option.disabled = true;
-    option.selected = true;
-    option.hidden = true;
-    outputSelect.appendChild(option)
-
-    if (!yearMultiSelect.selectedValue) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        outputSelect.disabled = true;
-        return;
-    }
-    if (monthMultiSelect.selectedItems.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        outputSelect.disabled = true;
-        return;
-    }
-
-    const data = await findOutputLettersByYears([yearMultiSelect.selectedValue]);
-
-
-    let outputLettersFiltered = new Set();// = data.filter(el => monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString()));
-
-    data.forEach(el => {
-        console.log(monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1)).toString())
-        if (monthMultiSelect.selectedValues.includes((new Date(el.documentDate).getMonth() + 1).toString())) {
-            outputLettersFiltered.add(el);
-        }
-    });
-
-    console.log(outputLettersFiltered);
-
-    if(outputLettersFiltered.length === 0) {
-        option.innerText = "Нет писем";
-        option.value = "0";
-        outputSelect.disabled = true;
-    }
-
-    outputLettersFiltered.forEach(element => {
-        const option = document.createElement("option");
-        option.innerText = element.documentNumber;
-        option.value = element.id;
-        outputSelect.appendChild(option);
-    })
-}
-
 function getTagsMultiselectInstance() {
     const data = [];
     tags.forEach(element => {
@@ -243,18 +191,6 @@ async function saveDocument() {
         hasAttentions = true;
     }
 
-    if (!form.easdNumber.value) {
-        form.easdNumber.setAttribute("empty", "");
-
-        form.easdNumber.oninput = () => {
-            form.easdNumber.removeAttribute("empty");
-            saveButton.removeAttribute("empty");
-            saveButton.classList.remove("btn-validation-failed");
-        }
-
-        hasAttentions = true;
-    }
-
     if (!form.registrationDate.value) {
         form.registrationDate.setAttribute("empty", "");
 
@@ -292,7 +228,20 @@ async function saveDocument() {
     }
 
     if (form.answer.checked && form.outputLetter.children.length === 1 || form.answer.checked && form.outputLetter.value === "Выберите вариант") {
-        form.answer.setAttribute("empty", "");
+        form.outputLetter.setAttribute("empty", "");
+
+        form.outputLetter.oninput = () => {
+            form.outputLetter.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        form.answer.oninput = () => {
+            form.outputLetter.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
         hasAttentions = true;
     }
 
@@ -428,7 +377,7 @@ async function saveDocument() {
         targetWorker: {id:form.targetWorker.selectedValue},
         reserve: form.reserve.checked,
         file: form.fileUploader.file,
-        outputLetter: {id:form.outputLetter.value}
+        outputLetter: {id: form.answer.checked ? form.outputLetter.value : 0}
     });
 
     try {

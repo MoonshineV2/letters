@@ -114,10 +114,6 @@ public class InputLetterService {
             throw new IllegalArgumentException("\"Кому расписано\" не задано");
         }
 
-        if (inputLetter.getEasdNumber() == 0) {
-            throw new IllegalArgumentException("Номер ЕАСД не задан");
-        }
-
         if (inputLetter.getTags().isEmpty()) {
             throw new IllegalArgumentException("Ни один тег не выбран");
         }

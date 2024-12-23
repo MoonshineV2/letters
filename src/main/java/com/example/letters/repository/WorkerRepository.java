@@ -26,7 +26,7 @@ public class WorkerRepository {
     }
 
     public List<Worker> findSigners() {
-        return entityManager.createQuery("SELECT w FROM Worker w WHERE w.canSign = true ORDER BY w.id ASC", Worker.class).getResultList();
+        return entityManager.createQuery("SELECT w FROM Worker w WHERE w.canSign = true AND w.disabled = false ORDER BY w.id ASC", Worker.class).getResultList();
     }
 
     public Worker create(Worker worker) {

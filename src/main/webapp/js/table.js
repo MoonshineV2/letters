@@ -12,6 +12,7 @@ class Table {
     createFormInstance;
 
     addOption = false;
+    showDisabled = false;
 
     constructor(element, data, options = {}) {
 
@@ -50,6 +51,10 @@ class Table {
 
         if (options.addOption) {
             this.addOption = options.addOption;
+        }
+
+        if (options.showDisabled) {
+            this.showDisabled = options.showDisabled;
         }
 
         this.initialize();
@@ -101,13 +106,18 @@ class Table {
         root.classList.add("table-upper");
 
         let generated =
-            `<div>
+            `<div style="display: flex;gap: 5px;">
                 ${this.addOption ? `
-                    <div style="position: relative">
-                        <button id="add-option" class="table-customization-btn add-option">
-                            Добавить
-                        </button>
-                    </div>
+                    <button id="add-option" class="table-customization-btn add-option">
+                        Добавить
+                    </button>
+                ` : ''}
+                ${this.showDisabled ? `
+                    <input type="checkbox" id="show-disabled" class="toggle-checkbox" />
+                    <label for="show-disabled" class="toggle-container">
+                        <div>Все</div>
+                        <div>Активные</div>
+                    </label>
                 ` : ''}
             </div>
             <div style="position: relative">
@@ -172,6 +182,23 @@ class Table {
             })
         }
 
+        if (this.showDisabled) {
+            root.querySelector("#show-disabled").onchange = () => {
+                if (root.querySelector("#show-disabled").checked) {
+                    this.dataRows.forEach(dr => {
+                        if (dr.assignedData.disabled) {
+                            dr.row.style.display = "none";
+                        }
+                    })
+                }
+                else {
+                    this.dataRows.forEach(dr => {
+                        dr.row.style.display = "";
+                    })
+                }
+            }
+        }
+
         return root;
     }
 
@@ -200,7 +227,12 @@ class Table {
     initBody() {
         this.body.innerHTML = "";
 
-        this.data.forEach(dataElement => {
+        let toShow = this.data;
+        if (!this.showDisabled) {
+            toShow = toShow.filter(dataElement => !dataElement.disabled);
+        }
+
+        toShow.forEach(dataElement => {
             const createdRow = this.createRow(dataElement);
             this.body.appendChild(createdRow);
             this.dataRows.push({id:dataElement.id, row:createdRow, assignedData:dataElement});
@@ -340,7 +372,7 @@ class Table {
 
     sortData(field, order) {
         const fieldType = this.getFieldType(this.data, field);
-        //console.log(fieldType);
+        console.log(this.data);
         if (fieldType === "number") {
             //console.log("type of number");
             if (order === "ASC") {

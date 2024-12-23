@@ -348,3 +348,60 @@ tbody th img{
 .table-customization-options.excel-options input[empty] {
     border: 1px solid #EB0034;
 }
+
+.toggle-checkbox {
+    display: none;
+}
+
+.toggle-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: fit-content;
+    border: 3px solid #343434;
+    border-radius: 20px;
+    background: #343434;
+    font-weight: bold;
+    color: #343434;
+    cursor: pointer;
+}
+
+.toggle-container::before {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    left: 0;
+    border-radius:20px;
+    background: white;
+    transition: all 0.3s;
+}
+
+.toggle-container div {
+    user-select: none;
+    padding: 2px;
+    text-align: center;
+    z-index: 1;
+    font-size: 14px;
+}
+
+.toggle-checkbox:checked + .toggle-container::before {
+    left: 50%;
+}
+
+.toggle-checkbox:checked + .toggle-container div:first-child{
+    color: white;
+    transition: color 0.3s;
+}
+.toggle-checkbox:checked + .toggle-container div:last-child{
+    color: #343434;
+    transition: color 0.3s;
+}
+.toggle-checkbox + .toggle-container div:first-child{
+    color: #343434;
+    transition: color 0.3s;
+}
+.toggle-checkbox + .toggle-container div:last-child{
+    color: white;
+    transition: color 0.3s;
+}

@@ -22,7 +22,7 @@ public class ParticipantRepository {
     }
 
     public List<Participant> findSigners() {
-        return entityManager.createQuery("SELECT p FROM Participant p WHERE p.canSign = true ORDER BY p.id ASC", Participant.class).getResultList();
+        return entityManager.createQuery("SELECT p FROM Participant p WHERE p.canSign = true AND p.disabled = false ORDER BY p.id ASC", Participant.class).getResultList();
     }
 
     public Participant create(Participant participant) {
