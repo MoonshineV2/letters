@@ -72,4 +72,19 @@ public class PageController {
         }
         return Response.ok(in, MediaType.TEXT_HTML).build();
     }
+
+    @GET
+    @Path("answers")
+    @RolesAllowed({"letters_default", "letters_admin"})
+    public Response showAnswersPage() {
+        String filePath = servletContext.getRealPath("/html/searchPage.html");
+        File file = new File(filePath);
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.ok(in, MediaType.TEXT_HTML).build();
+    }
 }
