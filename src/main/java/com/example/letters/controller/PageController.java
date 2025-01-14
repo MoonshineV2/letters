@@ -77,7 +77,7 @@ public class PageController {
     @Path("answers")
     @RolesAllowed({"letters_default", "letters_admin"})
     public Response showAnswersPage() {
-        String filePath = servletContext.getRealPath("/html/searchPage.html");
+        String filePath = servletContext.getRealPath("/html/answersPage.html");
         File file = new File(filePath);
         InputStream in = null;
         try {

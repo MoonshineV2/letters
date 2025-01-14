@@ -177,6 +177,16 @@ public class OutputLetterRepository {
         return (List<OutputLetter>) emQuery.getResultList();
     }
 
+    public List<OutputLetter> findByAnswer(int inputLetterId) {
+        return (List<OutputLetter>) entityManager.createQuery(
+                        "SELECT ol " +
+                                "from OutputLetter ol " +
+                                "where ol.inputLetter.id = :id " +
+                                "ORDER BY ol.id ASC")
+                .setParameter("id", inputLetterId)
+                .getResultList();
+    }
+
     public Optional<DBFile> getFileById(int id) {
         Tuple tuple = entityManager
                 .createQuery("select ol.documentName as fileName, ol.file as file from OutputLetter ol where ol.id = :id ORDER BY ol.id ASC", Tuple.class)

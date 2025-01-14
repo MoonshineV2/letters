@@ -7,7 +7,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Stateless
@@ -184,6 +183,17 @@ public class InputLetterRepository {
         }
 
         return (List<InputLetter>) emQuery.getResultList();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<InputLetter> findByAnswer(int outputLetterId) {
+        return (List<InputLetter>) entityManager.createQuery(
+                        "SELECT il " +
+                                "from InputLetter il " +
+                                "where il.outputLetter.id = :id " +
+                                "ORDER BY il.id ASC")
+                .setParameter("id", outputLetterId)
+                .getResultList();
     }
 
     public Optional<DBFile> getFileById(int id) {

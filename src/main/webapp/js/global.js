@@ -416,6 +416,9 @@ function getHeaderNavigationHTMLInstance(isAdmin) {
             <li id="search-ref">
                 <a href="${BACKEND_API_URL}/api/pages/search">Поиск</a>
             </li>
+            <li id="answers-ref">
+                <a href="${BACKEND_API_URL}/api/pages/answers">Ответы</a>
+            </li>
             ${isAdmin ? 
                 `<li id="administration-ref">
                     <a href="${BACKEND_API_URL}/api/pages/administrating">Администрирование</a>
@@ -740,6 +743,18 @@ async function findWorkgroups(withDisabled) {
 
     const data = await response.json();
     return data.map(el => new Workgroup(el))
+}
+
+async function getAnswerChain() {
+    let url = BACKEND_API_URL + `/api/answers`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    return await response.json();
 }
 
 function arrayBufferToBase64( buffer ) {
