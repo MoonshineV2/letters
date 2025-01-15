@@ -15,6 +15,7 @@ public class ParticipantDto {
     public String post;
     public boolean canSign;
     public boolean disabled;
+    public String email;
 
     public static ParticipantDto fromParticipant(Participant participant) {
         return new ParticipantDto(
@@ -23,7 +24,8 @@ public class ParticipantDto {
                 participant.getInitials(),
                 participant.getPost(),
                 participant.isCanSign(),
-                participant.isDisabled()
+                participant.isDisabled(),
+                participant.getEmail()
         );
     }
 
@@ -34,7 +36,8 @@ public class ParticipantDto {
                 initials,
                 post,
                 canSign,
-                disabled
+                disabled,
+                email
         );
     }
 }

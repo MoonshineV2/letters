@@ -25,6 +25,8 @@ public class Participant {
     private boolean canSign;
     @Column(name = "disabled")
     private boolean disabled;
+    @Column(name = "email")
+    private String email;
 
     public Participant(int id) {
         this.id = id;

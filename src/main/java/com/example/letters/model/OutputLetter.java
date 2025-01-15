@@ -96,9 +96,6 @@ public class OutputLetter {
     @Column(name = "document_num")
     private String documentNumber;
 
-    @Column(name = "email")
-    private String email;
-
     public OutputLetter(int id) {
         this.id = id;
     }

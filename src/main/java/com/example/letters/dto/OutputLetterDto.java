@@ -59,8 +59,6 @@ public class OutputLetterDto {
 
     public byte[] file;
 
-    public String email;
-
     public static OutputLetterDto fromOutputLetter(OutputLetter outputLetter) {
         OutputLetterDto dto = new OutputLetterDto();
         dto.id = outputLetter.getId();
@@ -100,7 +98,6 @@ public class OutputLetterDto {
         dto.reserve = outputLetter.isReserve();
         //dto.file = outputLetter.getFile();
         dto.documentNumber = outputLetter.getDocumentNumber();
-        dto.email = outputLetter.getEmail();
 
         return dto;
     }
@@ -129,7 +126,6 @@ public class OutputLetterDto {
         outputLetter.setReserve(reserve);
         outputLetter.setFile(file);
         outputLetter.setDocumentNumber(documentNumber);
-        outputLetter.setEmail(email);
 
         return outputLetter;
     }

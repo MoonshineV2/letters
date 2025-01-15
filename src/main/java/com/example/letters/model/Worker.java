@@ -35,6 +35,9 @@ public class Worker {
     @Column(name = "disabled")
     private boolean disabled;
 
+    @Column(name = "email")
+    private String email;
+
     public Worker(int id) {
         this.id = id;
     }

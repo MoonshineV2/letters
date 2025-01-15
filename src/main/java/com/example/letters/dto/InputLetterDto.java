@@ -58,8 +58,6 @@ public class InputLetterDto {
 
     public byte[] file;
 
-    public String email;
-
     public static InputLetterDto fromInputLetter(InputLetter inputLetter) {
         InputLetterDto dto = new InputLetterDto();
         dto.id = inputLetter.getId();
@@ -100,7 +98,6 @@ public class InputLetterDto {
             dto.outputLetter = OutputLetterDto.fromOutputLetter(inputLetter.getOutputLetter());
             dto.outputLetter.setInputLetter(null);
         }
-        dto.email = inputLetter.getEmail();
 
         return dto;
     }
@@ -130,7 +127,6 @@ public class InputLetterDto {
         inputLetter.setReserve(isReserve);
         inputLetter.setFile(file);
         if (outputLetter != null && outputLetter.id != 0) inputLetter.setOutputLetter(outputLetter.toOutputLetter());
-        inputLetter.setEmail(email);
 
         return inputLetter;
     }

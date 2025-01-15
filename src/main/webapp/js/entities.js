@@ -1244,6 +1244,7 @@ class Participant {
     initials = "";
     post;
     canSign;
+    email;
     disabled;
 
     constructor(participant) {
@@ -1254,6 +1255,7 @@ class Participant {
         this.post = participant.post;
         this.canSign = participant.canSign;
         this.disabled = participant.disabled;
+        this.email = participant.email;
     }
 
     compare(another) {
@@ -1269,6 +1271,7 @@ class Participant {
         initials:"Фамилия, инициалы",
         post:"Должность",
         canSign:"Право подписи",
+        email:"Электронная почта",
         disabled:"Неактивен"
     }
 
@@ -1308,6 +1311,13 @@ class Participant {
                             <p id="participant-post-empty" class="under-attention under-attention-empty" hidden>поле не может быть пустым</p>
                         </div>
                 </div>
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for=participant-email">${this.locale.email}</label>
+                            <input id="participant-email" type="text">
+                            <p id="participant-email-empty" class="under-attention under-attention-empty" hidden>поле не может быть пустым</p>
+                        </div>
+                </div>
                 <div class="custom-checkbox">
                     <input id="participant-cansign" type="checkbox" ${isSigner !== undefined && isSigner === true ? 'checked disabled' : ''}>
                     <label for="participant-cansign">${Participant.locale.canSign.toLowerCase()}</label>
@@ -1330,6 +1340,7 @@ class Participant {
         const nameInput = bodyWrapper.querySelector("#participant-fullname");
         const shortNameInput = bodyWrapper.querySelector("#participant-initials");
         const post = bodyWrapper.querySelector("#participant-post");
+        const email = bodyWrapper.querySelector("#participant-email");
         const canSign = bodyWrapper.querySelector("#participant-cansign");
 
         shortNameInput.oninput = () => {
@@ -1360,7 +1371,8 @@ class Participant {
                     fullName: nameInput.value,
                     initials: shortNameInput.value,
                     post: post.value,
-                    canSign: canSign.checked
+                    canSign: canSign.checked,
+                    email: email.value
                 }))
 
                 const event = new Event("participantsChanged");
@@ -1406,6 +1418,13 @@ class Participant {
                             <label for=participant-post">${Participant.locale.post}</label>
                             <input id="participant-post" type="text" value="${this.post}">
                             <p id="participant-post-empty" class="under-attention under-attention-empty" hidden>поле не может быть пустым</p>
+                        </div>
+                </div>
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for=participant-email">${Participant.locale.email}</label>
+                            <input id="participant-email" type="text" value="${this.email}">
+                            <p id="participant-email-empty" class="under-attention under-attention-empty" hidden>поле не может быть пустым</p>
                         </div>
                 </div>
                 <div class="custom-checkbox">
@@ -1464,6 +1483,7 @@ class Participant {
             clonedParticipant.initials = bodyWrapper.querySelector("#participant-initials").value;
             clonedParticipant.post = bodyWrapper.querySelector("#participant-post").value;
             clonedParticipant.canSign = bodyWrapper.querySelector("#participant-cansign").checked;
+            clonedParticipant.email = bodyWrapper.querySelector("#participant-email").value;
             clonedParticipant.disabled = bodyWrapper.querySelector("#worker-disabled").checked;
 
             try {
@@ -1492,6 +1512,7 @@ class Worker {
     canSign;
     workgroupId;
     workgroupName;
+    email;
     disabled;
 
     constructor(worker) {
@@ -1503,6 +1524,7 @@ class Worker {
         this.canSign = worker.canSign;
         this.workgroupId = worker.workgroupId;
         this.workgroupName = worker.workgroupName;
+        this.email = worker.email;
         this.disabled = worker.disabled;
     }
 
@@ -1524,6 +1546,7 @@ class Worker {
         canSign:"Право подписи",
         workgroupId:"Id рабочей группы",
         workgroupName:"Название рабочей группы",
+        email:"Электронная почта",
         disabled:"Неактивен"
     }
 
@@ -1570,6 +1593,13 @@ class Worker {
                         <p id="doc-type-select-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                     </div>
                 </div>
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="worker-email">${this.locale.email}</label>
+                            <input id="worker-email" type="text">
+                            <p id="worker-email-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
+                </div>
                 <div class="custom-checkbox">
                     <input id="worker-cansign" type="checkbox" ${isSigner !== undefined && isSigner === true ? 'checked disabled' : ''}>
                     <label for="worker-cansign">${Worker.locale.canSign.toLowerCase()}</label>
@@ -1602,6 +1632,7 @@ class Worker {
         const nameInput = bodyWrapper.querySelector("#worker-fullname");
         const shortNameInput = bodyWrapper.querySelector("#worker-initials");
         const post = bodyWrapper.querySelector("#worker-post");
+        const email = bodyWrapper.querySelector("#worker-email");
         const canSign = bodyWrapper.querySelector("#worker-cansign");
 
         shortNameInput.oninput = () => {
@@ -1637,7 +1668,8 @@ class Worker {
                     initials: shortNameInput.value,
                     post: post.value,
                     canSign: canSign.checked,
-                    workgroupId: workgroupSelect.value
+                    workgroupId: workgroupSelect.value,
+                    email: email.value
                 }))
 
                 const event = new Event("WorkersChanged");
@@ -1693,6 +1725,13 @@ class Worker {
                         </select>
                         <p id="doc-type-select-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
                     </div>
+                </div>
+                <div class="custom-input">
+                        <div class="field-container">
+                            <label for="worker-email">${Worker.locale.email}</label>
+                            <input id="worker-email" type="text" value="${this.email}">
+                            <p id="worker-email-empty" class="under-attention under-attention-empty">поле не может быть пустым</p>
+                        </div>
                 </div>
                 <div class="custom-checkbox">
                     <input id="worker-cansign" type="checkbox" ${this.canSign ? "checked" : ""}>
@@ -1764,6 +1803,7 @@ class Worker {
             clonedWorker.post = bodyWrapper.querySelector("#worker-post").value;
             clonedWorker.workgroupId = bodyWrapper.querySelector("#workgroup-select").value;
             clonedWorker.canSign = bodyWrapper.querySelector("#worker-cansign").checked;
+            clonedWorker.email = bodyWrapper.querySelector("#worker-email").value;
             clonedWorker.disabled = bodyWrapper.querySelector("#worker-disabled").checked;
 
             try {

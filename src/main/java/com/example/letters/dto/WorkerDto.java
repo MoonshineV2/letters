@@ -18,6 +18,7 @@ public class WorkerDto {
     String workgroupName;
     boolean canSign;
     boolean disabled;
+    String email;
 
     public static WorkerDto fromWorker(Worker worker) {
 
@@ -29,7 +30,8 @@ public class WorkerDto {
                 worker.getWorkgroup() != null ? worker.getWorkgroup().getId() : 0,
                 worker.getWorkgroup() != null ? worker.getWorkgroup().getName() : null,
                 worker.isCanSign(),
-                worker.isDisabled()
+                worker.isDisabled(),
+                worker.getEmail()
         );
     }
 
@@ -46,7 +48,8 @@ public class WorkerDto {
                 post,
                 workgroup,
                 canSign,
-                disabled
+                disabled,
+                email
         );
     }
 }
