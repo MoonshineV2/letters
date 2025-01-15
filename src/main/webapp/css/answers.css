@@ -75,6 +75,10 @@
     visibility: hidden;
 }
 
+.tree {
+    min-width: max-content;
+}
+
 .tree ul {
     padding-top: 20px; position: relative;
 
@@ -84,6 +88,8 @@
 
     list-style: none;
     padding-left: 0;
+
+    contain: layout;
 }
 
 .tree li {
@@ -99,13 +105,14 @@
 
 /*We will use ::before and ::after to draw the connectors*/
 
-.tree li::before, .tree li::after{
+.tree li::before, .tree li::after {
     content: '';
     position: absolute; top: 0; right: 50%;
     border-top: 1px solid #ccc;
     width: 50%; height: 20px;
 }
-.tree li::after{
+
+.tree li::after {
     right: auto; left: 50%;
     border-left: 1px solid #ccc;
 }
