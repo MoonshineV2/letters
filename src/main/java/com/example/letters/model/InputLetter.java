@@ -97,6 +97,9 @@ public class InputLetter {
     @JoinColumn(name="output_letter_id")
     private OutputLetter outputLetter;
 
+    @Column(name = "email")
+    private String email;
+
     public InputLetter(int id) {
         this.id = id;
     }
