@@ -745,8 +745,20 @@ async function findWorkgroups(withDisabled) {
     return data.map(el => new Workgroup(el))
 }
 
-async function getAnswerChain() {
-    let url = BACKEND_API_URL + `/api/answers`;
+async function getAnswerChainByInputLetterId(id) {
+    let url = BACKEND_API_URL + `/api/answers/inputLetter/${id}`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+async function getAnswerChainByOutputLetterId(id) {
+    let url = BACKEND_API_URL + `/api/answers/outputLetter/${id}`;
 
     const response = await fetch(url);
 
@@ -889,8 +901,6 @@ async function onOutputYearOrMonthChange(outputSelect, yearMultiSelect, monthMul
         year: yearMultiSelect.selectedValue,
         months: monthMultiSelect.selectedValues,
     });
-
-    console.log(data);
 
     if(data.length === 0) {
         option.innerText = "Нет писем";

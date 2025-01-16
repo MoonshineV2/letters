@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -15,6 +16,10 @@ public class LetterChain {
 
     private int id;
     private String type;
+    private Date registrationDate;
+    private String documentNumber;
+
+    private boolean isRoot;
 
     private List<LetterChain> previous;
     private LetterChain next;
@@ -23,6 +28,8 @@ public class LetterChain {
         LetterChain letterChain = new LetterChain();
         letterChain.setId(inputLetter.getId());
         letterChain.setType(inputLetter.getClass().getSimpleName().split("\\$")[0]);
+        letterChain.setRegistrationDate(inputLetter.getRegistrationDate());
+        letterChain.setDocumentNumber(inputLetter.getDocumentNumber());
 
         return letterChain;
     }
@@ -31,6 +38,8 @@ public class LetterChain {
         LetterChain letterChain = new LetterChain();
         letterChain.setId(outputLetter.getId());
         letterChain.setType(outputLetter.getClass().getSimpleName().split("\\$")[0]);
+        letterChain.setRegistrationDate(outputLetter.getRegistrationDate());
+        letterChain.setDocumentNumber(outputLetter.getDocumentNumber());
 
         return letterChain;
     }

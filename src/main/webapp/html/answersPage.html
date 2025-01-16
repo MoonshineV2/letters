@@ -22,13 +22,52 @@
 <main>
     <section class="answers-root-select">
         <h1 class="answers-header">Дерево ответов</h1>
-        <div style="margin-top: 10px; display: flex; flex-direction: row; align-items: center; justify-content: space-around;">
-            <select name="letter-type" id="letter-type">
-                <option value="input">Входящее</option>
-                <option value="output">Исходящее</option>
-            </select>
-            <input placeholder="номер письма">
-            <button id="build-chain">Найти</button>
+        <div class="dividing-line dividing-down"></div>
+        <div class="fields">
+            <div class="custom-select">
+                <label for="letterType-select">Тип письма</label>
+                <select name="letterType" id="letterType-select">
+                    <option value="input" selected>Входящие</option>
+                    <option value="output">Исходящие</option>
+                </select>
+            </div>
+            <div class="field-answer-grid">
+                <div class="multiselect">
+                    <label for="years">Год письма</label>
+                    <select id="years" name="years" data-placeholder="Выберите год" data-search="false" data-select-all="true" multiple data-multi-select>
+                    </select>
+                </div>
+                <div class="multiselect">
+                    <label for="months">Месяц письма</label>
+                    <select id="months" name="months" data-placeholder="Выберите месяц" data-search="false" data-select-all="true" multiple data-multi-select>
+                        <option value="1">01 (январь)</option>
+                        <option value="2">02 (февраль)</option>
+                        <option value="3">03 (март)</option>
+                        <option value="4">04 (апрель)</option>
+                        <option value="5">05 (май)</option>
+                        <option value="6">06 (июнь)</option>
+                        <option value="7">07 (июль)</option>
+                        <option value="8">08 (август)</option>
+                        <option value="9">09 (сентябрь)</option>
+                        <option value="10">10 (октябрь)</option>
+                        <option value="11">11 (ноябрь)</option>
+                        <option value="12">12 (декабрь)</option>
+                    </select>
+                </div>
+                <div class="custom-select answer-grid-select">
+                    <label for="letter-select">Номер входящего (номер ИВЦ ЖА)</label>
+                    <select name="letter-id" id="letter-select" disabled>
+                        <option value="0" disabled selected hidden>Нет писем</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="dividing-line dividing-up"></div>
+        <div class="field-container">
+            <button id="build-tree" class="letter-save-btn" onclick="">
+                Построить
+            </button>
+            <p class="under-attention btn-under-attention-empty">*требуется заполнить поля</p>
         </div>
     </section>
     <section class="letter-chain-section">

@@ -21,15 +21,32 @@ public class AnswersChainService {
     @Inject
     private OutputLetterRepository outputLetterRepository;
 
-    public AnswersChain getChain(InputLetter inputLetter) {
-        inputLetter =  inputLetterRepository.findById(inputLetter.getId()).orElseThrow(
-                () -> new IllegalArgumentException("Input letter not found")
+    public AnswersChain getChainByInputLetterId(int id) {
+        InputLetter inputLetter =  inputLetterRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Входящее письмо с Id = " + id + " не найдено")
         );
 
         AnswersChain answersChain = new AnswersChain(LetterChain.create(inputLetter));
 
         generateChainAfterRoot(answersChain);
         generateChainBeforeRoot(answersChain);
+        applyRootStatus(answersChain.getRoot(), InputLetter.class.getSimpleName(), id);
+
+        return answersChain;
+    }
+
+
+
+    public AnswersChain getChainByOutputLetterId(int id) {
+        OutputLetter outputLetter =  outputLetterRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Исходящее письмо с Id = " + id + " не найдено")
+        );
+
+        AnswersChain answersChain = new AnswersChain(LetterChain.create(outputLetter));
+
+        generateChainAfterRoot(answersChain);
+        generateChainBeforeRoot(answersChain);
+        applyRootStatus(answersChain.getRoot(), OutputLetter.class.getSimpleName(), id);
 
         return answersChain;
     }
@@ -77,5 +94,16 @@ public class AnswersChainService {
         }
 
         letterChain.getPrevious().forEach(this::generatePreviousChains);
+    }
+
+    private void applyRootStatus(LetterChain letterChain, String letterType, int id) {
+        if (letterChain.getType().equals(letterType) && letterChain.getId() == id) {
+            letterChain.setRoot(true);
+        }
+        else {
+            if (letterChain.getPrevious() != null) {
+                letterChain.getPrevious().forEach(node -> applyRootStatus(node, letterType, id));
+            }
+        }
     }
 }
