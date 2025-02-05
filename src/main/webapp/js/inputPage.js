@@ -324,6 +324,7 @@ async function saveDocument() {
             form.topic.removeAttribute("empty");
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
+            auto_grow(form.topic);
         }
 
         hasAttentions = true;
@@ -336,6 +337,7 @@ async function saveDocument() {
             form.note.removeAttribute("empty");
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
+            auto_grow(form.topic);
         }
 
         hasAttentions = true;
