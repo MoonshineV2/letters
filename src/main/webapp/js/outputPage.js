@@ -115,6 +115,7 @@ window.addEventListener("load", async () => {
     form.numberIVC = document.querySelector("#ivc-num");
     form.registrationDate = document.querySelector("#registration-date");
     form.documentDate = document.querySelector("#date-doc");
+    form.documentNumber = document.querySelector("#doc-num");
     form.documentType = docTypesSelect;
     form.address = originsAndAddressesSelect;
     form.signer = signersSelect;
@@ -172,6 +173,18 @@ async function saveDocument() {
 
         form.numberIVC.oninput = () => {
             form.numberIVC.removeAttribute("empty");
+            saveButton.removeAttribute("empty");
+            saveButton.classList.remove("btn-validation-failed");
+        }
+
+        hasAttentions = true;
+    }
+
+    if (!form.documentNumber.value) {
+        form.documentNumber.setAttribute("empty", "");
+
+        form.documentNumber.oninput = () => {
+            form.documentNumber.removeAttribute("empty");
             saveButton.removeAttribute("empty");
             saveButton.classList.remove("btn-validation-failed");
         }
@@ -329,6 +342,7 @@ async function saveDocument() {
         numberIVC: form.numberIVC.value,
         registrationDate: form.registrationDate.value,
         documentDate: form.documentDate.value,
+        documentNumber: form.documentNumber.value,
         documentType: {id:form.documentType.selectedValue},
         documentName: form.fileUploader.file ? form.fileUploader.file.name : "",
         address: {id:form.address.selectedValue},

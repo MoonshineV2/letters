@@ -517,6 +517,7 @@ class OutputLetter {
     createDate;
     registrationDate;
     documentDate;
+    documentNumber = '';
     documentName;
     documentType;
     address;
@@ -540,6 +541,8 @@ class OutputLetter {
         this.createDate = data.createDate;
         this.registrationDate = data.registrationDate;
         this.documentDate = data.documentDate;
+        if (data.documentNumber)
+            this.documentNumber = data.documentNumber;
         this.documentName = data.documentName;
         if (data.documentType)
             this.documentType = new DocumentType(data.documentType);
@@ -580,6 +583,7 @@ class OutputLetter {
         file:"Файл",
         registrationDate:"Дата регистрации",
         documentDate:"Дата письма",
+        documentNumber:"Номер письма",
         documentName:"Название файла",
         documentType:"Тип письма",
         address:"Куда направлено",
@@ -769,6 +773,10 @@ class OutputLetter {
                 <div class="custom-input">
                         <label for="ol-numberIVC">${OutputLetter.locale.numberIVC}</label>
                         <input id="ol-numberIVC" type="text" value="${this.numberIVC}">
+                </div>
+                <div class="custom-input">
+                    <label for="ol-doc-num">${OutputLetter.locale.documentNumber}</label>
+                    <input id="ol-doc-num" type="text" value="${this.documentNumber}">
                 </div>
                 <div class="custom-input">
                         <label for="ol-easdNumber">${OutputLetter.locale.easdNumber}</label>
@@ -967,6 +975,7 @@ class OutputLetter {
 
             clonedLetter.year = bodyWrapper.querySelector("#ol-year").value;
             clonedLetter.numberIVC = bodyWrapper.querySelector("#ol-numberIVC").value;
+            clonedLetter.documentNumber = bodyWrapper.querySelector("#ol-doc-num").value;
             clonedLetter.easdNumber = bodyWrapper.querySelector("#ol-easdNumber").value;
             clonedLetter.answer = bodyWrapper.querySelector("#ol-is-answer").checked;
             clonedLetter.inputLetter = {id:inputSelect.value};

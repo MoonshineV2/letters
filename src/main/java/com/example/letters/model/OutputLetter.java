@@ -93,6 +93,9 @@ public class OutputLetter {
     @Column(name = "file")
     private byte[] file;
 
+    @Column(name = "document_num")
+    private String documentNumber;
+
     public OutputLetter(int id) {
         this.id = id;
     }
