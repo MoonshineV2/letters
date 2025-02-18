@@ -408,20 +408,20 @@ function getHeaderNavigationHTMLInstance(isAdmin) {
     let ul = `
         <ul>
             <li id="input-ref">
-                <a href="${BACKEND_API_URL}/api/pages/input">Входящие</a>
+                <a href="${BACKEND_API_URL}/pages/input">Входящие</a>
             </li>
             <li id="output-ref">
-                <a href="${BACKEND_API_URL}/api/pages/output">Исходящие</a>
+                <a href="${BACKEND_API_URL}/pages/output">Исходящие</a>
             </li>
             <li id="search-ref">
-                <a href="${BACKEND_API_URL}/api/pages/search">Поиск</a>
+                <a href="${BACKEND_API_URL}/pages/search">Поиск</a>
             </li>
             <li id="answers-ref">
-                <a href="${BACKEND_API_URL}/api/pages/answers">Ответы</a>
+                <a href="${BACKEND_API_URL}/pages/answers">Ответы</a>
             </li>
             ${isAdmin ? 
                 `<li id="administration-ref">
-                    <a href="${BACKEND_API_URL}/api/pages/administrating">Администрирование</a>
+                    <a href="${BACKEND_API_URL}/pages/administrating">Администрирование</a>
                 </li>`
                 : ``
             }

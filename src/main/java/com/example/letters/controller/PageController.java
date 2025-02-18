@@ -14,14 +14,22 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-@Path("pages")
+@Path("")
 public class PageController {
 
     @Context
     private ServletContext servletContext;
 
     @GET
-    @Path("input")
+    @Path("")
+    @Produces({MediaType.TEXT_HTML})
+    @RolesAllowed({"letters_default", "letters_admin"})
+    public InputStream showWelcomePage() {
+        return servletContext.getResourceAsStream("/html/welcomePage.html");
+    }
+
+    @GET
+    @Path("pages/input")
     @Produces({MediaType.TEXT_HTML})
     @RolesAllowed({"letters_default", "letters_admin"})
     public InputStream showInputPage() {
@@ -29,7 +37,7 @@ public class PageController {
     }
 
     @GET
-    @Path("output")
+    @Path("pages/output")
     @RolesAllowed({"letters_default", "letters_admin"})
     public Response showOutputPage() {
         String filePath = servletContext.getRealPath("/html/outputPage.html");
@@ -44,7 +52,7 @@ public class PageController {
     }
 
     @GET
-    @Path("search")
+    @Path("pages/search")
     @RolesAllowed({"letters_default", "letters_admin"})
     public Response showSearchPage() {
         String filePath = servletContext.getRealPath("/html/searchPage.html");
@@ -59,7 +67,7 @@ public class PageController {
     }
 
     @GET
-    @Path("administrating")
+    @Path("pages/administrating")
     @RolesAllowed({"letters_admin"})
     public Response showAdministratingPage() {
         String filePath = servletContext.getRealPath("/html/administratingPage.html");
@@ -74,7 +82,7 @@ public class PageController {
     }
 
     @GET
-    @Path("answers")
+    @Path("pages/answers")
     @RolesAllowed({"letters_default", "letters_admin"})
     public Response showAnswersPage() {
         String filePath = servletContext.getRealPath("/html/answersPage.html");

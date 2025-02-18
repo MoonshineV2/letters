@@ -9,6 +9,10 @@
         <realm-name>web-fki</realm-name>
     </login-config>
 
+    <welcome-file-list>
+        <welcome-file>welcomePage.html</welcome-file>
+    </welcome-file-list>
+
     <security-role>
         <role-name>letters_default</role-name>
     </security-role>

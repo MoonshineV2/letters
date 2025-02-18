@@ -97,7 +97,6 @@ public class OutputLetterDto {
         dto.note = outputLetter.getNote();
         dto.reserve = outputLetter.isReserve();
         //dto.file = outputLetter.getFile();
-        dto.documentNumber = outputLetter.getDocumentNumber();
 
         return dto;
     }
@@ -125,7 +124,6 @@ public class OutputLetterDto {
         outputLetter.setNote(note);
         outputLetter.setReserve(reserve);
         outputLetter.setFile(file);
-        outputLetter.setDocumentNumber(documentNumber);
 
         return outputLetter;
     }

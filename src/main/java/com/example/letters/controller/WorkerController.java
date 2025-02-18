@@ -10,7 +10,7 @@ import jakarta.ws.rs.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("workers")
+@Path("api/workers")
 public class WorkerController {
     @Inject
     private WorkerService workerService;

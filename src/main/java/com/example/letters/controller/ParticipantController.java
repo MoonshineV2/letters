@@ -9,7 +9,7 @@ import jakarta.ws.rs.*;
 
 import java.util.List;
 
-@Path("participants")
+@Path("api/participants")
 public class ParticipantController {
 
     @Inject

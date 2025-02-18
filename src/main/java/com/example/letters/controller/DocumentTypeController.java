@@ -10,7 +10,7 @@ import jakarta.ws.rs.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("documentTypes")
+@Path("api/documentTypes")
 public class DocumentTypeController {
 
     @Inject

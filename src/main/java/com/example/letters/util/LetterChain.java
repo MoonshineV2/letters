@@ -39,7 +39,7 @@ public class LetterChain {
         letterChain.setId(outputLetter.getId());
         letterChain.setType(outputLetter.getClass().getSimpleName().split("\\$")[0]);
         letterChain.setRegistrationDate(outputLetter.getRegistrationDate());
-        letterChain.setDocumentNumber(outputLetter.getDocumentNumber());
+        letterChain.setDocumentNumber(String.valueOf(outputLetter.getNumberIVC()));
 
         return letterChain;
     }

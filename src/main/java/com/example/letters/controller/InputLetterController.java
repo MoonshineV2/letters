@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("inputLetters")
+@Path("api/inputLetters")
 public class InputLetterController {
 
     @Inject
@@ -119,7 +119,7 @@ public class InputLetterController {
     @PUT
     @Consumes("application/json")
     @Produces("application/json")
-    @RolesAllowed({"letters_default", "letters_admin"})
+    @RolesAllowed({"letters_admin"})
     public InputLetterDto update(InputLetterDto inputLetterDto) {
         InputLetter out = inputLetterService.update(inputLetterDto.toInputLetter());
         return InputLetterDto.fromInputLetter(out);

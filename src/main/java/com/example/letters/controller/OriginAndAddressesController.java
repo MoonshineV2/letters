@@ -10,7 +10,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
-@Path("originsAndAddresses")
+@Path("api/originsAndAddresses")
 public class OriginAndAddressesController {
 
     @Inject

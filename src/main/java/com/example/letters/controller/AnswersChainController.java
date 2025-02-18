@@ -9,7 +9,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 
-@Path("answers")
+@Path("api/answers")
 public class AnswersChainController {
 
     @Inject

@@ -12,6 +12,7 @@ class Table {
     createFormInstance;
 
     addOption = false;
+    editOption = false;
     showDisabled = false;
 
     constructor(element, data, options = {}) {
@@ -51,6 +52,10 @@ class Table {
 
         if (options.addOption) {
             this.addOption = options.addOption;
+        }
+
+        if (options.editOption) {
+            this.editOption = options.editOption;
         }
 
         if (options.showDisabled) {
@@ -257,12 +262,15 @@ class Table {
 
             const span = document.createElement("span");
             td.appendChild(span);
-            const image = document.createElement("img");
-            image.src = "../images/edit.svg";
-            image.onclick = () => {
-                el.editFormInstance();
+            if (this.editOption) {
+                const image = document.createElement("img");
+                image.src = "../images/edit.svg";
+                image.onclick = () => {
+                    el.editFormInstance();
+                }
+                span.appendChild(image);
             }
-            span.appendChild(image);
+
 
             row.appendChild(td);
         })

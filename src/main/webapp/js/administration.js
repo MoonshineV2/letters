@@ -14,7 +14,7 @@ window.addEventListener("load", async () => {
         table = new Table(
             document.querySelector("#table-section"),
             participants,
-            {addOption:true, showDisabled:true}
+            {addOption:true, editOption:true, showDisabled:true}
             );
         document.querySelector("#table-section").classList.remove("hidden");
     }
@@ -23,7 +23,7 @@ window.addEventListener("load", async () => {
         table = new Table(
             document.querySelector("#table-section"),
             types,
-            {addOption:true, showDisabled:true}
+            {addOption:true, editOption:true, showDisabled:true}
         );
         document.querySelector("#table-section").classList.remove("hidden");
     }
@@ -32,7 +32,7 @@ window.addEventListener("load", async () => {
         table = new Table(
             document.querySelector("#table-section"),
             tags,
-            {addOption:true, showDisabled:true});
+            {addOption:true, editOption:true, showDisabled:true});
         document.querySelector("#table-section").classList.remove("hidden");
     }
     document.querySelector("#administrate-workgroups").onclick = async () => {
@@ -40,7 +40,7 @@ window.addEventListener("load", async () => {
         table = new Table(
             document.querySelector("#table-section"),
             workgroups,
-            {addOption:true, showDisabled:true});
+            {addOption:true, editOption:true, showDisabled:true});
         document.querySelector("#table-section").classList.remove("hidden");
     }
     document.querySelector("#administrate-origins-and-addresses").onclick = async () => {
@@ -48,7 +48,7 @@ window.addEventListener("load", async () => {
         table = new Table(
             document.querySelector("#table-section"),
             originsAndAddresses,
-            {addOption:true, showDisabled:true});
+            {addOption:true, editOption:true, showDisabled:true});
         document.querySelector("#table-section").classList.remove("hidden");
     }
     document.querySelector("#administrate-workers").onclick = async () => {
@@ -56,7 +56,7 @@ window.addEventListener("load", async () => {
         table = new Table(
             document.querySelector("#table-section"),
             workers,
-            {addOption:true, showDisabled:true});
+            {addOption:true, editOption:true, showDisabled:true});
         document.querySelector("#table-section").classList.remove("hidden");
     }
 

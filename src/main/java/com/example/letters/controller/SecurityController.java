@@ -11,7 +11,7 @@ import jakarta.ws.rs.core.SecurityContext;
 import java.util.HashMap;
 import java.util.Map;
 
-@Path("security")
+@Path("api/security")
 public class SecurityController {
 
     @Context

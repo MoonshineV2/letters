@@ -82,10 +82,6 @@ public class OutputLetterService {
             throw new IllegalArgumentException("Дата письма не задана");
         }
 
-        if (outputLetter.getDocumentNumber() == null || outputLetter.getDocumentNumber().isEmpty()) {
-            throw new IllegalArgumentException("Номер письма не задан");
-        }
-
         if (outputLetter.getDocumentType() == null) {
             throw new IllegalArgumentException("Тип документа не задан");
         }
@@ -151,10 +147,6 @@ public class OutputLetterService {
 
         if (outputLetter.getDocumentDate() == null) {
             throw new IllegalArgumentException("Дата письма не задана");
-        }
-
-        if (outputLetter.getDocumentNumber() == null || outputLetter.getDocumentNumber().isEmpty()) {
-            throw new IllegalArgumentException("Номер письма не задан");
         }
 
         if (outputLetter.getDocumentType() == null) {

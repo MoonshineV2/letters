@@ -13,7 +13,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.io.*;
 
-@Path("excel")
+@Path("api/excel")
 public class ExcelExporterController {
 
     @Inject

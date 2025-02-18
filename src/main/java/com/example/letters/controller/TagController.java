@@ -8,7 +8,7 @@ import jakarta.ws.rs.*;
 
 import java.util.List;
 
-@Path("tags")
+@Path("api/tags")
 public class TagController {
 
     @Inject
