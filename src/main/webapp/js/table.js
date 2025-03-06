@@ -1,5 +1,7 @@
 class Table {
 
+    tableName = "";
+
     locale = {};
     tableCellsResolver = {};
     columns = [];
@@ -54,12 +56,28 @@ class Table {
             this.addOption = options.addOption;
         }
 
+        if (options.createFormInstance) {
+            this.createFormInstance = options.createFormInstance;
+        }
+
         if (options.editOption) {
             this.editOption = options.editOption;
         }
 
         if (options.showDisabled) {
             this.showDisabled = options.showDisabled;
+        }
+
+        if (options.createEventName) {
+            this.createEventName = options.createEventName;
+        }
+
+        if (options.changeEventName) {
+            this.changeEventName = options.changeEventName;
+        }
+
+        if (options.tableName) {
+            this.tableName = options.tableName;
         }
 
         this.initialize();
@@ -90,13 +108,20 @@ class Table {
         tableHTML.appendChild(tbodyHTML);
         this.body = tbodyHTML;
 
-        this.data.forEach(el => {
-            Object.keys(el).forEach(key => {
-                if (!this.columns.includes(key)) {
-                    this.columns.push(key);
-                }
+        if (this.data && this.data.length > 0) {
+            this.data.forEach(el => {
+                Object.keys(el).forEach(key => {
+                    if (!this.columns.includes(key)) {
+                        this.columns.push(key);
+                    }
+                })
             })
-        })
+        }
+        else if(this.locale) {
+            Object.keys(this.locale).forEach(key => {
+                this.columns.push(key);
+            })
+        }
 
         this.initHeader()
         this.initBody();
@@ -124,6 +149,9 @@ class Table {
                         <div>Активные</div>
                     </label>
                 ` : ''}
+            </div>
+            <div>
+                <h4>${this.tableName}</h4>
             </div>
             <div style="position: relative">
                 <button id="export-btn" class="table-customization-btn excel-btn">
